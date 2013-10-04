@@ -21,10 +21,15 @@
 #import "ZXDecoderResult.h"
 #import "ZXDetectorResult.h"
 #import "ZXErrors.h"
+#import "ZXPDF417Common.h"
 #import "ZXPDF417Decoder.h"
 #import "ZXPDF417Detector.h"
+#import "ZXPDF417DetectorResult.h"
 #import "ZXPDF417Reader.h"
+#import "ZXPDF417ResultMetadata.h"
+#import "ZXPDF417ScanningDecoder.h"
 #import "ZXResult.h"
+#import "ZXResultPoint.h"
 
 @interface ZXPDF417Reader ()
 
@@ -49,158 +54,84 @@
 }
 
 - (ZXResult *)decode:(ZXBinaryBitmap *)image hints:(ZXDecodeHints *)hints error:(NSError **)error {
-  ZXDecoderResult *decoderResult;
-  NSArray *points;
-  if (hints != nil && hints.pureBarcode) {
-    ZXBitMatrix *matrix = [image blackMatrixWithError:error];
-    if (!matrix) {
-      return nil;
-    }
-    ZXBitMatrix *bits = [self extractPureBits:matrix];
-    if (!bits) {
-      if (error) *error = NotFoundErrorInstance();
-      return nil;
-    }
-    decoderResult = [self.decoder decodeMatrix:bits error:error];
-    if (!decoderResult) {
-      return nil;
-    }
-    points = @[];
-  } else {
-    ZXDetectorResult *detectorResult = [[[ZXPDF417Detector alloc] initWithImage:image] detectWithError:error];
-    if (!detectorResult) {
-      return nil;
-    }
-    decoderResult = [self.decoder decodeMatrix:detectorResult.bits error:error];
-    if (!decoderResult) {
-      return nil;
-    }
-    points = detectorResult.points;
+  NSArray *result = [self decode:image hints:hints multiple:NO error:error];
+  if (!result || result.count == 0 || !result[0]) {
+    if (error) *error = NotFoundErrorInstance();
+    return nil;
   }
-  return [ZXResult resultWithText:decoderResult.text
-                         rawBytes:decoderResult.rawBytes
-                           length:decoderResult.length
-                     resultPoints:points
-                           format:kBarcodeFormatPDF417];
+  return result[0];
+}
+
+- (NSArray *)decodeMultiple:(ZXBinaryBitmap *)image error:(NSError **)error {
+  return [self decodeMultiple:image hints:nil error:error];
+}
+
+- (NSArray *)decodeMultiple:(ZXBinaryBitmap *)image hints:(ZXDecodeHints *)hints error:(NSError **)error {
+  return [self decode:image hints:hints multiple:YES error:error];
+}
+
+- (NSArray *)decode:(ZXBinaryBitmap *)image hints:(ZXDecodeHints *)hints multiple:(BOOL)multiple error:(NSError **)error {
+  NSMutableArray *results = [NSMutableArray array];
+  ZXPDF417DetectorResult *detectorResult = [[[ZXPDF417Detector alloc] initWithImage:image] detect:multiple error:error];
+  if (!detectorResult) {
+    return nil;
+  }
+  for (NSArray *points in detectorResult.points) {
+    ZXDecoderResult *decoderResult = [ZXPDF417ScanningDecoder decode:detectorResult.bits
+                                                        imageTopLeft:points[4]
+                                                     imageBottomLeft:points[5]
+                                                       imageTopRight:points[6]
+                                                    imageBottomRight:points[7]
+                                                    minCodewordWidth:[self minCodewordWidth:points]
+                                                    maxCodewordWidth:[self maxCodewordWidth:points]
+                                                               error:error];
+    if (!decoderResult) {
+      return nil;
+    }
+    ZXResult *result = [[ZXResult alloc] initWithText:decoderResult.text rawBytes:decoderResult.rawBytes
+                                               length:decoderResult.length resultPoints:points format:kBarcodeFormatPDF417];
+    [result putMetadata:kResultMetadataTypeErrorCorrectionLevel value:decoderResult.ecLevel];
+    ZXPDF417ResultMetadata *pdf417ResultMetadata = decoderResult.other;
+    if (!pdf417ResultMetadata) {
+      [result putMetadata:kResultMetadataTypePDF417ExtraMetadata value:pdf417ResultMetadata];
+    }
+    [results addObject:result];
+  }
+  return [NSArray arrayWithArray:results];
+}
+
+- (int)maxWidth:(ZXResultPoint *)p1 p2:(ZXResultPoint *)p2 {
+  if (!p1 || !p2) {
+    return 0;
+  }
+  return abs(p1.x - p2.x);
+}
+
+- (int)minWidth:(ZXResultPoint *)p1 p2:(ZXResultPoint *)p2 {
+  if (!p1 || !p2) {
+    return INT_MAX;
+  }
+  return abs(p1.x - p2.x);
+}
+
+- (int)maxCodewordWidth:(NSArray *)p {
+  return MAX(
+             MAX([self maxWidth:p[0] p2:p[4]], [self maxWidth:p[6] p2:p[2]] * PDF417_MODULES_IN_CODEWORD /
+                 PDF417_MODULES_IN_STOP_PATTERN),
+             MAX([self maxWidth:p[1] p2:p[5]], [self maxWidth:p[7] p2:p[3]] * PDF417_MODULES_IN_CODEWORD /
+                 PDF417_MODULES_IN_STOP_PATTERN));
+}
+
+- (int)minCodewordWidth:(NSArray *)p {
+  return MIN(
+             MIN([self minWidth:p[0] p2:p[4]], [self minWidth:p[6] p2:p[2]] * PDF417_MODULES_IN_CODEWORD /
+                 PDF417_MODULES_IN_STOP_PATTERN),
+             MIN([self minWidth:p[1] p2:p[5]], [self minWidth:p[7] p2:p[3]] * PDF417_MODULES_IN_CODEWORD /
+                 PDF417_MODULES_IN_STOP_PATTERN));
 }
 
 - (void)reset {
-  // do nothing
-}
-
-/**
- * This method detects a code in a "pure" image -- that is, pure monochrome image
- * which contains only an unrotated, unskewed, image of a code, with some white border
- * around it. This is a specialized method that works exceptionally fast in this special
- * case.
- */
-- (ZXBitMatrix *)extractPureBits:(ZXBitMatrix *)image {
-  NSArray *leftTopBlack = image.topLeftOnBit;
-  NSArray *rightBottomBlack = image.bottomRightOnBit;
-  if (leftTopBlack == nil || rightBottomBlack == nil) {
-    return nil;
-  }
-
-  int moduleSize = [self moduleSize:leftTopBlack image:image];
-  if (moduleSize == -1) {
-    return nil;
-  }
-
-  int top = [leftTopBlack[1] intValue];
-  int bottom = [rightBottomBlack[1] intValue];
-  int left = [self findPatternStart:[leftTopBlack[0] intValue] y:top image:image];
-  if (left == -1) {
-    return nil;
-  }
-  int right = [self findPatternEnd:[leftTopBlack[0] intValue] y:top image:image];
-  if (right == -1) {
-    return nil;
-  }
-
-  int matrixWidth = (right - left + 1) / moduleSize;
-  int matrixHeight = (bottom - top + 1) / moduleSize;
-  if (matrixWidth <= 0 || matrixHeight <= 0) {
-    return nil;
-  }
-
-  int nudge = moduleSize >> 1;
-  top += nudge;
-  left += nudge;
-
-  ZXBitMatrix *bits = [[ZXBitMatrix alloc] initWithWidth:matrixWidth height:matrixHeight];
-  for (int y = 0; y < matrixHeight; y++) {
-    int iOffset = top + y * moduleSize;
-    for (int x = 0; x < matrixWidth; x++) {
-      if ([image getX:left + x * moduleSize y:iOffset]) {
-        [bits setX:x y:y];
-      }
-    }
-  }
-
-  return bits;
-}
-
-- (int)moduleSize:(NSArray *)leftTopBlack image:(ZXBitMatrix *)image {
-  int x = [leftTopBlack[0] intValue];
-  int y = [leftTopBlack[1] intValue];
-  int width = [image width];
-  while (x < width && [image getX:x y:y]) {
-    x++;
-  }
-  if (x == width) {
-    return -1;
-  }
-
-  int moduleSize = (int)((unsigned int)(x - [leftTopBlack[0] intValue]) >> 3);
-  if (moduleSize == 0) {
-    return -1;
-  }
-
-  return moduleSize;
-}
-
-- (int)findPatternStart:(int)x y:(int)y image:(ZXBitMatrix *)image {
-  int width = image.width;
-  int start = x;
-
-  int transitions = 0;
-  BOOL black = YES;
-  while (start < width - 1 && transitions < 8) {
-    start++;
-    BOOL newBlack = [image getX:start y:y];
-    if (black != newBlack) {
-      transitions++;
-    }
-    black = newBlack;
-  }
-  if (start == width - 1) {
-    return -1;
-  }
-  return start;
-}
-
-- (int)findPatternEnd:(int)x y:(int)y image:(ZXBitMatrix *)image {
-  int width = image.width;
-  int end = width - 1;
-
-  while (end > x && ![image getX:end y:y]) {
-    end--;
-  }
-  int transitions = 0;
-  BOOL black = YES;
-  while (end > x && transitions < 9) {
-    end--;
-    BOOL newBlack = [image getX:end y:y];
-    if (black != newBlack) {
-      transitions++;
-    }
-    black = newBlack;
-  }
-
-  if (end == x) {
-    return -1;
-  }
-  return end;
+  // nothing needs to be reset
 }
 
 @end

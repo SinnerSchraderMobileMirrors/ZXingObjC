@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 ZXing authors
+ * Copyright 2013 ZXing authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
-/**
- * This class contains the methods for decoding the PDF417 codewords.
- */
+#define PDF417_SYMBOL_TABLE_LEN 2787
+extern int PDF417_SYMBOL_TABLE[PDF417_SYMBOL_TABLE_LEN];
 
-@class ZXDecoderResult;
+#define PDF417_CODEWORD_TABLE_LEN 2787
+extern int PDF417_CODEWORD_TABLE[PDF417_CODEWORD_TABLE_LEN];
 
-@interface ZXPDF417DecodedBitStreamParser : NSObject
+extern int const PDF417_MODULES_IN_CODEWORD;
+extern int const PDF417_MODULES_IN_STOP_PATTERN;
 
-+ (ZXDecoderResult *)decode:(NSArray *)codewords ecLevel:(NSString *)ecLevel error:(NSError **)error;
+@interface ZXPDF417Common : NSObject
+
++ (int)bitCountSum:(NSArray *)moduleBitCount;
++ (int)codeword:(long)symbol;
 
 @end
