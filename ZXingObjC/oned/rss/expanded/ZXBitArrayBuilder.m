@@ -22,30 +22,30 @@
 @implementation ZXBitArrayBuilder
 
 + (ZXBitArray *)buildBitArray:(NSArray *)pairs {
-  int charNumber = ([pairs count] << 1) - 1;
+  NSInteger charNumber = ([pairs count] << 1) - 1;
   if ([pairs[pairs.count - 1] rightChar] == nil) {
     charNumber -= 1;
   }
 
-  int size = 12 * charNumber;
+  NSInteger size = 12 * charNumber;
 
   ZXBitArray *binary = [[ZXBitArray alloc] initWithSize:size];
-  int accPos = 0;
+  NSInteger accPos = 0;
 
   ZXExpandedPair *firstPair = pairs[0];
-  int firstValue = [[firstPair rightChar] value];
-  for (int i = 11; i >= 0; --i) {
+  NSInteger firstValue = [[firstPair rightChar] value];
+  for (NSInteger i = 11; i >= 0; --i) {
     if ((firstValue & (1 << i)) != 0) {
       [binary set:accPos];
     }
     accPos++;
   }
 
-  for (int i = 1; i < [pairs count]; ++i) {
+  for (NSInteger i = 1; i < [pairs count]; ++i) {
     ZXExpandedPair *currentPair = pairs[i];
-    int leftValue = [[currentPair leftChar] value];
+    NSInteger leftValue = [[currentPair leftChar] value];
 
-    for (int j = 11; j >= 0; --j) {
+    for (NSInteger j = 11; j >= 0; --j) {
       if ((leftValue & (1 << j)) != 0) {
         [binary set:accPos];
       }
@@ -53,9 +53,9 @@
     }
 
     if ([currentPair rightChar] != nil) {
-      int rightValue = [[currentPair rightChar] value];
+      NSInteger rightValue = [[currentPair rightChar] value];
 
-      for (int j = 11; j >= 0; --j) {
+      for (NSInteger j = 11; j >= 0; --j) {
         if ((rightValue & (1 << j)) != 0) {
           [binary set:accPos];
         }

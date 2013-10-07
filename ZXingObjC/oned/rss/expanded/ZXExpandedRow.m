@@ -18,7 +18,7 @@
 
 @implementation ZXExpandedRow
 
-- (id)initWithPairs:(NSArray *)pairs rowNumber:(int)rowNumber wasReversed:(BOOL)wasReversed {
+- (id)initWithPairs:(NSArray *)pairs rowNumber:(NSInteger)rowNumber wasReversed:(BOOL)wasReversed {
   if (self = [super init]) {
     _pairs = [NSArray arrayWithArray:pairs];
     _rowNumber = rowNumber;

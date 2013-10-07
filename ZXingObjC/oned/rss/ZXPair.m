@@ -19,13 +19,13 @@
 
 @interface ZXPair ()
 
-@property (nonatomic, assign) int count;
+@property (nonatomic, assign) NSInteger count;
 
 @end
 
 @implementation ZXPair
 
-- (id)initWithValue:(int)value checksumPortion:(int)checksumPortion finderPattern:(ZXRSSFinderPattern *)finderPattern {
+- (id)initWithValue:(NSInteger)value checksumPortion:(NSInteger)checksumPortion finderPattern:(ZXRSSFinderPattern *)finderPattern {
   if (self = [super initWithValue:value checksumPortion:checksumPortion]) {
     _finderPattern = finderPattern;
   }

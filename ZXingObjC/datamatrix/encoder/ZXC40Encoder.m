@@ -21,7 +21,7 @@
 
 @implementation ZXC40Encoder
 
-- (int)encodingMode {
+- (NSInteger)encodingMode {
   return [ZXHighLevelEncoder c40Encodation];
 }
 
@@ -32,13 +32,13 @@
     unichar c = [context currentChar];
     context.pos++;
 
-    int lastCharSize = [self encodeChar:c buffer:buffer];
+    NSInteger lastCharSize = [self encodeChar:c buffer:buffer];
 
-    int unwritten = (buffer.length / 3) * 2;
+    NSInteger unwritten = (buffer.length / 3) * 2;
 
-    int curCodewordCount = context.codewordCount + unwritten;
+    NSInteger curCodewordCount = context.codewordCount + unwritten;
     [context updateSymbolInfoWithLength:curCodewordCount];
-    int available = context.symbolInfo.dataCapacity - curCodewordCount;
+    NSInteger available = context.symbolInfo.dataCapacity - curCodewordCount;
 
     if (![context hasMoreCharacters]) {
       //Avoid having a single C40 value in the last triplet
@@ -55,9 +55,9 @@
       break;
     }
 
-    int count = buffer.length;
+    NSInteger count = buffer.length;
     if ((count % 3) == 0) {
-      int newMode = [ZXHighLevelEncoder lookAheadTest:context.message startpos:context.pos currentMode:[self encodingMode]];
+      NSInteger newMode = [ZXHighLevelEncoder lookAheadTest:context.message startpos:context.pos currentMode:[self encodingMode]];
       if (newMode != [self encodingMode]) {
         [context signalEncoderChange:newMode];
         break;
@@ -67,9 +67,9 @@
   [self handleEOD:context buffer:buffer];
 }
 
-- (int)backtrackOneCharacter:(ZXEncoderContext *)context buffer:(NSMutableString *)buffer
-                     removed:(NSMutableString *)removed lastCharSize:(int)lastCharSize {
-  int count = buffer.length;
+- (NSInteger)backtrackOneCharacter:(ZXEncoderContext *)context buffer:(NSMutableString *)buffer
+                     removed:(NSMutableString *)removed lastCharSize:(NSInteger)lastCharSize {
+  NSInteger count = buffer.length;
   [buffer deleteCharactersInRange:NSMakeRange(count - lastCharSize, lastCharSize)];
   context.pos--;
   unichar c = context.currentChar;
@@ -87,12 +87,12 @@
  * Handle "end of data" situations
  */
 - (void)handleEOD:(ZXEncoderContext *)context buffer:(NSMutableString *)buffer {
-  int unwritten = (buffer.length / 3) * 2;
-  int rest = buffer.length % 3;
+  NSInteger unwritten = (buffer.length / 3) * 2;
+  NSInteger rest = buffer.length % 3;
 
-  int curCodewordCount = context.codewordCount + unwritten;
+  NSInteger curCodewordCount = context.codewordCount + unwritten;
   [context updateSymbolInfoWithLength:curCodewordCount];
-  int available = context.symbolInfo.dataCapacity - curCodewordCount;
+  NSInteger available = context.symbolInfo.dataCapacity - curCodewordCount;
 
   if (rest == 2) {
     [buffer appendString:@"\0"]; //Shift 1
@@ -126,7 +126,7 @@
   [context signalEncoderChange:[ZXHighLevelEncoder asciiEncodation]];
 }
 
-- (int)encodeChar:(unichar)c buffer:(NSMutableString *)sb {
+- (NSInteger)encodeChar:(unichar)c buffer:(NSMutableString *)sb {
   if (c == ' ') {
     [sb appendString:@"\3"];
     return 1;
@@ -158,7 +158,7 @@
     return 2;
   } else if (c >= (unichar)0x0080) {
     [sb appendFormat:@"\1%C", (unichar)0x001e]; //Shift 2, Upper Shift
-    int len = 2;
+    NSInteger len = 2;
     len += [self encodeChar:(unichar) (c - 128) buffer:sb];
     return len;
   } else {
@@ -168,11 +168,11 @@
   }
 }
 
-- (NSString *)encodeToCodewords:(NSString *)sb startpos:(int)startPos {
+- (NSString *)encodeToCodewords:(NSString *)sb startpos:(NSInteger)startPos {
   unichar c1 = [sb characterAtIndex:startPos];
   unichar c2 = [sb characterAtIndex:startPos + 1];
   unichar c3 = [sb characterAtIndex:startPos + 2];
-  int v = (1600 * c1) + (40 * c2) + c3 + 1;
+  NSInteger v = (1600 * c1) + (40 * c2) + c3 + 1;
   unichar cw1 = (unichar) (v / 256);
   unichar cw2 = (unichar) (v % 256);
   return [NSString stringWithFormat:@"%C%C", cw1, cw2];

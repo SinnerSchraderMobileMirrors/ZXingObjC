@@ -33,7 +33,7 @@
   return self;
 }
 
-- (void)setValue:(int)value {
+- (void)setValue:(NSInteger)value {
   NSNumber *confidence = self.values[@(value)];
   if (!confidence) {
     confidence = @0;
@@ -43,7 +43,7 @@
 }
 
 - (NSNumber *)value {
-  int maxConfidence = -1;
+  NSInteger maxConfidence = -1;
   NSNumber *result;
   BOOL ambiguous = NO;
   for (NSNumber *key in [self.values allKeys]) {
@@ -63,7 +63,7 @@
   return result;
 }
 
-- (NSNumber *)confidence:(int)value {
+- (NSNumber *)confidence:(NSInteger)value {
   return self.values[@(value)];
 }
 

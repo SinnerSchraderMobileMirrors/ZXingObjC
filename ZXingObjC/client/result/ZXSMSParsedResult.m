@@ -54,7 +54,7 @@
 - (NSString *)sMSURI {
   NSMutableString *result = [NSMutableString stringWithString:@"sms:"];
   BOOL first = YES;
-  for (int i = 0; i < self.numbers.count; i++) {
+  for (NSInteger i = 0; i < self.numbers.count; i++) {
     if (first) {
       first = NO;
     } else {

@@ -18,11 +18,11 @@
 #import "ZXEAN8Writer.h"
 #import "ZXUPCEANReader.h"
 
-int const EAN8codeWidth = 3 + (7 * 4) + 5 + (7 * 4) + 3;
+NSInteger const EAN8codeWidth = 3 + (7 * 4) + 5 + (7 * 4) + 3;
 
 @implementation ZXEAN8Writer
 
-- (ZXBitMatrix *)encode:(NSString *)contents format:(ZXBarcodeFormat)format width:(int)width height:(int)height hints:(ZXEncodeHints *)hints error:(NSError **)error {
+- (ZXBitMatrix *)encode:(NSString *)contents format:(ZXBarcodeFormat)format width:(NSInteger)width height:(NSInteger)height hints:(ZXEncodeHints *)hints error:(NSError **)error {
   if (format != kBarcodeFormatEan8) {
     [NSException raise:NSInvalidArgumentException format:@"Can only encode EAN_8"];
   }
@@ -32,31 +32,31 @@ int const EAN8codeWidth = 3 + (7 * 4) + 5 + (7 * 4) + 3;
 /**
  * Returns a byte array of horizontal pixels (FALSE = white, TRUE = black)
  */
-- (BOOL *)encode:(NSString *)contents length:(int *)pLength {
+- (BOOL *)encode:(NSString *)contents length:(NSInteger *)pLength {
   if ([contents length] != 8) {
-    [NSException raise:NSInvalidArgumentException format:@"Requested contents should be 8 digits long, but got %d", (int)[contents length]];
+    [NSException raise:NSInvalidArgumentException format:@"Requested contents should be 8 digits long, but got %ld", (long)[contents length]];
   }
 
   if (pLength) *pLength = EAN8codeWidth;
   BOOL *result = (BOOL *)malloc(EAN8codeWidth * sizeof(BOOL));
   memset(result, 0, EAN8codeWidth * sizeof(int8_t));
-  int pos = 0;
+  NSInteger pos = 0;
 
-  pos += [super appendPattern:result pos:pos pattern:(int *)START_END_PATTERN patternLen:START_END_PATTERN_LEN startColor:TRUE];
+  pos += [super appendPattern:result pos:pos pattern:(NSInteger *)START_END_PATTERN patternLen:START_END_PATTERN_LEN startColor:TRUE];
 
-  for (int i = 0; i <= 3; i++) {
-    int digit = [[contents substringWithRange:NSMakeRange(i, 1)] intValue];
-    pos += [super appendPattern:result pos:pos pattern:(int *)L_PATTERNS[digit] patternLen:L_PATTERNS_SUB_LEN startColor:FALSE];
+  for (NSInteger i = 0; i <= 3; i++) {
+    NSInteger digit = [[contents substringWithRange:NSMakeRange(i, 1)] intValue];
+    pos += [super appendPattern:result pos:pos pattern:(NSInteger *)L_PATTERNS[digit] patternLen:L_PATTERNS_SUB_LEN startColor:FALSE];
   }
 
-  pos += [super appendPattern:result pos:pos pattern:(int *)MIDDLE_PATTERN patternLen:MIDDLE_PATTERN_LEN startColor:FALSE];
+  pos += [super appendPattern:result pos:pos pattern:(NSInteger *)MIDDLE_PATTERN patternLen:MIDDLE_PATTERN_LEN startColor:FALSE];
 
-  for (int i = 4; i <= 7; i++) {
-    int digit = [[contents substringWithRange:NSMakeRange(i, 1)] intValue];
-    pos += [super appendPattern:result pos:pos pattern:(int *)L_PATTERNS[digit] patternLen:L_PATTERNS_SUB_LEN startColor:TRUE];
+  for (NSInteger i = 4; i <= 7; i++) {
+    NSInteger digit = [[contents substringWithRange:NSMakeRange(i, 1)] intValue];
+    pos += [super appendPattern:result pos:pos pattern:(NSInteger *)L_PATTERNS[digit] patternLen:L_PATTERNS_SUB_LEN startColor:TRUE];
   }
 
-  pos += [super appendPattern:result pos:pos pattern:(int *)START_END_PATTERN patternLen:START_END_PATTERN_LEN startColor:TRUE];
+  pos += [super appendPattern:result pos:pos pattern:(NSInteger *)START_END_PATTERN patternLen:START_END_PATTERN_LEN startColor:TRUE];
 
   return result;
 }

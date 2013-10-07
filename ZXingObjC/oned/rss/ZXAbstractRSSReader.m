@@ -16,15 +16,15 @@
 
 #import "ZXAbstractRSSReader.h"
 
-static int MAX_AVG_VARIANCE;
-static int MAX_INDIVIDUAL_VARIANCE;
+static NSInteger MAX_AVG_VARIANCE;
+static NSInteger MAX_INDIVIDUAL_VARIANCE;
 
 float const MIN_FINDER_PATTERN_RATIO = 9.5f / 12.0f;
 float const MAX_FINDER_PATTERN_RATIO = 12.5f / 14.0f;
 
 #define RSS14_FINDER_PATTERNS_LEN 9
 #define RSS14_FINDER_PATTERNS_SUB_LEN 4
-const int RSS14_FINDER_PATTERNS[RSS14_FINDER_PATTERNS_LEN][RSS14_FINDER_PATTERNS_SUB_LEN] = {
+const NSInteger RSS14_FINDER_PATTERNS[RSS14_FINDER_PATTERNS_LEN][RSS14_FINDER_PATTERNS_SUB_LEN] = {
   {3,8,2,1},
   {3,5,5,1},
   {3,3,7,1},
@@ -38,7 +38,7 @@ const int RSS14_FINDER_PATTERNS[RSS14_FINDER_PATTERNS_LEN][RSS14_FINDER_PATTERNS
 
 #define RSS_EXPANDED_FINDER_PATTERNS_LEN 6
 #define RSS_EXPANDED_FINDER_PATTERNS_SUB_LEN 4
-const int RSS_EXPANDED_FINDER_PATTERNS[RSS_EXPANDED_FINDER_PATTERNS_LEN][RSS_EXPANDED_FINDER_PATTERNS_SUB_LEN] = {
+const NSInteger RSS_EXPANDED_FINDER_PATTERNS[RSS_EXPANDED_FINDER_PATTERNS_LEN][RSS_EXPANDED_FINDER_PATTERNS_SUB_LEN] = {
   {1,8,4,1}, // A
   {3,6,4,1}, // B
   {3,4,6,1}, // C
@@ -50,19 +50,19 @@ const int RSS_EXPANDED_FINDER_PATTERNS[RSS_EXPANDED_FINDER_PATTERNS_LEN][RSS_EXP
 @implementation ZXAbstractRSSReader
 
 + (void)initialize {
-  MAX_AVG_VARIANCE = (int)(PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.2f);
-  MAX_INDIVIDUAL_VARIANCE = (int)(PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.45f);
+  MAX_AVG_VARIANCE = (NSInteger)(PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.2f);
+  MAX_INDIVIDUAL_VARIANCE = (NSInteger)(PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.45f);
 }
 
 - (id)init {
   if (self = [super init]) {
     _decodeFinderCountersLen = 4;
-    _decodeFinderCounters = (int *)malloc(_decodeFinderCountersLen * sizeof(int));
-    memset(self.decodeFinderCounters, 0, self.decodeFinderCountersLen * sizeof(int));
+    _decodeFinderCounters = (NSInteger *)malloc(_decodeFinderCountersLen * sizeof(NSInteger));
+    memset(self.decodeFinderCounters, 0, self.decodeFinderCountersLen * sizeof(NSInteger));
 
     _dataCharacterCountersLen = 8;
-    _dataCharacterCounters = (int *)malloc(_dataCharacterCountersLen * sizeof(int));
-    memset(self.dataCharacterCounters, 0, self.dataCharacterCountersLen * sizeof(int));
+    _dataCharacterCounters = (NSInteger *)malloc(_dataCharacterCountersLen * sizeof(NSInteger));
+    memset(self.dataCharacterCounters, 0, self.dataCharacterCountersLen * sizeof(NSInteger));
 
     _oddRoundingErrorsLen = 4;
     _oddRoundingErrors = (float *)malloc(_oddRoundingErrorsLen * sizeof(float));
@@ -73,12 +73,12 @@ const int RSS_EXPANDED_FINDER_PATTERNS[RSS_EXPANDED_FINDER_PATTERNS_LEN][RSS_EXP
     memset(_evenRoundingErrors, 0, _evenRoundingErrorsLen * sizeof(float));
 
     _oddCountsLen = _dataCharacterCountersLen / 2;
-    _oddCounts = (int *)malloc(_oddCountsLen * sizeof(int));
-    memset(_oddCounts, 0, _oddCountsLen * sizeof(int));
+    _oddCounts = (NSInteger *)malloc(_oddCountsLen * sizeof(NSInteger));
+    memset(_oddCounts, 0, _oddCountsLen * sizeof(NSInteger));
 
     _evenCountsLen = _dataCharacterCountersLen / 2;
-    _evenCounts = (int *)malloc(_evenCountsLen * sizeof(int));
-    memset(_evenCounts, 0, _evenCountsLen * sizeof(int));
+    _evenCounts = (NSInteger *)malloc(_evenCountsLen * sizeof(NSInteger));
+    memset(_evenCounts, 0, _evenCountsLen * sizeof(NSInteger));
   }
 
   return self;
@@ -116,19 +116,19 @@ const int RSS_EXPANDED_FINDER_PATTERNS[RSS_EXPANDED_FINDER_PATTERNS_LEN][RSS_EXP
   }
 }
 
-+ (int)parseFinderValue:(int *)counters countersSize:(unsigned int)countersSize finderPatternType:(RSS_PATTERNS)finderPatternType {
++ (NSInteger)parseFinderValue:(NSInteger *)counters countersSize:(NSUInteger)countersSize finderPatternType:(RSS_PATTERNS)finderPatternType {
   switch (finderPatternType) {
     case RSS_PATTERNS_RSS14_PATTERNS:
-      for (int value = 0; value < RSS14_FINDER_PATTERNS_LEN; value++) {
-        if ([self patternMatchVariance:counters countersSize:countersSize pattern:(int *)RSS14_FINDER_PATTERNS[value] maxIndividualVariance:MAX_INDIVIDUAL_VARIANCE] < MAX_AVG_VARIANCE) {
+      for (NSInteger value = 0; value < RSS14_FINDER_PATTERNS_LEN; value++) {
+        if ([self patternMatchVariance:counters countersSize:countersSize pattern:(NSInteger *)RSS14_FINDER_PATTERNS[value] maxIndividualVariance:MAX_INDIVIDUAL_VARIANCE] < MAX_AVG_VARIANCE) {
           return value;
         }
       }
       break;
 
     case RSS_PATTERNS_RSS_EXPANDED_PATTERNS:
-      for (int value = 0; value < RSS_EXPANDED_FINDER_PATTERNS_LEN; value++) {
-        if ([self patternMatchVariance:counters countersSize:countersSize pattern:(int *)RSS_EXPANDED_FINDER_PATTERNS[value] maxIndividualVariance:MAX_INDIVIDUAL_VARIANCE] < MAX_AVG_VARIANCE) {
+      for (NSInteger value = 0; value < RSS_EXPANDED_FINDER_PATTERNS_LEN; value++) {
+        if ([self patternMatchVariance:counters countersSize:countersSize pattern:(NSInteger *)RSS_EXPANDED_FINDER_PATTERNS[value] maxIndividualVariance:MAX_INDIVIDUAL_VARIANCE] < MAX_AVG_VARIANCE) {
           return value;
         }
       }
@@ -141,20 +141,20 @@ const int RSS_EXPANDED_FINDER_PATTERNS[RSS_EXPANDED_FINDER_PATTERNS_LEN][RSS_EXP
   return -1;
 }
 
-+ (int)count:(int *)array arrayLen:(unsigned int)arrayLen {
-  int count = 0;
++ (NSInteger)count:(NSInteger *)array arrayLen:(NSUInteger)arrayLen {
+  NSInteger count = 0;
 
-  for (int i = 0; i < arrayLen; i++) {
+  for (NSInteger i = 0; i < arrayLen; i++) {
     count += array[i];
   }
 
   return count;
 }
 
-+ (void)increment:(int *)array arrayLen:(unsigned int)arrayLen errors:(float *)errors {
-  int index = 0;
++ (void)increment:(NSInteger *)array arrayLen:(NSUInteger)arrayLen errors:(float *)errors {
+  NSInteger index = 0;
   float biggestError = errors[0];
-  for (int i = 1; i < arrayLen; i++) {
+  for (NSInteger i = 1; i < arrayLen; i++) {
     if (errors[i] > biggestError) {
       biggestError = errors[i];
       index = i;
@@ -163,10 +163,10 @@ const int RSS_EXPANDED_FINDER_PATTERNS[RSS_EXPANDED_FINDER_PATTERNS_LEN][RSS_EXP
   array[index]++;
 }
 
-+ (void)decrement:(int *)array arrayLen:(unsigned int)arrayLen errors:(float *)errors {
-  int index = 0;
++ (void)decrement:(NSInteger *)array arrayLen:(NSUInteger)arrayLen errors:(float *)errors {
+  NSInteger index = 0;
   float biggestError = errors[0];
-  for (int i = 1; i < arrayLen; i++) {
+  for (NSInteger i = 1; i < arrayLen; i++) {
     if (errors[i] < biggestError) {
       biggestError = errors[i];
       index = i;
@@ -175,15 +175,15 @@ const int RSS_EXPANDED_FINDER_PATTERNS[RSS_EXPANDED_FINDER_PATTERNS_LEN][RSS_EXP
   array[index]--;
 }
 
-+ (BOOL)isFinderPattern:(int *)counters countersLen:(unsigned int)countersLen {
-  int firstTwoSum = counters[0] + counters[1];
-  int sum = firstTwoSum + counters[2] + counters[3];
++ (BOOL)isFinderPattern:(NSInteger *)counters countersLen:(NSUInteger)countersLen {
+  NSInteger firstTwoSum = counters[0] + counters[1];
+  NSInteger sum = firstTwoSum + counters[2] + counters[3];
   float ratio = (float)firstTwoSum / (float)sum;
   if (ratio >= MIN_FINDER_PATTERN_RATIO && ratio <= MAX_FINDER_PATTERN_RATIO) {
-    int minCounter = INT_MAX;
-    int maxCounter = INT_MIN;
-    for (int i = 0; i < countersLen; i++) {
-      int counter = counters[i];
+    NSInteger minCounter = INT_MAX;
+    NSInteger maxCounter = INT_MIN;
+    for (NSInteger i = 0; i < countersLen; i++) {
+      NSInteger counter = counters[i];
       if (counter > maxCounter) {
         maxCounter = counter;
       }

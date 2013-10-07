@@ -29,12 +29,12 @@
 #import "ZXPDF417ScanningDecoder.h"
 #import "ZXResultPoint.h"
 
-const int ZXPDF417_ROW_HEIGHT_SKEW = 2;
-//  const int ZXPDF417_STOP_PATTERN_VALUE = 130324;
-const int ZXPDF417_CODEWORD_SKEW_SIZE = 2;
+const NSInteger ZXPDF417_ROW_HEIGHT_SKEW = 2;
+//  const NSInteger ZXPDF417_STOP_PATTERN_VALUE = 130324;
+const NSInteger ZXPDF417_CODEWORD_SKEW_SIZE = 2;
 
-const int ZXPDF417_MAX_ERRORS = 3;
-const int ZXPDF417_MAX_EC_CODEWORDS = 512;
+const NSInteger ZXPDF417_MAX_ERRORS = 3;
+const NSInteger ZXPDF417_MAX_EC_CODEWORDS = 512;
 static ZXPDF417ECErrorCorrection *errorCorrection;
 
 @implementation ZXPDF417ScanningDecoder
@@ -52,8 +52,8 @@ static ZXPDF417ECErrorCorrection *errorCorrection;
             imageBottomLeft:(ZXResultPoint *)imageBottomLeft
               imageTopRight:(ZXResultPoint *)imageTopRight
            imageBottomRight:(ZXResultPoint *)imageBottomRight
-           minCodewordWidth:(int)minCodewordWidth
-           maxCodewordWidth:(int)maxCodewordWidth {
+           minCodewordWidth:(NSInteger)minCodewordWidth
+           maxCodewordWidth:(NSInteger)maxCodewordWidth {
   ZXPDF417BoundingBox *boundingBox = [[ZXPDF417BoundingBox alloc] initWithImage:image topLeft:imageTopLeft bottomLeft:imageBottomLeft topRight:imageTopRight bottomRight:imageBottomRight];
   ZXPDF417DetectionResultRowIndicatorColumn *leftRowIndicatorColumn;
   ZXPDF417DetectionResultRowIndicatorColumn *rightRowIndicatorColumn;
@@ -81,13 +81,13 @@ static ZXPDF417ECErrorCorrection *errorCorrection;
       again = YES;
     }
   }
-  int maxBarcodeColumn = detectionResult.barcodeColumnCount + 1;
+  NSInteger maxBarcodeColumn = detectionResult.barcodeColumnCount + 1;
   [detectionResult setDetectionResultColumn:0 detectionResultColumn:leftRowIndicatorColumn];
   [detectionResult setDetectionResultColumn:maxBarcodeColumn detectionResultColumn:rightRowIndicatorColumn];
 
   BOOL leftToRight = leftRowIndicatorColumn != nil;
-  for (int barcodeColumnCount = 1; barcodeColumnCount <= maxBarcodeColumn; barcodeColumnCount++) {
-    int barcodeColumn = leftToRight ? barcodeColumnCount : maxBarcodeColumn - barcodeColumnCount;
+  for (NSInteger barcodeColumnCount = 1; barcodeColumnCount <= maxBarcodeColumn; barcodeColumnCount++) {
+    NSInteger barcodeColumn = leftToRight ? barcodeColumnCount : maxBarcodeColumn - barcodeColumnCount;
     if ([detectionResult detectionResultColumn:barcodeColumn]) {
       // This will be the case for the opposite row indicator column, which doesn't need to be decoded again.
       continue;
@@ -99,10 +99,10 @@ static ZXPDF417ECErrorCorrection *errorCorrection;
       detectionResultColumn = [[ZXPDF417DetectionResultColumn alloc] initWithBoundingBox:boundingBox];
     }
     [detectionResult setDetectionResultColumn:barcodeColumn detectionResultColumn:detectionResultColumn];
-    int startColumn = -1;
-    int previousStartColumn = startColumn;
+    NSInteger startColumn = -1;
+    NSInteger previousStartColumn = startColumn;
     // TODO start at a row for which we know the start position, then detect upwards and downwards from there.
-    for (int imageRow = boundingBox.minY; imageRow < boundingBox.maxY; imageRow++) {
+    for (NSInteger imageRow = boundingBox.minY; imageRow < boundingBox.maxY; imageRow++) {
       startColumn = [self startColumn:detectionResult barcodeColumn:barcodeColumn imageRow:imageRow leftToRight:leftToRight];
       if (startColumn < 0 || startColumn > boundingBox.maxX) {
         if (previousStartColumn == -1) {
@@ -149,8 +149,8 @@ static ZXPDF417ECErrorCorrection *errorCorrection;
     return nil;
   }
   NSArray *rowHeights = [rowIndicatorColumn rowHeights];
-  int maxRowHeight = [self max:rowHeights];
-  int missingStartRows = 0;
+  NSInteger maxRowHeight = [self max:rowHeights];
+  NSInteger missingStartRows = 0;
   for (NSNumber *rowHeight in rowHeights) {
     if ([rowHeight intValue] < maxRowHeight - ZXPDF417_ROW_HEIGHT_SKEW) {
       missingStartRows++;
@@ -158,8 +158,8 @@ static ZXPDF417ECErrorCorrection *errorCorrection;
       break;
     }
   }
-  int missingEndRows = 0;
-  for (int row = [rowHeights count] - 1; row >= 0; row--) {
+  NSInteger missingEndRows = 0;
+  for (NSInteger row = [rowHeights count] - 1; row >= 0; row--) {
     if ([rowHeights[row] intValue] < maxRowHeight - ZXPDF417_ROW_HEIGHT_SKEW) {
       missingEndRows++;
     } else {
@@ -171,8 +171,8 @@ static ZXPDF417ECErrorCorrection *errorCorrection;
   return rowIndicatorColumn.boundingBox;
 }
 
-+ (int)max:(NSArray *)values {
-  int maxValue = -1;
++ (NSInteger)max:(NSArray *)values {
+  NSInteger maxValue = -1;
   for (NSNumber *value in values) {
     maxValue = MAX(maxValue, [value intValue]);
   }
@@ -202,14 +202,14 @@ static ZXPDF417ECErrorCorrection *errorCorrection;
                                                       boundingBox:(ZXPDF417BoundingBox *)boundingBox
                                                        startPoint:(ZXResultPoint *)startPoint
                                                       leftToRight:(BOOL)leftToRight
-                                                 minCodewordWidth:(int)minCodewordWidth
-                                                 maxCodewordWidth:(int)maxCodewordWidth {
+                                                 minCodewordWidth:(NSInteger)minCodewordWidth
+                                                 maxCodewordWidth:(NSInteger)maxCodewordWidth {
   ZXPDF417DetectionResultRowIndicatorColumn *rowIndicatorColumn = [[ZXPDF417DetectionResultRowIndicatorColumn alloc] initWithBoundingBox:boundingBox
                                                                                                                                   isLeft:leftToRight];
-  for (int i = 0; i < 2; i++) {
-    int increment = i == 0 ? 1 : -1;
-    int startColumn = (int) startPoint.x;
-    for (int imageRow = (int) startPoint.y; imageRow <= boundingBox.maxY &&
+  for (NSInteger i = 0; i < 2; i++) {
+    NSInteger increment = i == 0 ? 1 : -1;
+    NSInteger startColumn = (NSInteger) startPoint.x;
+    for (NSInteger imageRow = (NSInteger) startPoint.y; imageRow <= boundingBox.maxY &&
         imageRow >= boundingBox.minY; imageRow += increment) {
       ZXPDF417Codeword *codeword = [self detectCodeword:image minColumn:0 maxColumn:image.width leftToRight:leftToRight startColumn:startColumn imageRow:imageRow
                                        minCodewordWidth:minCodewordWidth maxCodewordWidth:maxCodewordWidth];
@@ -229,7 +229,7 @@ static ZXPDF417ECErrorCorrection *errorCorrection;
 + (ZXDecoderResult *)createDecoderResult:(ZXPDF417DetectionResult *)detectionResult {
   ZXPDF417BarcodeMatrix *barcodeMatrix = [self createBarcodeMatrix:detectionResult];
   NSNumber *numberOfCodewords = [barcodeMatrix value:0 column:1];
-  int calculatedNumberOfCodewords = detectionResult.barcodeColumnCount * detectionResult.barcodeRowCount -
+  NSInteger calculatedNumberOfCodewords = detectionResult.barcodeColumnCount * detectionResult.barcodeRowCount -
     [self numberOfECCodeWords:detectionResult.barcodeECLevel];
   if (!numberOfCodewords) {
     if (calculatedNumberOfCodewords < 1 || calculatedNumberOfCodewords > ZXPDF417_MAX_CODEWORDS_IN_BARCODE) {
@@ -242,12 +242,12 @@ static ZXPDF417ECErrorCorrection *errorCorrection;
   }
   NSMutableArray *erasures = [NSMutableArray array];
   NSMutableArray *codewords = [NSMutableArray array];
-  for (int i = 0; i < detectionResult.barcodeRowCount * detectionResult.barcodeColumnCount; i++) {
+  for (NSInteger i = 0; i < detectionResult.barcodeRowCount * detectionResult.barcodeColumnCount; i++) {
     [codewords addObject:@0];
   }
 
-  for (int row = 0; row < detectionResult.barcodeRowCount; row++) {
-    for (int column = 0; column < detectionResult.barcodeColumnCount; column++) {
+  for (NSInteger row = 0; row < detectionResult.barcodeRowCount; row++) {
+    for (NSInteger column = 0; column < detectionResult.barcodeColumnCount; column++) {
       NSNumber *codeword = [barcodeMatrix value:row column:column + 1];
       if (!codeword) {
         [erasures addObject:@(row * detectionResult.barcodeColumnCount + column)];
@@ -262,7 +262,7 @@ static ZXPDF417ECErrorCorrection *errorCorrection;
 + (ZXPDF417BarcodeMatrix *)createBarcodeMatrix:(ZXPDF417DetectionResult *)detectionResult {
   ZXPDF417BarcodeMatrix *barcodeMatrix = [[ZXPDF417BarcodeMatrix alloc] init];
 
-  int column = -1;
+  NSInteger column = -1;
   for (ZXPDF417DetectionResultColumn *detectionResultColumn in detectionResult.detectionResultColumns) {
     column++;
     if ((id)detectionResultColumn == [NSNull null]) {
@@ -278,12 +278,12 @@ static ZXPDF417ECErrorCorrection *errorCorrection;
   return barcodeMatrix;
 }
 
-+ (BOOL)isValidBarcodeColumn:(ZXPDF417DetectionResult *)detectionResult barcodeColumn:(int)barcodeColumn {
++ (BOOL)isValidBarcodeColumn:(ZXPDF417DetectionResult *)detectionResult barcodeColumn:(NSInteger)barcodeColumn {
   return barcodeColumn >= 0 && barcodeColumn <= detectionResult.barcodeColumnCount + 1;
 }
 
-+ (int)startColumn:(ZXPDF417DetectionResult *)detectionResult barcodeColumn:(int)barcodeColumn imageRow:(int)imageRow leftToRight:(BOOL)leftToRight {
-  int offset = leftToRight ? 1 : -1;
++ (NSInteger)startColumn:(ZXPDF417DetectionResult *)detectionResult barcodeColumn:(NSInteger)barcodeColumn imageRow:(NSInteger)imageRow leftToRight:(BOOL)leftToRight {
+  NSInteger offset = leftToRight ? 1 : -1;
   ZXPDF417Codeword *codeword;
   if ([self isValidBarcodeColumn:detectionResult barcodeColumn:barcodeColumn - offset]) {
     codeword = [[detectionResult detectionResultColumn:barcodeColumn - offset] codeword:imageRow];
@@ -301,7 +301,7 @@ static ZXPDF417ECErrorCorrection *errorCorrection;
   if (codeword) {
     return leftToRight ? codeword.endX : codeword.startX;
   }
-  int skippedColumns = 0;
+  NSInteger skippedColumns = 0;
 
   while ([self isValidBarcodeColumn:detectionResult barcodeColumn:barcodeColumn - offset]) {
     barcodeColumn -= offset;
@@ -316,8 +316,8 @@ static ZXPDF417ECErrorCorrection *errorCorrection;
   return leftToRight ? detectionResult.boundingBox.minX : detectionResult.boundingBox.maxX;
 }
 
-+ (ZXPDF417Codeword *)detectCodeword:(ZXBitMatrix *)image minColumn:(int)minColumn maxColumn:(int)maxColumn leftToRight:(BOOL)leftToRight
-                         startColumn:(int)startColumn imageRow:(int)imageRow minCodewordWidth:(int)minCodewordWidth maxCodewordWidth:(int)maxCodewordWidth {
++ (ZXPDF417Codeword *)detectCodeword:(ZXBitMatrix *)image minColumn:(NSInteger)minColumn maxColumn:(NSInteger)maxColumn leftToRight:(BOOL)leftToRight
+                         startColumn:(NSInteger)startColumn imageRow:(NSInteger)imageRow minCodewordWidth:(NSInteger)minCodewordWidth maxCodewordWidth:(NSInteger)maxCodewordWidth {
   startColumn = [self adjustCodewordStartColumn:image minColumn:minColumn maxColumn:maxColumn leftToRight:leftToRight codewordStartColumn:startColumn imageRow:imageRow];
   // we usually know fairly exact now how long a codeword is. We should provide minimum and maximum expected length
   // and try to adjust the read pixels, e.g. remove single pixel errors or try to cut off exceeding pixels.
@@ -327,13 +327,13 @@ static ZXPDF417ECErrorCorrection *errorCorrection;
   if (!moduleBitCount) {
     return nil;
   }
-  int endColumn;
-  int codewordBitCount = [ZXPDF417Common bitCountSum:moduleBitCount];
+  NSInteger endColumn;
+  NSInteger codewordBitCount = [ZXPDF417Common bitCountSum:moduleBitCount];
   if (leftToRight) {
     endColumn = startColumn + codewordBitCount;
   } else {
-    for (int i = 0; i < [moduleBitCount count] >> 1; i++) {
-      int tmpCount = [moduleBitCount[i] intValue];
+    for (NSInteger i = 0; i < [moduleBitCount count] >> 1; i++) {
+      NSInteger tmpCount = [moduleBitCount[i] intValue];
       moduleBitCount[i] = moduleBitCount[[moduleBitCount count] - 1 - i];
       moduleBitCount[[moduleBitCount count] - 1 - i] = @(tmpCount);
     }
@@ -344,7 +344,7 @@ static ZXPDF417ECErrorCorrection *errorCorrection;
   // use start (and maybe stop pattern) to determine if blackbars are wider than white bars. If so, adjust.
   // should probably done only for codewords with a lot more than 17 bits. 
   // The following fixes 10-1.png, which has wide black bars and small white bars
-  //    for (int i = 0; i < moduleBitCount.length; i++) {
+  //    for (NSInteger i = 0; i < moduleBitCount.length; i++) {
   //      if (i % 2 == 0) {
   //        moduleBitCount[i]--;
   //      } else {
@@ -360,23 +360,23 @@ static ZXPDF417ECErrorCorrection *errorCorrection;
     return nil;
   }
 
-  int decodedValue = [ZXPDF417CodewordDecoder decodedValue:moduleBitCount];
-  int codeword = [ZXPDF417Common codeword:decodedValue];
+  NSInteger decodedValue = [ZXPDF417CodewordDecoder decodedValue:moduleBitCount];
+  NSInteger codeword = [ZXPDF417Common codeword:decodedValue];
   if (codeword == -1) {
     return nil;
   }
   return [[ZXPDF417Codeword alloc] initWithStartX:startColumn endX:endColumn bucket:[self codewordBucketNumber:decodedValue] value:codeword];
 }
 
-+ (NSMutableArray *)moduleBitCount:(ZXBitMatrix *)image minColumn:(int)minColumn maxColumn:(int)maxColumn leftToRight:(BOOL)leftToRight
-                       startColumn:(int)startColumn imageRow:(int)imageRow {
-  int imageColumn = startColumn;
++ (NSMutableArray *)moduleBitCount:(ZXBitMatrix *)image minColumn:(NSInteger)minColumn maxColumn:(NSInteger)maxColumn leftToRight:(BOOL)leftToRight
+                       startColumn:(NSInteger)startColumn imageRow:(NSInteger)imageRow {
+  NSInteger imageColumn = startColumn;
   NSMutableArray *moduleBitCount = [NSMutableArray arrayWithCapacity:8];
-  for (int i = 0; i < 8; i++) {
+  for (NSInteger i = 0; i < 8; i++) {
     [moduleBitCount addObject:@0];
   }
-  int moduleNumber = 0;
-  int increment = leftToRight ? 1 : -1;
+  NSInteger moduleNumber = 0;
+  NSInteger increment = leftToRight ? 1 : -1;
   BOOL previousPixelValue = leftToRight;
   while (((leftToRight && imageColumn < maxColumn) || (!leftToRight && imageColumn >= minColumn)) &&
       moduleNumber < [moduleBitCount count]) {
@@ -395,23 +395,23 @@ static ZXPDF417ECErrorCorrection *errorCorrection;
   return nil;
 }
 
-+ (int)numberOfECCodeWords:(int)barcodeECLevel {
++ (NSInteger)numberOfECCodeWords:(NSInteger)barcodeECLevel {
   return 2 << barcodeECLevel;
 }
 
-+ (int)adjustCodewordStartColumn:(ZXBitMatrix *)image
-                       minColumn:(int)minColumn
-                       maxColumn:(int)maxColumn
++ (NSInteger)adjustCodewordStartColumn:(ZXBitMatrix *)image
+                       minColumn:(NSInteger)minColumn
+                       maxColumn:(NSInteger)maxColumn
                      leftToRight:(BOOL)leftToRight
-             codewordStartColumn:(int)codewordStartColumn
-                        imageRow:(int)imageRow {
-  int correctedStartColumn = codewordStartColumn;
-  int increment = leftToRight ? -1 : 1;
+             codewordStartColumn:(NSInteger)codewordStartColumn
+                        imageRow:(NSInteger)imageRow {
+  NSInteger correctedStartColumn = codewordStartColumn;
+  NSInteger increment = leftToRight ? -1 : 1;
   // there should be no black pixels before the start column. If there are, then we need to start earlier.
-  for (int i = 0; i < 2; i++) {
+  for (NSInteger i = 0; i < 2; i++) {
     while (((leftToRight && correctedStartColumn >= minColumn) || (!leftToRight && correctedStartColumn < maxColumn)) &&
            leftToRight == [image getX:correctedStartColumn y:imageRow]) {
-      if (abs(codewordStartColumn - correctedStartColumn) > ZXPDF417_CODEWORD_SKEW_SIZE) {
+      if (ABS(codewordStartColumn - correctedStartColumn) > ZXPDF417_CODEWORD_SKEW_SIZE) {
         return codewordStartColumn;
       }
       correctedStartColumn += increment;
@@ -422,19 +422,19 @@ static ZXPDF417ECErrorCorrection *errorCorrection;
   return correctedStartColumn;
 }
 
-+ (BOOL)checkCodewordSkew:(int)codewordSize minCodewordWidth:(int)minCodewordWidth maxCodewordWidth:(int)maxCodewordWidth {
++ (BOOL)checkCodewordSkew:(NSInteger)codewordSize minCodewordWidth:(NSInteger)minCodewordWidth maxCodewordWidth:(NSInteger)maxCodewordWidth {
   return minCodewordWidth - ZXPDF417_CODEWORD_SKEW_SIZE <= codewordSize &&
       codewordSize <= maxCodewordWidth + ZXPDF417_CODEWORD_SKEW_SIZE;
 }
 
-+ (ZXDecoderResult *)decodeCodewords:(NSMutableArray *)codewords ecLevel:(int)ecLevel erasures:(NSArray *)erasures {
++ (ZXDecoderResult *)decodeCodewords:(NSMutableArray *)codewords ecLevel:(NSInteger)ecLevel erasures:(NSArray *)erasures {
   if ([codewords count] == 0) {
     return nil;
   }
 
-  int numECCodewords = 1 << (ecLevel + 1);
+  NSInteger numECCodewords = 1 << (ecLevel + 1);
 
-  int correctedErrorsCount = [self correctErrors:codewords erasures:erasures numECCodewords:numECCodewords];
+  NSInteger correctedErrorsCount = [self correctErrors:codewords erasures:erasures numECCodewords:numECCodewords];
   if (correctedErrorsCount == -1) {
     return nil;
   }
@@ -453,7 +453,7 @@ static ZXPDF417ECErrorCorrection *errorCorrection;
  * Given data and error-correction codewords received, possibly corrupted by errors, attempts to
  * correct the errors in-place.
  */
-+ (int)correctErrors:(NSMutableArray *)codewords erasures:(NSArray *)erasures numECCodewords:(int)numECCodewords {
++ (NSInteger)correctErrors:(NSMutableArray *)codewords erasures:(NSArray *)erasures numECCodewords:(NSInteger)numECCodewords {
   if ([erasures count] > numECCodewords / 2 + ZXPDF417_MAX_ERRORS || numECCodewords < 0 || numECCodewords > ZXPDF417_MAX_EC_CODEWORDS) {
     // Too many errors or EC Codewords is corrupted
     return -1;
@@ -464,7 +464,7 @@ static ZXPDF417ECErrorCorrection *errorCorrection;
 /**
  * Verify that all is OK with the codeword array.
  */
-+ (BOOL)verifyCodewordCount:(NSMutableArray *)codewords numECCodewords:(int)numECCodewords {
++ (BOOL)verifyCodewordCount:(NSMutableArray *)codewords numECCodewords:(NSInteger)numECCodewords {
   if ([codewords count] < 4) {
     // Codeword array size should be at least 4 allowing for
     // Count CW, At least one Data CW, Error Correction CW, Error Correction CW
@@ -473,7 +473,7 @@ static ZXPDF417ECErrorCorrection *errorCorrection;
   // The first codeword, the Symbol Length Descriptor, shall always encode the total number of data
   // codewords in the symbol, including the Symbol Length Descriptor itself, data codewords and pad
   // codewords, but excluding the number of error correction codewords.
-  int numberOfCodewords = [codewords[0] intValue];
+  NSInteger numberOfCodewords = [codewords[0] intValue];
   if (numberOfCodewords > [codewords count]) {
     return NO;
   }
@@ -489,14 +489,14 @@ static ZXPDF417ECErrorCorrection *errorCorrection;
   return YES;
 }
 
-+ (NSArray *)bitCountForCodeword:(int)codeword {
++ (NSArray *)bitCountForCodeword:(NSInteger)codeword {
   NSMutableArray *result = [NSMutableArray array];
-  for (int i = 0; i < 8; i++) {
+  for (NSInteger i = 0; i < 8; i++) {
     [result addObject:@0];
   }
 
-  int previousValue = 0;
-  int i = [result count] - 1;
+  NSInteger previousValue = 0;
+  NSInteger i = [result count] - 1;
   while (YES) {
     if ((codeword & 0x1) != previousValue) {
       previousValue = codeword & 0x1;
@@ -511,11 +511,11 @@ static ZXPDF417ECErrorCorrection *errorCorrection;
   return result;
 }
 
-+ (int)codewordBucketNumber:(int)codeword {
++ (NSInteger)codewordBucketNumber:(NSInteger)codeword {
   return [self codewordBucketNumberWithModuleBitCount:[self bitCountForCodeword:codeword]];
 }
 
-+ (int)codewordBucketNumberWithModuleBitCount:(NSArray *)moduleBitCount {
++ (NSInteger)codewordBucketNumberWithModuleBitCount:(NSArray *)moduleBitCount {
   return ([moduleBitCount[0] intValue] - [moduleBitCount[2] intValue] + [moduleBitCount[4] intValue] - [moduleBitCount[6] intValue] + 9) % 9;
 }
 

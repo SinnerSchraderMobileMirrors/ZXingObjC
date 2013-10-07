@@ -37,8 +37,8 @@
   // Prepare the matrix.
   ZXByteMatrix *matrix = [[ZXByteMatrix alloc] initWithWidth:45 height:45];
   // Just set bogus zero/one values.
-  for (int y = 0; y < 45; ++y) {
-    for (int x = 0; x < 45; ++x) {
+  for (NSInteger y = 0; y < 45; ++y) {
+    for (NSInteger x = 0; x < 45; ++x) {
       [matrix setX:x y:y intValue:(y + x) % 2];
     }
   }
@@ -68,8 +68,8 @@
   qrCode.version = [ZXQRCodeVersion versionForNumber:1];
   qrCode.maskPattern = 3;
   ZXByteMatrix *matrix = [[ZXByteMatrix alloc] initWithWidth:21 height:21];
-  for (int y = 0; y < 21; ++y) {
-    for (int x = 0; x < 21; ++x) {
+  for (NSInteger y = 0; y < 21; ++y) {
+    for (NSInteger x = 0; x < 21; ++x) {
       [matrix setX:x y:y intValue:(y + x) % 2];
     }
   }

@@ -35,7 +35,7 @@
   return self;
 }
 
-- (ZXResult *)decodeRow:(int)rowNumber row:(ZXBitArray *)row startGuardRange:(NSRange)startGuardRange hints:(ZXDecodeHints *)hints error:(NSError **)error {
+- (ZXResult *)decodeRow:(NSInteger)rowNumber row:(ZXBitArray *)row startGuardRange:(NSRange)startGuardRange hints:(ZXDecodeHints *)hints error:(NSError **)error {
   ZXResult *result = [self.ean13Reader decodeRow:rowNumber row:row startGuardRange:startGuardRange hints:hints error:error];
   if (result) {
     result = [self maybeReturnResult:result];
@@ -49,7 +49,7 @@
   }
 }
 
-- (ZXResult *)decodeRow:(int)rowNumber row:(ZXBitArray *)row hints:(ZXDecodeHints *)hints error:(NSError **)error {
+- (ZXResult *)decodeRow:(NSInteger)rowNumber row:(ZXBitArray *)row hints:(ZXDecodeHints *)hints error:(NSError **)error {
   ZXResult *result = [self.ean13Reader decodeRow:rowNumber row:row hints:hints error:error];
   if (result) {
     result = [self maybeReturnResult:result];
@@ -95,7 +95,7 @@
   return kBarcodeFormatUPCA;
 }
 
-- (int)decodeMiddle:(ZXBitArray *)row startRange:(NSRange)startRange result:(NSMutableString *)result error:(NSError **)error {
+- (NSInteger)decodeMiddle:(ZXBitArray *)row startRange:(NSRange)startRange result:(NSMutableString *)result error:(NSError **)error {
   return [self.ean13Reader decodeMiddle:row startRange:startRange result:result error:error];
 }
 

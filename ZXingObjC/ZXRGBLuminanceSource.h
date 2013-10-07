@@ -23,6 +23,6 @@
 
 @interface ZXRGBLuminanceSource : ZXLuminanceSource
 
-- (id)initWithWidth:(int)width height:(int)height pixels:(int *)pixels pixelsLen:(int)pixelsLen;
+- (id)initWithWidth:(NSInteger)width height:(NSInteger)height pixels:(NSInteger *)pixels pixelsLen:(NSInteger)pixelsLen;
 
 @end

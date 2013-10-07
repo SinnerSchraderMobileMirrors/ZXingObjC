@@ -20,20 +20,20 @@
 
 @implementation ZXASCIIEncoder
 
-- (int)encodingMode {
+- (NSInteger)encodingMode {
   return [ZXHighLevelEncoder asciiEncodation];
 }
 
 - (void)encode:(ZXEncoderContext *)context {
   //step B
-  int n = [ZXHighLevelEncoder determineConsecutiveDigitCount:context.message startpos:context.pos];
+  NSInteger n = [ZXHighLevelEncoder determineConsecutiveDigitCount:context.message startpos:context.pos];
   if (n >= 2) {
     [context writeCodeword:[self encodeASCIIDigits:[context.message characterAtIndex:context.pos]
                                             digit2:[context.message characterAtIndex:context.pos + 1]]];
     context.pos += 2;
   } else {
     unichar c = [context currentChar];
-    int newMode = [ZXHighLevelEncoder lookAheadTest:context.message startpos:context.pos currentMode:[self encodingMode]];
+    NSInteger newMode = [ZXHighLevelEncoder lookAheadTest:context.message startpos:context.pos currentMode:[self encodingMode]];
     if (newMode != [self encodingMode]) {
       if (newMode == [ZXHighLevelEncoder base256Encodation]) {
         [context writeCodeword:[ZXHighLevelEncoder latchToBase256]];
@@ -68,7 +68,7 @@
 
 - (unichar)encodeASCIIDigits:(unichar)digit1 digit2:(unichar)digit2 {
   if ([ZXHighLevelEncoder isDigit:digit1] && [ZXHighLevelEncoder isDigit:digit2]) {
-    int num = (digit1 - 48) * 10 + (digit2 - 48);
+    NSInteger num = (digit1 - 48) * 10 + (digit2 - 48);
     return (unichar) (num + 130);
   }
   @throw [NSException exceptionWithName:NSInvalidArgumentException

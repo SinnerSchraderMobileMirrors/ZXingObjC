@@ -21,7 +21,7 @@
 
 @implementation ZXBase256Encoder
 
-- (int)encodingMode {
+- (NSInteger)encodingMode {
   return [ZXHighLevelEncoder base256Encodation];
 }
 
@@ -34,15 +34,15 @@
 
     context.pos++;
 
-    int newMode = [ZXHighLevelEncoder lookAheadTest:context.message startpos:context.pos currentMode:[self encodingMode]];
+    NSInteger newMode = [ZXHighLevelEncoder lookAheadTest:context.message startpos:context.pos currentMode:[self encodingMode]];
     if (newMode != [self encodingMode]) {
       [context signalEncoderChange:newMode];
       break;
     }
   }
-  int dataCount = buffer.length - 1;
-  int lengthFieldSize = 1;
-  int currentSize = [context codewordCount] + dataCount + lengthFieldSize;
+  NSInteger dataCount = buffer.length - 1;
+  NSInteger lengthFieldSize = 1;
+  NSInteger currentSize = [context codewordCount] + dataCount + lengthFieldSize;
   [context updateSymbolInfoWithLength:currentSize];
   BOOL mustPad = (context.symbolInfo.dataCapacity - currentSize) > 0;
   if ([context hasMoreCharacters] || mustPad) {
@@ -56,18 +56,18 @@
                    atIndex:1];
     } else {
       @throw [NSException exceptionWithName:@"IllegalStateException"
-                                     reason:[NSString stringWithFormat:@"Message length not in valid ranges: %d", dataCount]
+                                     reason:[NSString stringWithFormat:@"Message length not in valid ranges: %ld", (long) (long)dataCount]
                                    userInfo:nil];
     }
   }
-  for (int i = 0, c = buffer.length; i < c; i++) {
+  for (NSInteger i = 0, c = buffer.length; i < c; i++) {
     [context writeCodeword:[self randomize255State:[buffer characterAtIndex:i] codewordPosition:context.codewordCount + 1]];
   }
 }
 
-- (unichar)randomize255State:(unichar)ch codewordPosition:(int)codewordPosition {
-  int pseudoRandom = ((149 * codewordPosition) % 255) + 1;
-  int tempVariable = ch + pseudoRandom;
+- (unichar)randomize255State:(unichar)ch codewordPosition:(NSInteger)codewordPosition {
+  NSInteger pseudoRandom = ((149 * codewordPosition) % 255) + 1;
+  NSInteger tempVariable = ch + pseudoRandom;
   if (tempVariable <= 255) {
     return (unichar) tempVariable;
   } else {

@@ -21,9 +21,9 @@
 
 @interface ZXECI : NSObject
 
-@property (nonatomic, readonly) int value;
+@property (nonatomic, readonly) NSInteger value;
 
-- (id)initWithValue:(int)value;
-+ (ZXECI *)eciByValue:(int)value;
+- (id)initWithValue:(NSInteger)value;
++ (ZXECI *)eciByValue:(NSInteger)value;
 
 @end

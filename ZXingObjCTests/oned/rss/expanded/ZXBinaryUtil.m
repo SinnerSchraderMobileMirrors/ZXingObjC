@@ -24,10 +24,10 @@
 + (ZXBitArray *)buildBitArrayFromString:(NSString *)data {
   NSString *dotsAndXs = [[data stringByReplacingOccurrencesOfString:@"1" withString:@"X"]
                          stringByReplacingOccurrencesOfString:@"0" withString:@"."];
-  ZXBitArray *binary = [[ZXBitArray alloc] initWithSize:(int)[dotsAndXs stringByReplacingOccurrencesOfString:@" " withString:@""].length];
-  int counter = 0;
+  ZXBitArray *binary = [[ZXBitArray alloc] initWithSize:(NSInteger)[dotsAndXs stringByReplacingOccurrencesOfString:@" " withString:@""].length];
+  NSInteger counter = 0;
 
-  for (int i = 0; i < dotsAndXs.length; ++i){
+  for (NSInteger i = 0; i < dotsAndXs.length; ++i){
     if(i % 9 == 0) { // spaces
       if([dotsAndXs characterAtIndex:i] != ' ') {
         @throw [NSException exceptionWithName:@"IllegalStateException" reason:@"space expected" userInfo:nil];
@@ -50,10 +50,10 @@
   NSString *dotsAndXs = [[data stringByReplacingOccurrencesOfString:@"1" withString:@"X"]
                          stringByReplacingOccurrencesOfString:@"0" withString:@"."];
 
-  int current = 0;
+  NSInteger current = 0;
   while (current < dotsAndXs.length) {
     [sb appendString:@" "];
-    for (int i = 0; i < 8 && current < dotsAndXs.length; ++i){
+    for (NSInteger i = 0; i < 8 && current < dotsAndXs.length; ++i){
       [sb appendFormat:@"%C", [dotsAndXs characterAtIndex:current]];
       current++;
     }

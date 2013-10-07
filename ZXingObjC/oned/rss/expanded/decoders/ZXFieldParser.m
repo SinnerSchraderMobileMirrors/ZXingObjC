@@ -183,7 +183,7 @@ static NSArray *FOUR_DIGIT_DATA_LENGTH = nil;
   }
   NSString *firstTwoDigits = [rawInformation substringWithRange:NSMakeRange(0, 2)];
 
-  for (int i = 0; i < [TWO_DIGIT_DATA_LENGTH count]; ++i) {
+  for (NSInteger i = 0; i < [TWO_DIGIT_DATA_LENGTH count]; ++i) {
     if ([TWO_DIGIT_DATA_LENGTH[i][0] isEqualToString:firstTwoDigits]) {
       if ([TWO_DIGIT_DATA_LENGTH[i][1] isEqual:VARIABLE_LENGTH]) {
         return [self processVariableAI:2
@@ -207,7 +207,7 @@ static NSArray *FOUR_DIGIT_DATA_LENGTH = nil;
   }
   NSString *firstThreeDigits = [rawInformation substringWithRange:NSMakeRange(0, 3)];
 
-  for (int i = 0; i < [THREE_DIGIT_DATA_LENGTH count]; ++i) {
+  for (NSInteger i = 0; i < [THREE_DIGIT_DATA_LENGTH count]; ++i) {
     if ([THREE_DIGIT_DATA_LENGTH[i][0] isEqualToString:firstThreeDigits]) {
       if ([THREE_DIGIT_DATA_LENGTH[i][1] isEqual:VARIABLE_LENGTH]) {
         return [self processVariableAI:3
@@ -225,7 +225,7 @@ static NSArray *FOUR_DIGIT_DATA_LENGTH = nil;
     }
   }
 
-  for (int i = 0; i < [THREE_DIGIT_PLUS_DIGIT_DATA_LENGTH count]; ++i) {
+  for (NSInteger i = 0; i < [THREE_DIGIT_PLUS_DIGIT_DATA_LENGTH count]; ++i) {
     if ([THREE_DIGIT_PLUS_DIGIT_DATA_LENGTH[i][0] isEqualToString:firstThreeDigits]) {
       if ([THREE_DIGIT_PLUS_DIGIT_DATA_LENGTH[i][1] isEqual:VARIABLE_LENGTH]) {
         return [self processVariableAI:4
@@ -249,7 +249,7 @@ static NSArray *FOUR_DIGIT_DATA_LENGTH = nil;
   }
   NSString *firstFourDigits = [rawInformation substringWithRange:NSMakeRange(0, 4)];
 
-  for (int i = 0; i < [FOUR_DIGIT_DATA_LENGTH count]; ++i) {
+  for (NSInteger i = 0; i < [FOUR_DIGIT_DATA_LENGTH count]; ++i) {
     if ([FOUR_DIGIT_DATA_LENGTH[i][0] isEqualToString:firstFourDigits]) {
       if ([FOUR_DIGIT_DATA_LENGTH[i][1] isEqual:VARIABLE_LENGTH]) {
         NSString *result = [self processVariableAI:4
@@ -276,7 +276,7 @@ static NSArray *FOUR_DIGIT_DATA_LENGTH = nil;
   return nil;
 }
 
-+ (NSString *)processFixedAI:(int)aiSize fieldSize:(int)fieldSize rawInformation:(NSString *)rawInformation {
++ (NSString *)processFixedAI:(NSInteger)aiSize fieldSize:(NSInteger)fieldSize rawInformation:(NSString *)rawInformation {
   if ([rawInformation length] < aiSize) {
     return nil;
   }
@@ -299,9 +299,9 @@ static NSArray *FOUR_DIGIT_DATA_LENGTH = nil;
   return parsedAI == nil ? result : [result stringByAppendingString:parsedAI];
 }
 
-+ (NSString *)processVariableAI:(int)aiSize variableFieldSize:(int)variableFieldSize rawInformation:(NSString *)rawInformation {
++ (NSString *)processVariableAI:(NSInteger)aiSize variableFieldSize:(NSInteger)variableFieldSize rawInformation:(NSString *)rawInformation {
   NSString *ai = [rawInformation substringWithRange:NSMakeRange(0, aiSize)];
-  int maxSize;
+  NSInteger maxSize;
   if ([rawInformation length] < aiSize + variableFieldSize) {
     maxSize = [rawInformation length];
   } else {

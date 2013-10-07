@@ -15,20 +15,20 @@
  */
 
 #define ZXPDF417_SYMBOL_TABLE_LEN 2787
-extern int ZXPDF417_SYMBOL_TABLE[ZXPDF417_SYMBOL_TABLE_LEN];
+extern NSInteger ZXPDF417_SYMBOL_TABLE[ZXPDF417_SYMBOL_TABLE_LEN];
 
 #define ZXPDF417_CODEWORD_TABLE_LEN 2787
-extern int ZXPDF417_CODEWORD_TABLE[ZXPDF417_CODEWORD_TABLE_LEN];
+extern NSInteger ZXPDF417_CODEWORD_TABLE[ZXPDF417_CODEWORD_TABLE_LEN];
 
-extern int const ZXPDF417_NUMBER_OF_CODEWORDS;
-extern int const ZXPDF417_MAX_CODEWORDS_IN_BARCODE;
-extern int const ZXPDF417_MODULES_IN_CODEWORD;
-extern int const ZXPDF417_MODULES_IN_STOP_PATTERN;
+extern NSInteger const ZXPDF417_NUMBER_OF_CODEWORDS;
+extern NSInteger const ZXPDF417_MAX_CODEWORDS_IN_BARCODE;
+extern NSInteger const ZXPDF417_MODULES_IN_CODEWORD;
+extern NSInteger const ZXPDF417_MODULES_IN_STOP_PATTERN;
 #define ZXPDF417_BARS_IN_MODULE 8
 
 @interface ZXPDF417Common : NSObject
 
-+ (int)bitCountSum:(NSArray *)moduleBitCount;
-+ (int)codeword:(long)symbol;
++ (NSInteger)bitCountSum:(NSArray *)moduleBitCount;
++ (NSInteger)codeword:(long)symbol;
 
 @end

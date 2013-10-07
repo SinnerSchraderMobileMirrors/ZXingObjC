@@ -18,7 +18,7 @@
 
 @implementation ZXDimensions
 
-- (id)initWithMinCols:(int)minCols maxCols:(int)maxCols minRows:(int)minRows maxRows:(int)maxRows {
+- (id)initWithMinCols:(NSInteger)minCols maxCols:(NSInteger)maxCols minRows:(NSInteger)minRows maxRows:(NSInteger)maxRows {
   if (self = [super init]) {
     _minCols = minCols;
     _maxCols = maxCols;

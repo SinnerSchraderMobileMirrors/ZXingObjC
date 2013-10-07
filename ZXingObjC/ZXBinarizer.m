@@ -51,7 +51,7 @@
  * and passed in with each call for performance. However it is legal to keep more than one row
  * at a time if needed.
  */
-- (ZXBitArray *)blackRow:(int)y row:(ZXBitArray *)row error:(NSError **)error {
+- (ZXBitArray *)blackRow:(NSInteger)y row:(ZXBitArray *)row error:(NSError **)error {
   @throw [NSException exceptionWithName:NSInternalInconsistencyException
                                  reason:[NSString stringWithFormat:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)]
                                userInfo:nil];
@@ -89,10 +89,10 @@
   }
   ZXLuminanceSource *source = [self luminanceSource];
 
-  int width = source.width;
-  int height = source.height;
+  NSInteger width = source.width;
+  NSInteger height = source.height;
 
-  int bytesPerRow = ((width&0xf)>>4)<<4;
+  NSInteger bytesPerRow = ((width&0xf)>>4)<<4;
 
   CGColorSpaceRef gray = CGColorSpaceCreateDeviceGray();
   CGContextRef context = CGBitmapContextCreate (
@@ -115,9 +115,9 @@
   r.size.height = 1;
 
   CGContextSetFillColorWithColor(context, ZXWhite);
-  for(int y=0; y<height; y++) {
+  for(NSInteger y=0; y<height; y++) {
     r.origin.y = height-1-y;
-    for(int x=0; x<width; x++) {
+    for(NSInteger x=0; x<width; x++) {
       if (![matrix getX:x y:y]) {
         r.origin.x = x;
         CGContextFillRect(context, r);
@@ -132,11 +132,11 @@
   return binary;
 }
 
-- (int)width {
+- (NSInteger)width {
   return self.luminanceSource.width;
 }
 
-- (int)height {
+- (NSInteger)height {
   return self.luminanceSource.height;
 }
 

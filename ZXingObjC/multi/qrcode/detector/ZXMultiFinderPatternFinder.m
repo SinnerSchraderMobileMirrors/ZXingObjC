@@ -52,7 +52,7 @@ float const DIFF_MODSIZE_CUTOFF = 0.5f;
  */
 - (NSArray *)selectBestPatternsWithError:(NSError **)error {
   NSMutableArray *_possibleCenters = [NSMutableArray arrayWithArray:[self possibleCenters]];
-  int size = [_possibleCenters count];
+  NSInteger size = [_possibleCenters count];
 
   if (size < 3) {
     if (error) *error = NotFoundErrorInstance();
@@ -85,13 +85,13 @@ float const DIFF_MODSIZE_CUTOFF = 0.5f;
 
   NSMutableArray *results = [NSMutableArray array];
 
-  for (int i1 = 0; i1 < (size - 2); i1++) {
+  for (NSInteger i1 = 0; i1 < (size - 2); i1++) {
     ZXQRCodeFinderPattern *p1 = self.possibleCenters[i1];
     if (p1 == nil) {
       continue;
     }
 
-    for (int i2 = i1 + 1; i2 < (size - 1); i2++) {
+    for (NSInteger i2 = i1 + 1; i2 < (size - 1); i2++) {
       ZXQRCodeFinderPattern *p2 = self.possibleCenters[i2];
       if (p2 == nil) {
         continue;
@@ -103,7 +103,7 @@ float const DIFF_MODSIZE_CUTOFF = 0.5f;
         break;
       }
 
-      for (int i3 = i2 + 1; i3 < size; i3++) {
+      for (NSInteger i3 = i2 + 1; i3 < size; i3++) {
         ZXQRCodeFinderPattern *p3 = self.possibleCenters[i3];
         if (p3 == nil) {
           continue;
@@ -155,8 +155,8 @@ float const DIFF_MODSIZE_CUTOFF = 0.5f;
 
 - (NSArray *)findMulti:(ZXDecodeHints *)hints error:(NSError **)error {
   BOOL tryHarder = hints != nil && hints.tryHarder;
-  int maxI = self.image.height;
-  int maxJ = self.image.width;
+  NSInteger maxI = self.image.height;
+  NSInteger maxJ = self.image.width;
   // We are looking for black/white/black/white/black modules in
   // 1:1:3:1:1 ratio; this tracks the number of such modules seen so far
   
@@ -164,21 +164,21 @@ float const DIFF_MODSIZE_CUTOFF = 0.5f;
   // image, and then account for the center being 3 modules in size. This gives the smallest
   // number of pixels the center could be, so skip this often. When trying harder, look for all
   // QR versions regardless of how dense they are.
-  int iSkip = (int)(maxI / (FINDER_PATTERN_MAX_MODULES * 4.0f) * 3);
+  NSInteger iSkip = (NSInteger)(maxI / (FINDER_PATTERN_MAX_MODULES * 4.0f) * 3);
   if (iSkip < FINDER_PATTERN_MIN_SKIP || tryHarder) {
     iSkip = FINDER_PATTERN_MIN_SKIP;
   }
 
-  int stateCount[5];
-  for (int i = iSkip - 1; i < maxI; i += iSkip) {
+  NSInteger stateCount[5];
+  for (NSInteger i = iSkip - 1; i < maxI; i += iSkip) {
     stateCount[0] = 0;
     stateCount[1] = 0;
     stateCount[2] = 0;
     stateCount[3] = 0;
     stateCount[4] = 0;
-    int currentState = 0;
+    NSInteger currentState = 0;
 
-    for (int j = 0; j < maxJ; j++) {
+    for (NSInteger j = 0; j < maxJ; j++) {
       if ([self.image getX:j y:i]) {
         if ((currentState & 1) == 1) {
           currentState++;

@@ -18,7 +18,7 @@
 
 @interface ZXC40Encoder : NSObject <ZXDataMatrixEncoder>
 
-- (int)encodeChar:(unichar)c buffer:(NSMutableString *)sb;
+- (NSInteger)encodeChar:(unichar)c buffer:(NSMutableString *)sb;
 - (void)writeNextTriplet:(ZXEncoderContext *)context buffer:(NSMutableString *)buffer;
 - (void)handleEOD:(ZXEncoderContext *)context buffer:(NSMutableString *)buffer;
 

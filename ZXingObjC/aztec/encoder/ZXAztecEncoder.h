@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-extern int ZX_DEFAULT_AZTEC_EC_PERCENT;
+extern NSInteger ZX_DEFAULT_AZTEC_EC_PERCENT;
 
 @class ZXAztecCode, ZXBitArray, ZXGenericGF;
 
 @interface ZXAztecEncoder : NSObject
 
-+ (ZXAztecCode *)encode:(int8_t *)data len:(int)len;
-+ (ZXAztecCode *)encode:(int8_t *)data len:(int)len minECCPercent:(int)minECCPercent;
-+ (void)drawBullsEye:(ZXBitMatrix *)matrix center:(int)center size:(int)size;
-+ (ZXBitArray *)generateModeMessageCompact:(BOOL)compact layers:(int)layers messageSizeInWords:(int)messageSizeInWords;
-+ (void)drawModeMessage:(ZXBitMatrix *)matrix compact:(BOOL)compact matrixSize:(int)matrixSize modeMessage:(ZXBitArray *)modeMessage;
-+ (ZXBitArray *)generateCheckWords:(ZXBitArray *)stuffedBits totalSymbolBits:(int)totalSymbolBits wordSize:(int)wordSize;
-+ (void)bitsToWords:(ZXBitArray *)stuffedBits wordSize:(int)wordSize totalWords:(int)totalWords message:(int *)message;
-+ (ZXGenericGF *)getGF:(int)wordSize;
-+ (ZXBitArray *)stuffBits:(ZXBitArray *)bits wordSize:(int)wordSize;
-+ (ZXBitArray *)highLevelEncode:(int8_t *)data len:(int)len;
-+ (void)outputWord:(ZXBitArray *)bits mode:(int)mode value:(int)value;
++ (ZXAztecCode *)encode:(int8_t *)data len:(NSUInteger)len;
++ (ZXAztecCode *)encode:(int8_t *)data len:(NSUInteger)len minECCPercent:(NSInteger)minECCPercent;
++ (void)drawBullsEye:(ZXBitMatrix *)matrix center:(NSInteger)center size:(NSInteger)size;
++ (ZXBitArray *)generateModeMessageCompact:(BOOL)compact layers:(NSInteger)layers messageSizeInWords:(NSInteger)messageSizeInWords;
++ (void)drawModeMessage:(ZXBitMatrix *)matrix compact:(BOOL)compact matrixSize:(NSInteger)matrixSize modeMessage:(ZXBitArray *)modeMessage;
++ (ZXBitArray *)generateCheckWords:(ZXBitArray *)stuffedBits totalSymbolBits:(NSInteger)totalSymbolBits wordSize:(NSInteger)wordSize;
++ (void)bitsToWords:(ZXBitArray *)stuffedBits wordSize:(NSInteger)wordSize totalWords:(NSInteger)totalWords message:(NSInteger *)message;
++ (ZXGenericGF *)getGF:(NSInteger)wordSize;
++ (ZXBitArray *)stuffBits:(ZXBitArray *)bits wordSize:(NSInteger)wordSize;
++ (ZXBitArray *)highLevelEncode:(int8_t *)data len:(NSUInteger)len;
++ (void)outputWord:(ZXBitArray *)bits mode:(NSInteger)mode value:(NSInteger)value;
 
 @end

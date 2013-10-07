@@ -24,7 +24,7 @@ enum {
 
 @interface ZXCurrentParsingState ()
 
-@property (nonatomic, assign) int encoding;
+@property (nonatomic, assign) NSInteger encoding;
 
 @end
 

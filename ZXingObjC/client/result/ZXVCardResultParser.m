@@ -95,8 +95,8 @@ static NSCharacterSet *SEMICOLON_OR_COMMA = nil;
 
 + (NSMutableArray *)matchVCardPrefixedField:(NSString *)prefix rawText:(NSString *)rawText trim:(BOOL)trim parseFieldDivider:(BOOL)parseFieldDivider {
   NSMutableArray *matches = nil;
-  int i = 0;
-  int max = [rawText length];
+  NSInteger i = 0;
+  NSUInteger max = [rawText length];
 
   while (i < max) {
     // At start or after newling, match prefix, followed by optional metadata 
@@ -140,7 +140,7 @@ static NSCharacterSet *SEMICOLON_OR_COMMA = nil;
       }
     }
 
-    int matchStart = i; // Found the start of a match here
+    NSInteger matchStart = i; // Found the start of a match here
 
     while ((NSUInteger)(i = [rawText rangeOfString:@"\n" options:NSLiteralSearch range:NSMakeRange(i, [rawText length] - i)].location) != NSNotFound) { // Really, end in \r\n
       if (i < [rawText length] - 1 &&                   // But if followed by tab or space,
@@ -204,11 +204,11 @@ static NSCharacterSet *SEMICOLON_OR_COMMA = nil;
 }
 
 + (NSString *)decodeQuotedPrintable:(NSString *)value charset:(NSString *)charset {
-  int length = [value length];
+  NSUInteger length = [value length];
   NSMutableString *result = [NSMutableString stringWithCapacity:length];
   NSMutableData *fragmentBuffer = [NSMutableData data];
 
-  for (int i = 0; i < length; i++) {
+  for (NSInteger i = 0; i < length; i++) {
     unichar c = [value characterAtIndex:i];
 
     switch (c) {
@@ -220,10 +220,10 @@ static NSCharacterSet *SEMICOLON_OR_COMMA = nil;
         unichar nextChar = [value characterAtIndex:i + 1];
         if (nextChar != '\r' && nextChar != '\n') {
           unichar nextNextChar = [value characterAtIndex:i + 2];
-          int firstDigit = [self parseHexDigit:nextChar];
-          int secondDigit = [self parseHexDigit:nextNextChar];
+          NSInteger firstDigit = [self parseHexDigit:nextChar];
+          NSInteger secondDigit = [self parseHexDigit:nextNextChar];
           if (firstDigit >= 0 && secondDigit >= 0) {
-            int encodedByte = (firstDigit << 4) + secondDigit;
+            NSInteger encodedByte = (firstDigit << 4) + secondDigit;
             [fragmentBuffer appendBytes:&encodedByte length:1];
           } // else ignore it, assume it was incorrectly encoded
           i += 2;
@@ -283,7 +283,7 @@ static NSCharacterSet *SEMICOLON_OR_COMMA = nil;
   NSMutableArray *result = [NSMutableArray arrayWithCapacity:lists.count];
   for (NSArray *list in lists) {
     NSString *type = nil;
-    for (int i = 1; i < list.count; i++) {
+    for (NSInteger i = 1; i < list.count; i++) {
       NSString *metadatum = list[i];
       NSUInteger equals = [metadatum rangeOfString:@"=" options:NSCaseInsensitiveSearch].location;
       if (equals == NSNotFound) {
@@ -314,7 +314,7 @@ static NSCharacterSet *SEMICOLON_OR_COMMA = nil;
     for (NSMutableArray *list in names) {
       NSString *name = list[0];
       NSMutableArray *components = [NSMutableArray arrayWithCapacity:5];
-      int start = 0;
+      NSInteger start = 0;
       NSUInteger end;
       while ((end = [name rangeOfString:@";" options:NSLiteralSearch range:NSMakeRange(start, [name length] - start)].location) != NSNotFound && end > 0) {
         [components addObject:[name substringWithRange:NSMakeRange(start, [name length] - end - 1)]];
@@ -333,7 +333,7 @@ static NSCharacterSet *SEMICOLON_OR_COMMA = nil;
   }
 }
 
-- (void)maybeAppendComponent:(NSArray *)components i:(int)i newName:(NSMutableString *)newName {
+- (void)maybeAppendComponent:(NSArray *)components i:(NSInteger)i newName:(NSMutableString *)newName {
   if ([components count] > i && components[i]) {
     [newName appendFormat:@" %@", components[i]];
   }

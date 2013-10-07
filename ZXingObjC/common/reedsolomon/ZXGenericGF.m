@@ -19,9 +19,9 @@
 
 @interface ZXGenericGF ()
 
-@property (nonatomic, assign) int *expTable;
-@property (nonatomic, assign) int *logTable;
-@property (nonatomic, assign) int primitive;
+@property (nonatomic, assign) NSInteger *expTable;
+@property (nonatomic, assign) NSInteger *logTable;
+@property (nonatomic, assign) NSInteger primitive;
 @property (nonatomic, assign) BOOL initialized;
 
 @end
@@ -34,7 +34,7 @@
 /**
  * Create a representation of GF(size) using the given primitive polynomial.
  */
-- (id)initWithPrimitive:(int)primitive size:(int)size b:(int)b {
+- (id)initWithPrimitive:(NSInteger)primitive size:(NSInteger)size b:(NSInteger)b {
   if (self = [super init]) {
     _primitive = primitive;
     _size = size;
@@ -45,10 +45,10 @@
 }
 
 - (void)initialize {
-  _expTable = (int *)malloc(self.size * sizeof(int));
-  _logTable = (int *)malloc(self.size * sizeof(int));
-  int x = 1;
-  for (int i = 0; i < self.size; i++) {
+  _expTable = (NSInteger *)malloc(self.size * sizeof(NSInteger));
+  _logTable = (NSInteger *)malloc(self.size * sizeof(NSInteger));
+  NSInteger x = 1;
+  for (NSInteger i = 0; i < self.size; i++) {
     _expTable[i] = x;
     x <<= 1; // x = x * 2; we're assuming the generator alpha is 2
     if (x >= self.size) {
@@ -57,12 +57,12 @@
     }
   }
 
-  for (int i = 0; i < self.size-1; i++) {
+  for (NSInteger i = 0; i < self.size-1; i++) {
     _logTable[_expTable[i]] = i;
   }
   // logTable[0] == 0 but this should never be used
   _zero = [[ZXGenericGFPoly alloc] initWithField:self coefficients:NULL coefficientsLen:0];
-  int oneInt = 1;
+  NSInteger oneInt = 1;
   _one = [[ZXGenericGFPoly alloc] initWithField:self coefficients:&oneInt coefficientsLen:1];
   self.initialized = YES;
 }
@@ -141,7 +141,7 @@
   return [self AztecData6];
 }
 
-- (ZXGenericGFPoly *)buildMonomial:(int)degree coefficient:(int)coefficient {
+- (ZXGenericGFPoly *)buildMonomial:(NSInteger)degree coefficient:(NSInteger)coefficient {
   [self checkInit];
 
   if (degree < 0) {
@@ -151,10 +151,10 @@
     return self.zero;
   }
 
-  int coefficientsLen = degree + 1;
-  int coefficients[coefficientsLen];
+  NSInteger coefficientsLen = degree + 1;
+  NSInteger coefficients[coefficientsLen];
   coefficients[0] = coefficient;
-  for (int i = 1; i < coefficientsLen; i++) {
+  for (NSInteger i = 1; i < coefficientsLen; i++) {
     coefficients[i] = 0;
   }
   return [[ZXGenericGFPoly alloc] initWithField:self coefficients:coefficients coefficientsLen:coefficientsLen];
@@ -163,17 +163,17 @@
 /**
  * Implements both addition and subtraction -- they are the same in GF(size).
  */
-+ (int)addOrSubtract:(int)a b:(int)b {
++ (NSInteger)addOrSubtract:(NSInteger)a b:(NSInteger)b {
   return a ^ b;
 }
 
-- (int)exp:(int)a {
+- (NSInteger)exp:(NSInteger)a {
   [self checkInit];
 
   return self.expTable[a];
 }
 
-- (int)log:(int)a {
+- (NSInteger)log:(NSInteger)a {
   [self checkInit];
 
   if (a == 0) {
@@ -182,7 +182,7 @@
   return self.logTable[a];
 }
 
-- (int)inverse:(int)a {
+- (NSInteger)inverse:(NSInteger)a {
   [self checkInit];
 
   if (a == 0) {
@@ -191,7 +191,7 @@
   return self.expTable[self.size - self.logTable[a] - 1];
 }
 
-- (int)multiply:(int)a b:(int)b {
+- (NSInteger)multiply:(NSInteger)a b:(NSInteger)b {
   [self checkInit];
 
   if (a == 0 || b == 0) {
@@ -206,7 +206,7 @@
 }
 
 - (NSString *)description {
-  return [NSString stringWithFormat:@"GF(0x%X,%d)", self.primitive, self.size];
+  return [NSString stringWithFormat:@"GF(0x%lX,%ld)", (long)self.primitive, (long)self.size];
 }
 
 @end

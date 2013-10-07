@@ -21,7 +21,7 @@
 
 @implementation ZXQRCodeECBlocks
 
-- (id)initWithEcCodewordsPerBlock:(int)ecCodewordsPerBlock ecBlocks:(ZXQRCodeECB *)ecBlocks {
+- (id)initWithEcCodewordsPerBlock:(NSInteger)ecCodewordsPerBlock ecBlocks:(ZXQRCodeECB *)ecBlocks {
   if (self = [super init]) {
     _ecCodewordsPerBlock = ecCodewordsPerBlock;
     _ecBlocks = @[ecBlocks];
@@ -30,7 +30,7 @@
   return self;
 }
 
-- (id)initWithEcCodewordsPerBlock:(int)ecCodewordsPerBlock ecBlocks1:(ZXQRCodeECB *)ecBlocks1 ecBlocks2:(ZXQRCodeECB *)ecBlocks2 {
+- (id)initWithEcCodewordsPerBlock:(NSInteger)ecCodewordsPerBlock ecBlocks1:(ZXQRCodeECB *)ecBlocks1 ecBlocks2:(ZXQRCodeECB *)ecBlocks2 {
   if (self = [super init]) {
     _ecCodewordsPerBlock = ecCodewordsPerBlock;
     _ecBlocks = @[ecBlocks1, ecBlocks2];
@@ -39,16 +39,16 @@
   return self;
 }
 
-+ (ZXQRCodeECBlocks *)ecBlocksWithEcCodewordsPerBlock:(int)ecCodewordsPerBlock ecBlocks:(ZXQRCodeECB *)ecBlocks {
++ (ZXQRCodeECBlocks *)ecBlocksWithEcCodewordsPerBlock:(NSInteger)ecCodewordsPerBlock ecBlocks:(ZXQRCodeECB *)ecBlocks {
   return [[ZXQRCodeECBlocks alloc] initWithEcCodewordsPerBlock:ecCodewordsPerBlock ecBlocks:ecBlocks];
 }
 
-+ (ZXQRCodeECBlocks *)ecBlocksWithEcCodewordsPerBlock:(int)ecCodewordsPerBlock ecBlocks1:(ZXQRCodeECB *)ecBlocks1 ecBlocks2:(ZXQRCodeECB *)ecBlocks2 {
++ (ZXQRCodeECBlocks *)ecBlocksWithEcCodewordsPerBlock:(NSInteger)ecCodewordsPerBlock ecBlocks1:(ZXQRCodeECB *)ecBlocks1 ecBlocks2:(ZXQRCodeECB *)ecBlocks2 {
   return [[ZXQRCodeECBlocks alloc] initWithEcCodewordsPerBlock:ecCodewordsPerBlock ecBlocks1:ecBlocks1 ecBlocks2:ecBlocks2];
 }
 
-- (int)numBlocks {
-  int total = 0;
+- (NSInteger)numBlocks {
+  NSInteger total = 0;
 
   for (ZXQRCodeECB *ecb in self.ecBlocks) {
     total += [ecb count];
@@ -57,7 +57,7 @@
   return total;
 }
 
-- (int)totalECCodewords {
+- (NSInteger)totalECCodewords {
   return self.ecCodewordsPerBlock * [self numBlocks];
 }
 
@@ -65,7 +65,7 @@
 
 @implementation ZXQRCodeECB
 
-- (id)initWithCount:(int)count dataCodewords:(int)dataCodewords {
+- (id)initWithCount:(NSInteger)count dataCodewords:(NSInteger)dataCodewords {
   if (self = [super init]) {
     _count = count;
     _dataCodewords = dataCodewords;
@@ -74,7 +74,7 @@
   return self;
 }
 
-+ (ZXQRCodeECB *)ecbWithCount:(int)count dataCodewords:(int)dataCodewords {
++ (ZXQRCodeECB *)ecbWithCount:(NSInteger)count dataCodewords:(NSInteger)dataCodewords {
   return [[ZXQRCodeECB alloc] initWithCount:count dataCodewords:dataCodewords];
 }
 
@@ -86,8 +86,8 @@
  * Element i represents the raw version bits that specify version i + 7
  */
 
-int const VERSION_DECODE_INFO_LEN = 34;
-int const VERSION_DECODE_INFO[VERSION_DECODE_INFO_LEN] = {
+NSInteger const VERSION_DECODE_INFO_LEN = 34;
+NSInteger const VERSION_DECODE_INFO[VERSION_DECODE_INFO_LEN] = {
   0x07C94, 0x085BC, 0x09A99, 0x0A4D3, 0x0BBF6,
   0x0C762, 0x0D847, 0x0E60D, 0x0F928, 0x10B78,
   0x1145D, 0x12A17, 0x13532, 0x149A6, 0x15683,
@@ -101,13 +101,13 @@ static NSArray *VERSIONS = nil;
 
 @implementation ZXQRCodeVersion
 
-- (id)initWithVersionNumber:(int)versionNumber alignmentPatternCenters:(NSArray *)alignmentPatternCenters ecBlocks1:(ZXQRCodeECBlocks *)ecBlocks1 ecBlocks2:(ZXQRCodeECBlocks *)ecBlocks2 ecBlocks3:(ZXQRCodeECBlocks *)ecBlocks3 ecBlocks4:(ZXQRCodeECBlocks *)ecBlocks4 {
+- (id)initWithVersionNumber:(NSInteger)versionNumber alignmentPatternCenters:(NSArray *)alignmentPatternCenters ecBlocks1:(ZXQRCodeECBlocks *)ecBlocks1 ecBlocks2:(ZXQRCodeECBlocks *)ecBlocks2 ecBlocks3:(ZXQRCodeECBlocks *)ecBlocks3 ecBlocks4:(ZXQRCodeECBlocks *)ecBlocks4 {
   if (self = [super init]) {
     _versionNumber = versionNumber;
     _alignmentPatternCenters = alignmentPatternCenters;
     _ecBlocks = @[ecBlocks1, ecBlocks2, ecBlocks3, ecBlocks4];
-    int total = 0;
-    int ecCodewords = ecBlocks1.ecCodewordsPerBlock;
+    NSInteger total = 0;
+    NSInteger ecCodewords = ecBlocks1.ecCodewordsPerBlock;
 
     for (ZXQRCodeECB *ecBlock in ecBlocks1.ecBlocks) {
       total += ecBlock.count * (ecBlock.dataCodewords + ecCodewords);
@@ -119,11 +119,11 @@ static NSArray *VERSIONS = nil;
   return self;
 }
 
-+ (ZXQRCodeVersion *)ZXQRCodeVersionWithVersionNumber:(int)aVersionNumber alignmentPatternCenters:(NSArray *)anAlignmentPatternCenters ecBlocks1:(ZXQRCodeECBlocks *)ecBlocks1 ecBlocks2:(ZXQRCodeECBlocks *)ecBlocks2 ecBlocks3:(ZXQRCodeECBlocks *)ecBlocks3 ecBlocks4:(ZXQRCodeECBlocks *)ecBlocks4 {
++ (ZXQRCodeVersion *)ZXQRCodeVersionWithVersionNumber:(NSInteger)aVersionNumber alignmentPatternCenters:(NSArray *)anAlignmentPatternCenters ecBlocks1:(ZXQRCodeECBlocks *)ecBlocks1 ecBlocks2:(ZXQRCodeECBlocks *)ecBlocks2 ecBlocks3:(ZXQRCodeECBlocks *)ecBlocks3 ecBlocks4:(ZXQRCodeECBlocks *)ecBlocks4 {
   return [[ZXQRCodeVersion alloc] initWithVersionNumber:aVersionNumber alignmentPatternCenters:anAlignmentPatternCenters ecBlocks1:ecBlocks1 ecBlocks2:ecBlocks2 ecBlocks3:ecBlocks3 ecBlocks4:ecBlocks4];
 }
 
-- (int)dimensionForVersion {
+- (NSInteger)dimensionForVersion {
   return 17 + 4 * self.versionNumber;
 }
 
@@ -134,7 +134,7 @@ static NSArray *VERSIONS = nil;
 /**
  * Deduces version information purely from QR Code dimensions.
  */
-+ (ZXQRCodeVersion *)provisionalVersionForDimension:(int)dimension {
++ (ZXQRCodeVersion *)provisionalVersionForDimension:(NSInteger)dimension {
   if (dimension % 4 != 1) {
     return nil;
   }
@@ -142,23 +142,23 @@ static NSArray *VERSIONS = nil;
   return [self versionForNumber:(dimension - 17) >> 2];
 }
 
-+ (ZXQRCodeVersion *)versionForNumber:(int)versionNumber {
++ (ZXQRCodeVersion *)versionForNumber:(NSInteger)versionNumber {
   if (versionNumber < 1 || versionNumber > 40) {
     return nil;
   }
   return VERSIONS[versionNumber - 1];
 }
 
-+ (ZXQRCodeVersion *)decodeVersionInformation:(int)versionBits {
-  int bestDifference = INT_MAX;
-  int bestVersion = 0;
++ (ZXQRCodeVersion *)decodeVersionInformation:(NSInteger)versionBits {
+  NSInteger bestDifference = INT_MAX;
+  NSInteger bestVersion = 0;
 
-  for (int i = 0; i < VERSION_DECODE_INFO_LEN; i++) {
-    int targetVersion = VERSION_DECODE_INFO[i];
+  for (NSInteger i = 0; i < VERSION_DECODE_INFO_LEN; i++) {
+    NSInteger targetVersion = VERSION_DECODE_INFO[i];
     if (targetVersion == versionBits) {
       return [self versionForNumber:i + 7];
     }
-    int bitsDifference = [ZXFormatInformation numBitsDiffering:versionBits b:targetVersion];
+    NSInteger bitsDifference = [ZXFormatInformation numBitsDiffering:versionBits b:targetVersion];
     if (bitsDifference < bestDifference) {
       bestVersion = i + 7;
       bestDifference = bitsDifference;
@@ -175,17 +175,17 @@ static NSArray *VERSIONS = nil;
  * See ISO 18004:2006 Annex E
  */
 - (ZXBitMatrix *)buildFunctionPattern {
-  int dimension = [self dimensionForVersion];
+  NSInteger dimension = [self dimensionForVersion];
   ZXBitMatrix *bitMatrix = [[ZXBitMatrix alloc] initWithDimension:dimension];
   [bitMatrix setRegionAtLeft:0 top:0 width:9 height:9];
   [bitMatrix setRegionAtLeft:dimension - 8 top:0 width:8 height:9];
   [bitMatrix setRegionAtLeft:0 top:dimension - 8 width:9 height:8];
-  int max = self.alignmentPatternCenters.count;
+  NSInteger max = self.alignmentPatternCenters.count;
 
-  for (int x = 0; x < max; x++) {
-    int i = [(self.alignmentPatternCenters)[x] intValue] - 2;
+  for (NSInteger x = 0; x < max; x++) {
+    NSInteger i = [(self.alignmentPatternCenters)[x] intValue] - 2;
 
-    for (int y = 0; y < max; y++) {
+    for (NSInteger y = 0; y < max; y++) {
       if ((x == 0 && (y == 0 || y == max - 1)) || (x == max - 1 && y == 0)) {
         continue;
       }

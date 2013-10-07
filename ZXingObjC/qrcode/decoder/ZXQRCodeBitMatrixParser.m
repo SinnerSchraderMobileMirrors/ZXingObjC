@@ -32,7 +32,7 @@
 @implementation ZXQRCodeBitMatrixParser
 
 - (id)initWithBitMatrix:(ZXBitMatrix *)bitMatrix error:(NSError **)error {
-  int dimension = bitMatrix.height;
+  NSInteger dimension = bitMatrix.height;
   if (dimension < 21 || (dimension & 0x03) != 1) {
     if (error) *error = FormatErrorInstance();
     return nil;
@@ -53,9 +53,9 @@
   if (self.parsedFormatInfo != nil) {
     return self.parsedFormatInfo;
   }
-  int formatInfoBits1 = 0;
+  NSInteger formatInfoBits1 = 0;
 
-  for (int i = 0; i < 6; i++) {
+  for (NSInteger i = 0; i < 6; i++) {
     formatInfoBits1 = [self copyBit:i j:8 versionBits:formatInfoBits1];
   }
 
@@ -63,19 +63,19 @@
   formatInfoBits1 = [self copyBit:8 j:8 versionBits:formatInfoBits1];
   formatInfoBits1 = [self copyBit:8 j:7 versionBits:formatInfoBits1];
 
-  for (int j = 5; j >= 0; j--) {
+  for (NSInteger j = 5; j >= 0; j--) {
     formatInfoBits1 = [self copyBit:8 j:j versionBits:formatInfoBits1];
   }
 
-  int dimension = self.bitMatrix.height;
-  int formatInfoBits2 = 0;
-  int jMin = dimension - 7;
+  NSInteger dimension = self.bitMatrix.height;
+  NSInteger formatInfoBits2 = 0;
+  NSInteger jMin = dimension - 7;
 
-  for (int j = dimension - 1; j >= jMin; j--) {
+  for (NSInteger j = dimension - 1; j >= jMin; j--) {
     formatInfoBits2 = [self copyBit:8 j:j versionBits:formatInfoBits2];
   }
 
-  for (int i = dimension - 8; i < dimension; i++) {
+  for (NSInteger i = dimension - 8; i < dimension; i++) {
     formatInfoBits2 = [self copyBit:i j:8 versionBits:formatInfoBits2];
   }
 
@@ -95,17 +95,17 @@
   if (self.parsedVersion != nil) {
     return self.parsedVersion;
   }
-  int dimension = self.bitMatrix.height;
-  int provisionalVersion = (dimension - 17) >> 2;
+  NSInteger dimension = self.bitMatrix.height;
+  NSInteger provisionalVersion = (dimension - 17) >> 2;
   if (provisionalVersion <= 6) {
     return [ZXQRCodeVersion versionForNumber:provisionalVersion];
   }
-  int versionBits = 0;
-  int ijMin = dimension - 11;
+  NSInteger versionBits = 0;
+  NSInteger ijMin = dimension - 11;
 
-  for (int j = 5; j >= 0; j--) {
+  for (NSInteger j = 5; j >= 0; j--) {
 
-    for (int i = dimension - 9; i >= ijMin; i--) {
+    for (NSInteger i = dimension - 9; i >= ijMin; i--) {
       versionBits = [self copyBit:i j:j versionBits:versionBits];
     }
 
@@ -118,8 +118,8 @@
   }
   versionBits = 0;
 
-  for (int i = 5; i >= 0; i--) {
-    for (int j = dimension - 9; j >= ijMin; j--) {
+  for (NSInteger i = 5; i >= 0; i--) {
+    for (NSInteger j = dimension - 9; j >= ijMin; j--) {
       versionBits = [self copyBit:i j:j versionBits:versionBits];
     }
   }
@@ -133,7 +133,7 @@
   return nil;
 }
 
-- (int)copyBit:(int)i j:(int)j versionBits:(int)versionBits {
+- (NSInteger)copyBit:(NSInteger)i j:(NSInteger)j versionBits:(NSInteger)versionBits {
   return [self.bitMatrix getX:i y:j] ? (versionBits << 1) | 0x1 : versionBits << 1;
 }
 
@@ -154,25 +154,25 @@
     return nil;
   }
 
-  ZXDataMask *dataMask = [ZXDataMask forReference:(int)[formatInfo dataMask]];
-  int dimension = self.bitMatrix.height;
+  ZXDataMask *dataMask = [ZXDataMask forReference:(NSInteger)[formatInfo dataMask]];
+  NSInteger dimension = self.bitMatrix.height;
   [dataMask unmaskBitMatrix:self.bitMatrix dimension:dimension];
   ZXBitMatrix *functionPattern = [version buildFunctionPattern];
   BOOL readingUp = YES;
   NSMutableArray *result = [NSMutableArray array];
-  int resultOffset = 0;
-  int currentByte = 0;
-  int bitsRead = 0;
+  NSInteger resultOffset = 0;
+  NSInteger currentByte = 0;
+  NSInteger bitsRead = 0;
 
-  for (int j = dimension - 1; j > 0; j -= 2) {
+  for (NSInteger j = dimension - 1; j > 0; j -= 2) {
     if (j == 6) {
       j--;
     }
 
-    for (int count = 0; count < dimension; count++) {
-      int i = readingUp ? dimension - 1 - count : count;
+    for (NSInteger count = 0; count < dimension; count++) {
+      NSInteger i = readingUp ? dimension - 1 - count : count;
 
-      for (int col = 0; col < 2; col++) {
+      for (NSInteger col = 0; col < 2; col++) {
         if (![functionPattern getX:j - col y:i]) {
           bitsRead++;
           currentByte <<= 1;

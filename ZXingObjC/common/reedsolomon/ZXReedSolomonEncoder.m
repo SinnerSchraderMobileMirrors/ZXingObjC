@@ -30,18 +30,18 @@
 - (id)initWithField:(ZXGenericGF *)field {
   if (self = [super init]) {
     _field = field;
-    int one = 1;
+    NSInteger one = 1;
     _cachedGenerators = [NSMutableArray arrayWithObject:[[ZXGenericGFPoly alloc] initWithField:field coefficients:&one coefficientsLen:1]];
   }
 
   return self;
 }
 
-- (ZXGenericGFPoly *)buildGenerator:(int)degree {
+- (ZXGenericGFPoly *)buildGenerator:(NSInteger)degree {
   if (degree >= self.cachedGenerators.count) {
     ZXGenericGFPoly *lastGenerator = self.cachedGenerators[[self.cachedGenerators count] - 1];
-    for (int d = [self.cachedGenerators count]; d <= degree; d++) {
-      int next[2] = { 1, [self.field exp:d - 1 + self.field.generatorBase] };
+    for (NSUInteger d = [self.cachedGenerators count]; d <= degree; d++) {
+      NSInteger next[2] = { 1, [self.field exp:(NSInteger)d - 1 + self.field.generatorBase] };
       ZXGenericGFPoly *nextGenerator = [lastGenerator multiply:[[ZXGenericGFPoly alloc] initWithField:self.field coefficients:next coefficientsLen:2]];
       [self.cachedGenerators addObject:nextGenerator];
       lastGenerator = nextGenerator;
@@ -51,33 +51,33 @@
   return (ZXGenericGFPoly *)self.cachedGenerators[degree];
 }
 
-- (void)encode:(int *)toEncode toEncodeLen:(int)toEncodeLen ecBytes:(int)ecBytes {
+- (void)encode:(NSInteger *)toEncode toEncodeLen:(NSInteger)toEncodeLen ecBytes:(NSInteger)ecBytes {
   if (ecBytes == 0) {
     @throw [NSException exceptionWithName:NSInvalidArgumentException
                                    reason:@"No error correction bytes"
                                  userInfo:nil];
   }
-  int dataBytes = toEncodeLen - ecBytes;
+  NSInteger dataBytes = toEncodeLen - ecBytes;
   if (dataBytes <= 0) {
     @throw [NSException exceptionWithName:NSInvalidArgumentException
                                    reason:@"No data bytes provided"
                                  userInfo:nil];
   }
   ZXGenericGFPoly *generator = [self buildGenerator:ecBytes];
-  int infoCoefficients[dataBytes];
-  for (int i = 0; i < dataBytes; i++) {
+  NSInteger infoCoefficients[dataBytes];
+  for (NSInteger i = 0; i < dataBytes; i++) {
     infoCoefficients[i] = toEncode[i];
   }
   ZXGenericGFPoly *info = [[ZXGenericGFPoly alloc] initWithField:self.field coefficients:infoCoefficients coefficientsLen:dataBytes];
   info = [info multiplyByMonomial:ecBytes coefficient:1];
   ZXGenericGFPoly *remainder = [info divide:generator][1];
-  int *coefficients = remainder.coefficients;
-  int coefficientsLen = remainder.coefficientsLen;
-  int numZeroCoefficients = ecBytes - coefficientsLen;
-  for (int i = 0; i < numZeroCoefficients; i++) {
+  NSInteger *coefficients = remainder.coefficients;
+  NSInteger coefficientsLen = remainder.coefficientsLen;
+  NSInteger numZeroCoefficients = ecBytes - coefficientsLen;
+  for (NSInteger i = 0; i < numZeroCoefficients; i++) {
     toEncode[dataBytes + i] = 0;
   }
-  for (int i = 0; i < coefficientsLen; i++) {
+  for (NSInteger i = 0; i < coefficientsLen; i++) {
     toEncode[dataBytes + numZeroCoefficients + i] = coefficients[i];
   }
 }

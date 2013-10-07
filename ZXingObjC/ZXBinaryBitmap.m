@@ -44,11 +44,11 @@
   return [[self alloc] initWithBinarizer:binarizer];
 }
 
-- (int)width {
+- (NSInteger)width {
   return self.binarizer.width;
 }
 
-- (int)height {
+- (NSInteger)height {
   return self.binarizer.height;
 }
 
@@ -57,7 +57,7 @@
  * cached data. Callers should assume this method is expensive and call it as seldom as possible.
  * This method is intended for decoding 1D barcodes and may choose to apply sharpening.
  */
-- (ZXBitArray *)blackRow:(int)y row:(ZXBitArray *)row error:(NSError **)error {
+- (ZXBitArray *)blackRow:(NSInteger)y row:(ZXBitArray *)row error:(NSError **)error {
   return [self.binarizer blackRow:y row:row error:error];
 }
 
@@ -82,7 +82,7 @@
  * Returns a new object with cropped image data. Implementations may keep a reference to the
  * original data rather than a copy. Only callable if isCropSupported() is true.
  */
-- (ZXBinaryBitmap *)crop:(int)left top:(int)top width:(int)aWidth height:(int)aHeight {
+- (ZXBinaryBitmap *)crop:(NSInteger)left top:(NSInteger)top width:(NSInteger)aWidth height:(NSInteger)aHeight {
   ZXLuminanceSource *newSource = [[self.binarizer luminanceSource] crop:left top:top width:aWidth height:aHeight];
   return [[ZXBinaryBitmap alloc] initWithBinarizer:[self.binarizer createBinarizer:newSource]];
 }

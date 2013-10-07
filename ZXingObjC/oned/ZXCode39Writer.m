@@ -22,7 +22,7 @@
 
 @implementation ZXCode39Writer
 
-- (ZXBitMatrix *)encode:(NSString *)contents format:(ZXBarcodeFormat)format width:(int)width height:(int)height hints:(ZXEncodeHints *)hints error:(NSError **)error {
+- (ZXBitMatrix *)encode:(NSString *)contents format:(ZXBarcodeFormat)format width:(NSInteger)width height:(NSInteger)height hints:(ZXEncodeHints *)hints error:(NSError **)error {
   if (format != kBarcodeFormatCode39) {
     [NSException raise:NSInvalidArgumentException 
                 format:@"Can only encode CODE_39."];
@@ -30,22 +30,22 @@
   return [super encode:contents format:format width:width height:height hints:hints error:error];
 }
 
-- (BOOL *)encode:(NSString *)contents length:(int *)pLength {
-  int length = [contents length];
+- (BOOL *)encode:(NSString *)contents length:(NSInteger *)pLength {
+  NSInteger length = [contents length];
   if (length > 80) {
     [NSException raise:NSInvalidArgumentException 
-                format:@"Requested contents should be less than 80 digits long, but got %d", length];
+                format:@"Requested contents should be less than 80 digits long, but got %ld", (long)length];
   }
 
-  const int widthsLengh = 9;
-  int widths[widthsLengh];
-  memset(widths, 0, widthsLengh * sizeof(int));
+  const NSInteger widthsLengh = 9;
+  NSInteger widths[widthsLengh];
+  memset(widths, 0, widthsLengh * sizeof(NSInteger));
 
-  int codeWidth = 24 + 1 + length;
-  for (int i = 0; i < length; i++) {
+  NSInteger codeWidth = 24 + 1 + length;
+  for (NSInteger i = 0; i < length; i++) {
     NSUInteger indexInString = [CODE39_ALPHABET_STRING rangeOfString:[contents substringWithRange:NSMakeRange(i, 1)]].location;
     [self toIntArray:CODE39_CHARACTER_ENCODINGS[indexInString] toReturn:widths];
-    for (int j = 0; j < widthsLengh; j++) {
+    for (NSInteger j = 0; j < widthsLengh; j++) {
       codeWidth += widths[j];
     }
   }
@@ -53,14 +53,14 @@
   if (pLength) *pLength = codeWidth;
   BOOL *result = (BOOL *)malloc(codeWidth * sizeof(BOOL));
   [self toIntArray:CODE39_CHARACTER_ENCODINGS[39] toReturn:widths];
-  int pos = [super appendPattern:result pos:0 pattern:widths patternLen:widthsLengh startColor:TRUE];
+  NSInteger pos = [super appendPattern:result pos:0 pattern:widths patternLen:widthsLengh startColor:TRUE];
 
-  const int narrowWhiteLen = ZX_CODE39_WHITELEN;
-  int narrowWhite[ZX_CODE39_WHITELEN] = {1};
+  const NSInteger narrowWhiteLen = ZX_CODE39_WHITELEN;
+  NSInteger narrowWhite[ZX_CODE39_WHITELEN] = {1};
 
   pos += [super appendPattern:result pos:pos pattern:narrowWhite patternLen:narrowWhiteLen startColor:FALSE];
 
-  for (int i = length - 1; i >= 0; i--) {
+  for (NSInteger i = length - 1; i >= 0; i--) {
     NSUInteger indexInString = [CODE39_ALPHABET_STRING rangeOfString:[contents substringWithRange:NSMakeRange(i, 1)]].location;
     [self toIntArray:CODE39_CHARACTER_ENCODINGS[indexInString] toReturn:widths];
     pos += [super appendPattern:result pos:pos pattern:widths patternLen:widthsLengh startColor:TRUE];
@@ -72,9 +72,9 @@
   return result;
 }
 
-- (void)toIntArray:(int)a toReturn:(int[])toReturn {
-  for (int i = 0; i < 9; i++) {
-    int temp = a & (1 << i);
+- (void)toIntArray:(NSInteger)a toReturn:(NSInteger[])toReturn {
+  for (NSInteger i = 0; i < 9; i++) {
+    NSInteger temp = a & (1 << i);
     toReturn[i] = temp == 0 ? 1 : 2;
   }
 }

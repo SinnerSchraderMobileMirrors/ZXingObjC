@@ -19,11 +19,11 @@
 
 @implementation ZXTextEncoder
 
-- (int)encodingMode {
+- (NSInteger)encodingMode {
   return [ZXHighLevelEncoder textEncodation];
 }
 
-- (int)encodeChar:(unichar)c buffer:(NSMutableString *)sb {
+- (NSInteger)encodeChar:(unichar)c buffer:(NSMutableString *)sb {
   if (c == ' ') {
     [sb appendString:@"\3"];
     return 1;
@@ -73,7 +73,7 @@
   }
   if (c >= (unichar)0x0080) {
     [sb appendFormat:@"\1%C", (unichar)0x001e]; //Shift 2, Upper Shift
-    int len = 2;
+    NSInteger len = 2;
     len += [self encodeChar:(unichar) (c - 128) buffer:sb];
     return len;
   }

@@ -23,16 +23,16 @@
 
 @interface ZXBinaryBitmap : NSObject
 
-@property (nonatomic, readonly) int width;
-@property (nonatomic, readonly) int height;
+@property (nonatomic, readonly) NSInteger width;
+@property (nonatomic, readonly) NSInteger height;
 @property (nonatomic, readonly) BOOL cropSupported;
 @property (nonatomic, readonly) BOOL rotateSupported;
 
 - (id)initWithBinarizer:(ZXBinarizer *)binarizer;
 + (id)binaryBitmapWithBinarizer:(ZXBinarizer *)binarizer;
-- (ZXBitArray *)blackRow:(int)y row:(ZXBitArray *)row error:(NSError **)error;
+- (ZXBitArray *)blackRow:(NSInteger)y row:(ZXBitArray *)row error:(NSError **)error;
 - (ZXBitMatrix *)blackMatrixWithError:(NSError **)error;
-- (ZXBinaryBitmap *)crop:(int)left top:(int)top width:(int)width height:(int)height;
+- (ZXBinaryBitmap *)crop:(NSInteger)left top:(NSInteger)top width:(NSInteger)width height:(NSInteger)height;
 - (ZXBinaryBitmap *)rotateCounterClockwise;
 - (ZXBinaryBitmap *)rotateCounterClockwise45;
 

@@ -18,9 +18,9 @@
 
 @interface ZXBitArray ()
 
-@property (nonatomic, assign) int *bits;
-@property (nonatomic, assign) int bitsLength;
-@property (nonatomic, assign) int size;
+@property (nonatomic, assign) int8_t *bits;
+@property (nonatomic, assign) NSUInteger bitsLength;
+@property (nonatomic, assign) NSUInteger size;
 
 @end
 
@@ -29,7 +29,7 @@
 - (id)init {
   if (self = [super init]) {
     _size = 0;
-    _bits = (int *)malloc(1 * sizeof(int));
+    _bits = (int8_t *)malloc(1 * sizeof(int8_t));
     _bitsLength = 1;
     _bits[0] = 0;
   }
@@ -37,7 +37,7 @@
   return self;
 }
 
-- (id)initWithSize:(int)size {
+- (id)initWithSize:(NSUInteger)size {
   if (self = [super init]) {
     _size = size;
     _bits = [self makeArray:size];
@@ -55,15 +55,15 @@
   }
 }
 
-- (int)sizeInBytes {
+- (NSUInteger)sizeInBytes {
   return (self.size + 7) >> 3;
 }
 
-- (void)ensureCapacity:(int)aSize {
+- (void)ensureCapacity:(NSUInteger)aSize {
   if (aSize > self.bitsLength << 5) {
-    int *newBits = [self makeArray:aSize];
+    int8_t *newBits = [self makeArray:aSize];
     
-    for (int i = 0; i < self.bitsLength; i++) {
+    for (NSUInteger i = 0; i < self.bitsLength; i++) {
       newBits[i] = self.bits[i];
     }
 
@@ -77,12 +77,12 @@
 }
 
 
-- (BOOL)get:(int)i {
+- (BOOL)get:(NSUInteger)i {
   return (self.bits[i >> 5] & (1 << (i & 0x1F))) != 0;
 }
 
 
-- (void)set:(int)i {
+- (void)set:(NSUInteger)i {
   self.bits[i >> 5] |= 1 << (i & 0x1F);
 }
 
@@ -90,16 +90,16 @@
 /**
  * Flips bit i.
  */
-- (void)flip:(int)i {
+- (void)flip:(NSUInteger)i {
   self.bits[i >> 5] ^= 1 << (i & 0x1F);
 }
 
-- (int)nextSet:(int)from {
+- (NSUInteger)nextSet:(NSUInteger)from {
   if (from >= self.size) {
     return self.size;
   }
-  int bitsOffset = from >> 5;
-  int currentBits = self.bits[bitsOffset];
+  NSInteger bitsOffset = from >> 5;
+  int8_t currentBits = self.bits[bitsOffset];
   // mask off lesser bits first
   currentBits &= ~((1 << (from & 0x1F)) - 1);
   while (currentBits == 0) {
@@ -108,16 +108,16 @@
     }
     currentBits = self.bits[bitsOffset];
   }
-  int result = (bitsOffset << 5) + [self numberOfTrailingZeros:currentBits];
+  NSUInteger result = (bitsOffset << 5) + [self numberOfTrailingZeros:currentBits];
   return result > self.size ? self.size : result;
 }
 
-- (int)nextUnset:(int)from {
+- (NSUInteger)nextUnset:(NSUInteger)from {
   if (from >= self.size) {
     return self.size;
   }
-  int bitsOffset = from >> 5;
-  int currentBits = ~self.bits[bitsOffset];
+  NSInteger bitsOffset = from >> 5;
+  int8_t currentBits = ~self.bits[bitsOffset];
   // mask off lesser bits first
   currentBits &= ~((1 << (from & 0x1F)) - 1);
   while (currentBits == 0) {
@@ -126,7 +126,7 @@
     }
     currentBits = ~self.bits[bitsOffset];
   }
-  int result = (bitsOffset << 5) + [self numberOfTrailingZeros:currentBits];
+  NSInteger result = (bitsOffset << 5) + [self numberOfTrailingZeros:currentBits];
   return result > self.size ? self.size : result;
 }
 
@@ -136,14 +136,14 @@
  * newBits is the new value of the next 32 bits. Note again that the least-significant bit
  * corresponds to bit i, the next-least-significant to i+1, and so on.
  */
-- (void)setBulk:(int)i newBits:(int)newBits {
+- (void)setBulk:(NSUInteger)i newBits:(int8_t)newBits {
   self.bits[i >> 5] = newBits;
 }
 
 /**
  * Sets a range of bits.
  */
-- (void)setRange:(int)start end:(int)end {
+- (void)setRange:(NSUInteger)start end:(NSInteger)end {
   if (end < start) {
     @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Start greater than end" userInfo:nil];
   }
@@ -151,17 +151,17 @@
     return;
   }
   end--; // will be easier to treat this as the last actually set bit -- inclusive
-  int firstInt = start >> 5;
-  int lastInt = end >> 5;
-  for (int i = firstInt; i <= lastInt; i++) {
-    int firstBit = i > firstInt ? 0 : start & 0x1F;
-    int lastBit = i < lastInt ? 31 : end & 0x1F;
-    int mask;
+  NSUInteger firstInt = start >> 5;
+  NSUInteger lastInt = end >> 5;
+  for (NSUInteger i = firstInt; i <= lastInt; i++) {
+    NSUInteger firstBit = i > firstInt ? 0 : start & 0x1F;
+    NSUInteger lastBit = i < lastInt ? 31 : end & 0x1F;
+    int8_t mask;
     if (firstBit == 0 && lastBit == 31) {
       mask = -1;
     } else {
       mask = 0;
-      for (int j = firstBit; j <= lastBit; j++) {
+      for (NSUInteger j = firstBit; j <= lastBit; j++) {
         mask |= 1 << j;
       }
     }
@@ -173,13 +173,13 @@
  * Clears all bits (sets to false).
  */
 - (void)clear {
-  memset(self.bits, 0, self.bitsLength * sizeof(int));
+  memset(self.bits, 0, self.bitsLength * sizeof(int8_t));
 }
 
 /**
  * Efficient method to check if a range of bits is set, or not set.
  */
-- (BOOL)isRange:(int)start end:(int)end value:(BOOL)value {
+- (BOOL)isRange:(NSUInteger)start end:(NSUInteger)end value:(BOOL)value {
   if (end < start) {
     @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Start greater than end" userInfo:nil];
   }
@@ -187,19 +187,19 @@
     return YES;
   }
   end--;
-  int firstInt = start >> 5;
-  int lastInt = end >> 5;
+  NSUInteger firstInt = start >> 5;
+  NSUInteger lastInt = end >> 5;
 
-  for (int i = firstInt; i <= lastInt; i++) {
-    int firstBit = i > firstInt ? 0 : start & 0x1F;
-    int lastBit = i < lastInt ? 31 : end & 0x1F;
-    int mask;
+  for (NSUInteger i = firstInt; i <= lastInt; i++) {
+    NSUInteger firstBit = i > firstInt ? 0 : start & 0x1F;
+    NSUInteger lastBit = i < lastInt ? 31 : end & 0x1F;
+    int8_t mask;
     if (firstBit == 0 && lastBit == 31) {
       mask = -1;
     } else {
       mask = 0;
 
-      for (int j = firstBit; j <= lastBit; j++) {
+      for (NSInteger j = firstBit; j <= lastBit; j++) {
         mask |= 1 << j;
       }
     }
@@ -224,23 +224,23 @@
  * least-significant. For example, appending 6 bits from 0x000001E will append the bits
  * 0, 1, 1, 1, 1, 0 in that order.
  */
-- (void)appendBits:(int)value numBits:(int)numBits {
-  if (numBits < 0 || numBits > 32) {
+- (void)appendBits:(int8_t)value numBits:(NSUInteger)numBits {
+  if (numBits > 32) {
     @throw [NSException exceptionWithName:NSInvalidArgumentException
                                    reason:@"Num bits must be between 0 and 32"
                                  userInfo:nil];
   }
   [self ensureCapacity:self.size + numBits];
-  for (int numBitsLeft = numBits; numBitsLeft > 0; numBitsLeft--) {
+  for (NSInteger numBitsLeft = numBits; numBitsLeft > 0; numBitsLeft--) {
     [self appendBit:((value >> (numBitsLeft - 1)) & 0x01) == 1];
   }
 }
 
 - (void)appendBitArray:(ZXBitArray *)other {
-  int otherSize = [other size];
+  NSUInteger otherSize = [other size];
   [self ensureCapacity:self.size + otherSize];
 
-  for (int i = 0; i < otherSize; i++) {
+  for (NSUInteger i = 0; i < otherSize; i++) {
     [self appendBit:[other get:i]];
   }
 }
@@ -252,22 +252,22 @@
                                  userInfo:nil];
   }
 
-  for (int i = 0; i < self.bitsLength; i++) {
+  for (NSUInteger i = 0; i < self.bitsLength; i++) {
     self.bits[i] ^= other.bits[i];
   }
 }
 
 
-- (void)toBytes:(int)bitOffset array:(int8_t *)array offset:(int)offset numBytes:(int)numBytes {
-  for (int i = 0; i < numBytes; i++) {
-    int theByte = 0;
-    for (int j = 0; j < 8; j++) {
+- (void)toBytes:(NSUInteger)bitOffset array:(int8_t *)array offset:(NSUInteger)offset numBytes:(NSUInteger)numBytes {
+  for (NSUInteger i = 0; i < numBytes; i++) {
+    int8_t theByte = 0;
+    for (NSUInteger j = 0; j < 8; j++) {
       if ([self get:bitOffset]) {
         theByte |= 1 << (7 - j);
       }
       bitOffset++;
     }
-    array[offset + i] = (char)theByte;
+    array[offset + i] = theByte;
   }
 }
 
@@ -275,8 +275,8 @@
  * Reverses all bits in the array.
  */
 - (void)reverse {
-  int *newBits = (int *)malloc(self.size * sizeof(int));
-  for (int i = 0; i < self.size; i++) {
+  int8_t *newBits = (int8_t *)malloc(self.size * sizeof(int8_t));
+  for (NSUInteger i = 0; i < self.size; i++) {
     newBits[i] = 0;
     if ([self get:self.size - i - 1]) {
       newBits[i >> 5] |= 1 << (i & 0x1F);
@@ -289,17 +289,17 @@
   self.bits = newBits;
 }
 
-- (int *)makeArray:(int)aSize {
-  int arraySize = aSize + (31 >> 5);
-  int *newArray = (int *)malloc(arraySize * sizeof(int));
-  memset(newArray, 0, arraySize * sizeof(int));
+- (int8_t *)makeArray:(NSUInteger)aSize {
+  NSUInteger arraySize = aSize + (31 >> 5);
+  int8_t *newArray = (int8_t *)malloc(arraySize * sizeof(int8_t));
+  memset(newArray, 0, arraySize * sizeof(int8_t));
   return newArray;
 }
 
 - (NSString *)description {
   NSMutableString *result = [NSMutableString string];
 
-  for (int i = 0; i < self.size; i++) {
+  for (NSUInteger i = 0; i < self.size; i++) {
     if ((i & 0x07) == 0) {
       [result appendString:@" "];
     }
@@ -310,15 +310,15 @@
 }
 
 // Ported from OpenJDK Integer.numberOfTrailingZeros implementation
-- (int)numberOfTrailingZeros:(int)i {
-  int y;
+- (NSUInteger)numberOfTrailingZeros:(NSUInteger)i {
+  NSUInteger y;
   if (i == 0) return 32;
-  int n = 31;
+  NSUInteger n = 31;
   y = i <<16; if (y != 0) { n = n -16; i = y; }
   y = i << 8; if (y != 0) { n = n - 8; i = y; }
   y = i << 4; if (y != 0) { n = n - 4; i = y; }
   y = i << 2; if (y != 0) { n = n - 2; i = y; }
-  return n - (int)(((unsigned int)(i << 1)) >> 31);
+  return n - (((i << 1)) >> 31);
 }
 
 @end

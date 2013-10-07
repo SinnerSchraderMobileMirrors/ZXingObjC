@@ -27,7 +27,7 @@
                         @"011000010100", @"000100001101", @"011000010000", @"001100001101", @"100010010111",
                         @"011101011010", @"001011001010"];
   NSArray *actual = [placement toBitFieldStringArray];
-  for (int i = 0; i < actual.count; i++) {
+  for (NSInteger i = 0; i < actual.count; i++) {
     STAssertEqualObjects(actual[i], expected[i], @"Row %d", i);
   }
 }

@@ -18,7 +18,7 @@
 
 @implementation ZXDimension
 
-- (id)initWithWidth:(int)width height:(int)height {
+- (id)initWithWidth:(NSInteger)width height:(NSInteger)height {
   if (width < 0 || height < 0) {
     [NSException raise:NSInvalidArgumentException format:@"Width and height must not be negative"];
   }
@@ -44,7 +44,7 @@
 }
 
 - (NSString *)description {
-  return [NSString stringWithFormat:@"%dx%d", self.width, self.height];
+  return [NSString stringWithFormat:@"%ldx%ld", (long)self.width, (long)self.height];
 }
 
 @end

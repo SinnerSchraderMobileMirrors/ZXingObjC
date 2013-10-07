@@ -23,23 +23,23 @@ typedef enum {
 
 @interface ZXAbstractRSSReader : ZXOneDReader
 
-@property (nonatomic, assign, readonly) int *decodeFinderCounters;
-@property (nonatomic, assign, readonly) unsigned int decodeFinderCountersLen;
-@property (nonatomic, assign, readonly) int *dataCharacterCounters;
-@property (nonatomic, assign, readonly) unsigned int dataCharacterCountersLen;
+@property (nonatomic, assign, readonly) NSInteger *decodeFinderCounters;
+@property (nonatomic, assign, readonly) NSUInteger decodeFinderCountersLen;
+@property (nonatomic, assign, readonly) NSInteger *dataCharacterCounters;
+@property (nonatomic, assign, readonly) NSUInteger dataCharacterCountersLen;
 @property (nonatomic, assign, readonly) float *oddRoundingErrors;
-@property (nonatomic, assign, readonly) unsigned int oddRoundingErrorsLen;
+@property (nonatomic, assign, readonly) NSUInteger oddRoundingErrorsLen;
 @property (nonatomic, assign, readonly) float *evenRoundingErrors;
-@property (nonatomic, assign, readonly) unsigned int evenRoundingErrorsLen;
-@property (nonatomic, assign, readonly) int *oddCounts;
-@property (nonatomic, assign, readonly) unsigned int oddCountsLen;
-@property (nonatomic, assign, readonly) int *evenCounts;
-@property (nonatomic, assign, readonly) unsigned int evenCountsLen;
+@property (nonatomic, assign, readonly) NSUInteger evenRoundingErrorsLen;
+@property (nonatomic, assign, readonly) NSInteger *oddCounts;
+@property (nonatomic, assign, readonly) NSUInteger oddCountsLen;
+@property (nonatomic, assign, readonly) NSInteger *evenCounts;
+@property (nonatomic, assign, readonly) NSUInteger evenCountsLen;
 
-+ (int)parseFinderValue:(int *)counters countersSize:(unsigned int)countersSize finderPatternType:(RSS_PATTERNS)finderPatternType;
-+ (int)count:(int *)array arrayLen:(unsigned int)arrayLen;
-+ (void)increment:(int *)array arrayLen:(unsigned int)arrayLen errors:(float *)errors;
-+ (void)decrement:(int *)array arrayLen:(unsigned int)arrayLen errors:(float *)errors;
-+ (BOOL)isFinderPattern:(int *)counters countersLen:(unsigned int)countersLen;
++ (NSInteger)parseFinderValue:(NSInteger *)counters countersSize:(NSUInteger)countersSize finderPatternType:(RSS_PATTERNS)finderPatternType;
++ (NSInteger)count:(NSInteger *)array arrayLen:(NSUInteger)arrayLen;
++ (void)increment:(NSInteger *)array arrayLen:(NSUInteger)arrayLen errors:(float *)errors;
++ (void)decrement:(NSInteger *)array arrayLen:(NSUInteger)arrayLen errors:(float *)errors;
++ (BOOL)isFinderPattern:(NSInteger *)counters countersLen:(NSUInteger)countersLen;
 
 @end

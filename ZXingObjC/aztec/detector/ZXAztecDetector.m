@@ -26,14 +26,14 @@
 
 @interface ZXAztecPoint : NSObject
 
-@property (nonatomic, assign) int x;
-@property (nonatomic, assign) int y;
+@property (nonatomic, assign) NSInteger x;
+@property (nonatomic, assign) NSInteger y;
 
 @end
 
 @implementation ZXAztecPoint
 
-- (id)initWithX:(int)x y:(int)y {
+- (id)initWithX:(NSInteger)x y:(NSInteger)y {
   if (self = [super init]) {
     _x = x;
     _y = y;
@@ -51,10 +51,10 @@
 
 @property (nonatomic, assign) BOOL compact;
 @property (nonatomic, strong) ZXBitMatrix *image;
-@property (nonatomic, assign) int nbCenterLayers;
-@property (nonatomic, assign) int nbDataBlocks;
-@property (nonatomic, assign) int nbLayers;
-@property (nonatomic, assign) int shift;
+@property (nonatomic, assign) NSInteger nbCenterLayers;
+@property (nonatomic, assign) NSInteger nbDataBlocks;
+@property (nonatomic, assign) NSInteger nbLayers;
+@property (nonatomic, assign) NSInteger shift;
 
 @end
 
@@ -124,7 +124,7 @@
   ZXAztecPoint *p2 = bullEyeCornerPoints[2];
   ZXAztecPoint *p3 = bullEyeCornerPoints[3];
 
-  int twoCenterLayers = 2 * self.nbCenterLayers;
+  NSInteger twoCenterLayers = 2 * self.nbCenterLayers;
 
   // Get the bits around the bull's eye
   NSArray *resab = [self sampleLine:p0 p2:p1 size:twoCenterLayers + 1];
@@ -149,26 +149,26 @@
   NSMutableArray *parameterData = [NSMutableArray array];
   NSMutableArray *shiftedParameterData = [NSMutableArray array];
   if (self.compact) {
-    for (int i = 0; i < 28; i++) {
+    for (NSInteger i = 0; i < 28; i++) {
       [shiftedParameterData addObject:@NO];
     }
 
-    for (int i = 0; i < 7; i++) {
+    for (NSInteger i = 0; i < 7; i++) {
       shiftedParameterData[i] = resab[2+i];
       shiftedParameterData[i + 7] = resbc[2+i];
       shiftedParameterData[i + 14] = rescd[2+i];
       shiftedParameterData[i + 21] = resda[2+i];
     }
 
-    for (int i = 0; i < 28; i++) {
+    for (NSInteger i = 0; i < 28; i++) {
       [parameterData addObject:shiftedParameterData[(i + self.shift * 7) % 28]];
     }
   } else {
-    for (int i = 0; i < 40; i++) {
+    for (NSInteger i = 0; i < 40; i++) {
       [shiftedParameterData addObject:@NO];
     }
 
-    for (int i = 0; i < 11; i++) {
+    for (NSInteger i = 0; i < 11; i++) {
       if (i < 5) {
         shiftedParameterData[i] = resab[2 + i];
         shiftedParameterData[i + 10] = resbc[2 + i];
@@ -183,7 +183,7 @@
       }
     }
 
-    for (int i = 0; i < 40; i++) {
+    for (NSInteger i = 0; i < 40; i++) {
       [parameterData addObject:shiftedParameterData[(i + self.shift * 10) % 40]];
     }
   }
@@ -207,26 +207,26 @@
 
   float ratio = (2 * self.nbLayers + (self.nbLayers > 4 ? 1 : 0) + (self.nbLayers - 4) / 8) / (2.0f * self.nbCenterLayers);
 
-  int dx = p0.x - p2.x;
+  NSInteger dx = p0.x - p2.x;
   dx += dx > 0 ? 1 : -1;
-  int dy = p0.y - p2.y;
+  NSInteger dy = p0.y - p2.y;
   dy += dy > 0 ? 1 : -1;
 
-  int targetcx = [ZXMathUtils round:p2.x - ratio * dx];
-  int targetcy = [ZXMathUtils round:p2.y - ratio * dy];
+  NSInteger targetcx = [ZXMathUtils round:p2.x - ratio * dx];
+  NSInteger targetcy = [ZXMathUtils round:p2.y - ratio * dy];
 
-  int targetax = [ZXMathUtils round:p0.x + ratio * dx];
-  int targetay = [ZXMathUtils round:p0.y + ratio * dy];
+  NSInteger targetax = [ZXMathUtils round:p0.x + ratio * dx];
+  NSInteger targetay = [ZXMathUtils round:p0.y + ratio * dy];
 
   dx = p1.x - p3.x;
   dx += dx > 0 ? 1 : -1;
   dy = p1.y - p3.y;
   dy += dy > 0 ? 1 : -1;
 
-  int targetdx = [ZXMathUtils round:p3.x - ratio * dx];
-  int targetdy = [ZXMathUtils round:p3.y - ratio * dy];
-  int targetbx = [ZXMathUtils round:p1.x + ratio * dx];
-  int targetby = [ZXMathUtils round:p1.y + ratio * dy];
+  NSInteger targetdx = [ZXMathUtils round:p3.x - ratio * dx];
+  NSInteger targetdy = [ZXMathUtils round:p3.y - ratio * dy];
+  NSInteger targetbx = [ZXMathUtils round:p1.x + ratio * dx];
+  NSInteger targetby = [ZXMathUtils round:p1.y + ratio * dy];
 
   if (![self isValidX:targetax y:targetay] ||
       ![self isValidX:targetbx y:targetby] ||
@@ -246,8 +246,8 @@
  * Corrects the parameter bits using Reed-Solomon algorithm
  */
 - (BOOL)correctParameterData:(NSMutableArray *)parameterData compact:(BOOL)isCompact error:(NSError **)error {
-  int numCodewords;
-  int numDataCodewords;
+  NSInteger numCodewords;
+  NSInteger numDataCodewords;
 
   if (isCompact) {
     numCodewords = 7;
@@ -257,15 +257,15 @@
     numDataCodewords = 4;
   }
 
-  int numECCodewords = numCodewords - numDataCodewords;
-  int parameterWordsLen = numCodewords;
-  int parameterWords[parameterWordsLen];
+  NSInteger numECCodewords = numCodewords - numDataCodewords;
+  NSInteger parameterWordsLen = numCodewords;
+  NSInteger parameterWords[parameterWordsLen];
 
-  int codewordSize = 4;
-  for (int i = 0; i < parameterWordsLen; i++) {
+  NSInteger codewordSize = 4;
+  for (NSInteger i = 0; i < parameterWordsLen; i++) {
     parameterWords[i] = 0;
-    int flag = 1;
-    for (int j = 1; j <= codewordSize; j++) {
+    NSInteger flag = 1;
+    for (NSInteger j = 1; j <= codewordSize; j++) {
       if ([parameterData[codewordSize * i + codewordSize - j] boolValue]) {
         parameterWords[i] += flag;
       }
@@ -284,9 +284,9 @@
     }
   }
 
-  for (int i = 0; i < numDataCodewords; i++) {
-    int flag = 1;
-    for (int j = 1; j <= codewordSize; j++) {
+  for (NSInteger i = 0; i < numDataCodewords; i++) {
+    NSInteger flag = 1;
+    for (NSInteger j = 1; j <= codewordSize; j++) {
       parameterData[i * codewordSize + codewordSize - j] = [NSNumber numberWithBool:(parameterWords[i] & flag) == flag];
       flag <<= 1;
     }
@@ -335,20 +335,20 @@
 
   float ratio = 0.75f * 2 / (2 * self.nbCenterLayers - 3);
 
-  int dx = pina.x - pinc.x;
-  int dy = pina.y - pinc.y;
-  int targetcx = [ZXMathUtils round:pinc.x - ratio * dx];
-  int targetcy = [ZXMathUtils round:pinc.y - ratio * dy];
-  int targetax = [ZXMathUtils round:pina.x + ratio * dx];
-  int targetay = [ZXMathUtils round:pina.y + ratio * dy];
+  NSInteger dx = pina.x - pinc.x;
+  NSInteger dy = pina.y - pinc.y;
+  NSInteger targetcx = [ZXMathUtils round:pinc.x - ratio * dx];
+  NSInteger targetcy = [ZXMathUtils round:pinc.y - ratio * dy];
+  NSInteger targetax = [ZXMathUtils round:pina.x + ratio * dx];
+  NSInteger targetay = [ZXMathUtils round:pina.y + ratio * dy];
 
   dx = pinb.x - pind.x;
   dy = pinb.y - pind.y;
 
-  int targetdx = [ZXMathUtils round:pind.x - ratio * dx];
-  int targetdy = [ZXMathUtils round:pind.y - ratio * dy];
-  int targetbx = [ZXMathUtils round:pinb.x + ratio * dx];
-  int targetby = [ZXMathUtils round:pinb.y + ratio * dy];
+  NSInteger targetdx = [ZXMathUtils round:pind.x - ratio * dx];
+  NSInteger targetdy = [ZXMathUtils round:pind.y - ratio * dy];
+  NSInteger targetbx = [ZXMathUtils round:pinb.x + ratio * dx];
+  NSInteger targetby = [ZXMathUtils round:pinb.y + ratio * dy];
 
   if (![self isValidX:targetax y:targetay] ||
       ![self isValidX:targetbx y:targetby] ||
@@ -383,8 +383,8 @@
   }
 
   if (detectorError && detectorError.code == ZXNotFoundError) {
-    int cx = self.image.width / 2;
-    int cy = self.image.height / 2;
+    NSInteger cx = self.image.width / 2;
+    NSInteger cy = self.image.height / 2;
     pointA = [[self firstDifferent:[[ZXAztecPoint alloc] initWithX:cx + 7 y:cy - 7] color:NO dx:1 dy:-1] toResultPoint];
     pointB = [[self firstDifferent:[[ZXAztecPoint alloc] initWithX:cx + 7 y:cy + 7]  color:NO dx:1 dy:1] toResultPoint];
     pointC = [[self firstDifferent:[[ZXAztecPoint alloc] initWithX:cx - 7 y:cy + 7]  color:NO dx:-1 dy:1] toResultPoint];
@@ -399,8 +399,8 @@
     pointD = cornerPoints[3];
   }
 
-  int cx = [ZXMathUtils round:([pointA x] + [pointD x] + [pointB x] + [pointC x]) / 4.0f];
-  int cy = [ZXMathUtils round:([pointA y] + [pointD y] + [pointB y] + [pointC y]) / 4.0f];
+  NSInteger cx = [ZXMathUtils round:([pointA x] + [pointD x] + [pointB x] + [pointC x]) / 4.0f];
+  NSInteger cy = [ZXMathUtils round:([pointA y] + [pointD y] + [pointB y] + [pointC y]) / 4.0f];
 
   detectorError = nil;
   detector = [[ZXWhiteRectangleDetector alloc] initWithImage:self.image initSize:15 x:cx y:cy error:&detectorError];
@@ -439,7 +439,7 @@
                 bottomRight:(ZXResultPoint *)bottomRight
                    topRight:(ZXResultPoint *)topRight
                       error:(NSError **)error {
-  int dimension;
+  NSInteger dimension;
   if (self.compact) {
     dimension = 4 * self.nbLayers + 11;
   } else {
@@ -479,8 +479,8 @@
  * Sets number of layers and number of data blocks from parameter bits
  */
 - (void)parameters:(NSArray *)parameterData {
-  int nbBitsForNbLayers;
-  int nbBitsForNbDatablocks;
+  NSInteger nbBitsForNbLayers;
+  NSInteger nbBitsForNbDatablocks;
 
   if (self.compact) {
     nbBitsForNbLayers = 2;
@@ -490,14 +490,14 @@
     nbBitsForNbDatablocks = 11;
   }
 
-  for (int i = 0; i < nbBitsForNbLayers; i++) {
+  for (NSInteger i = 0; i < nbBitsForNbLayers; i++) {
     self.nbLayers <<= 1;
     if ([parameterData[i] boolValue]) {
       self.nbLayers++;
     }
   }
 
-  for (int i = nbBitsForNbLayers; i < nbBitsForNbLayers + nbBitsForNbDatablocks; i++) {
+  for (NSInteger i = nbBitsForNbLayers; i < nbBitsForNbLayers + nbBitsForNbDatablocks; i++) {
     self.nbDataBlocks <<= 1;
     if ([parameterData[i] boolValue]) {
       self.nbDataBlocks++;
@@ -512,7 +512,7 @@
 /**
  * Samples a line
  */
-- (NSArray *)sampleLine:(ZXAztecPoint *)p1 p2:(ZXAztecPoint *)p2 size:(int)size {
+- (NSArray *)sampleLine:(ZXAztecPoint *)p1 p2:(ZXAztecPoint *)p2 size:(NSInteger)size {
   NSMutableArray *res = [NSMutableArray arrayWithCapacity:size];
   float d = [self distance:p1 b:p2];
   float moduleSize = d / (size - 1);
@@ -522,7 +522,7 @@
   float px = p1.x;
   float py = p1.y;
 
-  for (int i = 0; i < size; i++) {
+  for (NSInteger i = 0; i < size; i++) {
     [res addObject:@([self.image getX:[ZXMathUtils round:px] y:[ZXMathUtils round:py]])];
     px += dx;
     py += dy;
@@ -537,20 +537,20 @@
  * or black points only
  */
 - (BOOL)isWhiteOrBlackRectangle:(ZXAztecPoint *)p1 p2:(ZXAztecPoint *)p2 p3:(ZXAztecPoint *)p3 p4:(ZXAztecPoint *)p4 {
-  int corr = 3;
+  NSInteger corr = 3;
 
   p1 = [[ZXAztecPoint alloc] initWithX:p1.x - corr y:p1.y + corr];
   p2 = [[ZXAztecPoint alloc] initWithX:p2.x - corr y:p2.y - corr];
   p3 = [[ZXAztecPoint alloc] initWithX:p3.x + corr y:p3.y - corr];
   p4 = [[ZXAztecPoint alloc] initWithX:p4.x + corr y:p4.y + corr];
 
-  int cInit = [self color:p4 p2:p1];
+  NSInteger cInit = [self color:p4 p2:p1];
 
   if (cInit == 0) {
     return NO;
   }
 
-  int c = [self color:p1 p2:p2];
+  NSInteger c = [self color:p1 p2:p2];
 
   if (c != cInit) {
     return NO;
@@ -572,18 +572,18 @@
  * Gets the color of a segment
  * return 1 if segment more than 90% black, -1 if segment is more than 90% white, 0 else
  */
-- (int)color:(ZXAztecPoint *)p1 p2:(ZXAztecPoint *)p2 {
+- (NSInteger)color:(ZXAztecPoint *)p1 p2:(ZXAztecPoint *)p2 {
   float d = [self distance:p1 b:p2];
   float dx = (p2.x - p1.x) / d;
   float dy = (p2.y - p1.y) / d;
-  int error = 0;
+  NSInteger error = 0;
 
   float px = p1.x;
   float py = p1.y;
 
   BOOL colorModel = [self.image getX:p1.x y:p1.y];
 
-  for (int i = 0; i < d; i++) {
+  for (NSInteger i = 0; i < d; i++) {
     px += dx;
     py += dy;
     if ([self.image getX:[ZXMathUtils round:px] y:[ZXMathUtils round:py]] != colorModel) {
@@ -604,9 +604,9 @@
 /**
  * Gets the coordinate of the first point with a different color in the given direction
  */
-- (ZXAztecPoint *)firstDifferent:(ZXAztecPoint *)init color:(BOOL)color dx:(int)dx dy:(int)dy {
-  int x = init.x + dx;
-  int y = init.y + dy;
+- (ZXAztecPoint *)firstDifferent:(ZXAztecPoint *)init color:(BOOL)color dx:(NSInteger)dx dy:(NSInteger)dy {
+  NSInteger x = init.x + dx;
+  NSInteger y = init.y + dy;
 
   while ([self isValidX:x y:y] && [self.image getX:x y:y] == color) {
     x += dx;
@@ -629,7 +629,7 @@
   return [[ZXAztecPoint alloc] initWithX:x y:y];
 }
 
-- (BOOL) isValidX:(int)x y:(int)y {
+- (BOOL) isValidX:(NSInteger)x y:(NSInteger)y {
   return x >= 0 && x < self.image.width && y > 0 && y < self.image.height;
 }
 

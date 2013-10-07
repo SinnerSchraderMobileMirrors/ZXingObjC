@@ -29,32 +29,31 @@
 }
 
 + (CGImageRef)createImageFromBuffer:(CVImageBufferRef)buffer
-                                      left:(size_t)left
-                                       top:(size_t)top
-                                     width:(size_t)width
-                                    height:(size_t)height {
-  int bytesPerRow = (int)CVPixelBufferGetBytesPerRow(buffer);
-  int dataWidth = (int)CVPixelBufferGetWidth(buffer);
-  int dataHeight = (int)CVPixelBufferGetHeight(buffer);
+                               left:(size_t)left
+                                top:(size_t)top
+                              width:(size_t)width
+                             height:(size_t)height {
+  size_t bytesPerRow = CVPixelBufferGetBytesPerRow(buffer);
+  size_t dataWidth = CVPixelBufferGetWidth(buffer);
+  size_t dataHeight = CVPixelBufferGetHeight(buffer);
 
   if (left + width > dataWidth ||
       top + height > dataHeight) {
     [NSException raise:NSInvalidArgumentException format:@"Crop rectangle does not fit within image data."];
   }
 
-  int newBytesPerRow = ((width*4+0xf)>>4)<<4;
+  size_t newBytesPerRow = ((width*4+0xf)>>4)<<4;
 
   CVPixelBufferLockBaseAddress(buffer,0); 
 
-  int8_t *baseAddress =
-  (int8_t *)CVPixelBufferGetBaseAddress(buffer); 
+  int8_t *baseAddress = (int8_t *)CVPixelBufferGetBaseAddress(buffer);
 
-  int size = newBytesPerRow*height;
+  size_t size = newBytesPerRow*height;
   int8_t *bytes = (int8_t*)malloc(size);
   if (newBytesPerRow == bytesPerRow) {
     memcpy(bytes, baseAddress+top*bytesPerRow, size);
   } else {
-    for(int y=0; y<height; y++) {
+    for (NSInteger y=0; y<height; y++) {
       memcpy(bytes+y*newBytesPerRow,
              baseAddress+left*4+(top+y)*bytesPerRow,
              newBytesPerRow);
@@ -87,7 +86,7 @@
                   top:(size_t)top
                 width:(size_t)width
                height:(size_t)height {
-  return [self initWithCGImage:image.cgimage left:(int)left top:(int)top width:(int)width height:(int)height];
+  return [self initWithCGImage:image.cgimage left:(NSInteger)left top:(NSInteger)top width:(NSInteger)width height:(NSInteger)height];
 }
 
 - (id)initWithZXImage:(ZXImage *)image {
@@ -99,15 +98,15 @@
                   top:(size_t)top
                 width:(size_t)width
                height:(size_t)height {
-  if (self = [super initWithWidth:(int)width height:(int)height]) {
-    [self initializeWithImage:image left:(int)left top:(int)top width:(int)width height:(int)height];
+  if (self = [super initWithWidth:(NSInteger)width height:(NSInteger)height]) {
+    [self initializeWithImage:image left:(NSInteger)left top:(NSInteger)top width:(NSInteger)width height:(NSInteger)height];
   }
 
   return self;
 }
 
 - (id)initWithCGImage:(CGImageRef)image {
-  return [self initWithCGImage:image left:0 top:0 width:(int)CGImageGetWidth(image) height:(int)CGImageGetHeight(image)];
+  return [self initWithCGImage:image left:0 top:0 width:(NSInteger)CGImageGetWidth(image) height:(NSInteger)CGImageGetHeight(image)];
 }
 
 - (id)initWithBuffer:(CVPixelBufferRef)buffer
@@ -115,7 +114,7 @@
                  top:(size_t)top
                width:(size_t)width
               height:(size_t)height {
-  CGImageRef image = [ZXCGImageLuminanceSource createImageFromBuffer:buffer left:(int)left top:(int)top width:(int)width height:(int)height];
+  CGImageRef image = [ZXCGImageLuminanceSource createImageFromBuffer:buffer left:(NSInteger)left top:(NSInteger)top width:(NSInteger)width height:(NSInteger)height];
 
   return [self initWithCGImage:image];
 }
@@ -139,33 +138,33 @@
   }
 }
 
-- (int8_t *)row:(int)y {
+- (int8_t *)row:(NSInteger)y {
   if (y < 0 || y >= self.height) {
-    [NSException raise:NSInvalidArgumentException format:@"Requested row is outside the image: %d", y];
+    [NSException raise:NSInvalidArgumentException format:@"Requested row is outside the image: %ld", (long)y];
   }
 
   int8_t *row = (int8_t *)malloc(self.width * sizeof(int8_t));
 
-  int offset = y * self.width;
+  NSInteger offset = y * self.width;
   memcpy(row, _data + offset, self.width);
   return row;
 }
 
 - (int8_t *)matrix {
-  int area = self.width * self.height;
+  NSInteger area = self.width * self.height;
 
   int8_t *result = (int8_t *)malloc(area * sizeof(int8_t));
   memcpy(result, _data, area * sizeof(int8_t));
   return result;
 }
 
-- (void)initializeWithImage:(CGImageRef)cgimage left:(int)left top:(int)top width:(int)width height:(int)height {
+- (void)initializeWithImage:(CGImageRef)cgimage left:(NSInteger)left top:(NSInteger)top width:(NSInteger)width height:(NSInteger)height {
   _data = 0;
   _image = CGImageRetain(cgimage);
   _left = left;
   _top = top;
-  int sourceWidth = (int)CGImageGetWidth(cgimage);
-  int sourceHeight = (int)CGImageGetHeight(cgimage);
+  NSInteger sourceWidth = (NSInteger)CGImageGetWidth(cgimage);
+  NSInteger sourceHeight = (NSInteger)CGImageGetHeight(cgimage);
 
   if (left + self.width > sourceWidth ||
       top + self.height > sourceHeight ||
@@ -192,7 +191,7 @@
 
   _data = (int8_t *)malloc(self.width * self.height * sizeof(int8_t));
 
-  for (int i = 0; i < self.height * self.width; i++) {
+  for (NSInteger i = 0; i < self.height * self.width; i++) {
     uint32_t rgbPixel=pixelData[i];
 
     float red = (rgbPixel>>24)&0xFF;
@@ -209,9 +208,9 @@
     if (red == green && green == blue) {
       _data[i] = red;
     } else {
-      _data[i] = (306 * (int)red +
-                 601 * (int)green +
-                 117 * (int)blue +
+      _data[i] = (306 * (NSInteger)red +
+                 601 * (NSInteger)green +
+                 117 * (NSInteger)blue +
                 (0x200)) >> 10; // 0x200 = 1<<9, half an lsb of the result to force rounding
     }
   }
@@ -233,8 +232,8 @@
   radians = -1 * radians;
 #endif
 
-  int sourceWidth = self.width;
-  int sourceHeight = self.height;
+  NSInteger sourceWidth = self.width;
+  NSInteger sourceHeight = self.height;
 
   CGRect imgRect = CGRectMake(0, 0, sourceWidth, sourceHeight);
   CGAffineTransform transform = CGAffineTransformMakeRotation(radians);

@@ -25,7 +25,7 @@
 
 @interface ZXQRCodeDecodedBitStreamParser : NSObject
 
-+ (ZXDecoderResult *)decode:(int8_t *)bytes length:(unsigned int)length version:(ZXQRCodeVersion *)version
++ (ZXDecoderResult *)decode:(int8_t *)bytes length:(NSUInteger)length version:(ZXQRCodeVersion *)version
                     ecLevel:(ZXErrorCorrectionLevel *)ecLevel hints:(ZXDecodeHints *)hints error:(NSError **)error;
 
 @end

@@ -19,7 +19,7 @@
 
 @implementation ZXECI
 
-- (id)initWithValue:(int)value {
+- (id)initWithValue:(NSInteger)value {
   if (self = [super init]) {
     _value = value;
   }
@@ -27,10 +27,10 @@
   return self;
 }
 
-+ (ZXECI *)eciByValue:(int)value {
++ (ZXECI *)eciByValue:(NSInteger)value {
   if (value < 0 || value > 999999) {
     @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                   reason:[NSString stringWithFormat:@"Bad ECI value: %d", value]
+                                   reason:[NSString stringWithFormat:@"Bad ECI value: %ld", (long)value]
                                  userInfo:nil];
   }
   if (value < 900) {

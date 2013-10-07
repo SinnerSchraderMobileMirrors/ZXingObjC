@@ -22,7 +22,7 @@ extern unichar const FNC1char;
 
 @property (nonatomic, assign, readonly) unichar value;
 
-- (id)initWithNewPosition:(int)newPosition value:(unichar)value;
+- (id)initWithNewPosition:(NSInteger)newPosition value:(unichar)value;
 - (BOOL)fnc1;
 
 @end

@@ -18,8 +18,8 @@
 #import "ZXBitArray.h"
 #import "ZXErrors.h"
 
-int const AI013x0x_HEADER_SIZE = 4 + 1;
-int const AI013x0x_WEIGHT_SIZE = 15;
+NSInteger const AI013x0x_HEADER_SIZE = 4 + 1;
+NSInteger const AI013x0x_WEIGHT_SIZE = 15;
 
 @implementation ZXAI013x0xDecoder
 

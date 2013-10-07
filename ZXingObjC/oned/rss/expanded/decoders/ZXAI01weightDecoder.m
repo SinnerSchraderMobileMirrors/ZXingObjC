@@ -19,30 +19,30 @@
 
 @implementation ZXAI01weightDecoder
 
-- (void)encodeCompressedWeight:(NSMutableString *)buf currentPos:(int)currentPos weightSize:(int)weightSize {
-  int originalWeightNumeric = [self.generalDecoder extractNumericValueFromBitArray:currentPos bits:weightSize];
+- (void)encodeCompressedWeight:(NSMutableString *)buf currentPos:(NSInteger)currentPos weightSize:(NSInteger)weightSize {
+  NSInteger originalWeightNumeric = [self.generalDecoder extractNumericValueFromBitArray:currentPos bits:weightSize];
   [self addWeightCode:buf weight:originalWeightNumeric];
 
-  int weightNumeric = [self checkWeight:originalWeightNumeric];
+  NSInteger weightNumeric = [self checkWeight:originalWeightNumeric];
 
-  int currentDivisor = 100000;
-  for (int i = 0; i < 5; ++i) {
+  NSInteger currentDivisor = 100000;
+  for (NSInteger i = 0; i < 5; ++i) {
     if (weightNumeric / currentDivisor == 0) {
       [buf appendString:@"0"];
     }
     currentDivisor /= 10;
   }
 
-  [buf appendFormat:@"%d", weightNumeric];
+  [buf appendFormat:@"%ld", (long)weightNumeric];
 }
 
-- (void)addWeightCode:(NSMutableString *)buf weight:(int)weight {
+- (void)addWeightCode:(NSMutableString *)buf weight:(NSInteger)weight {
   @throw [NSException exceptionWithName:NSInternalInconsistencyException
                                  reason:[NSString stringWithFormat:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)]
                                userInfo:nil];
 }
 
-- (int)checkWeight:(int)weight {
+- (NSInteger)checkWeight:(NSInteger)weight {
   @throw [NSException exceptionWithName:NSInternalInconsistencyException
                                  reason:[NSString stringWithFormat:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)]
                                userInfo:nil];

@@ -19,26 +19,26 @@
 
 @interface ZXBitMatrix ()
 
-@property (nonatomic, assign) int rowSize;
-@property (nonatomic, assign) int bitsSize;
+@property (nonatomic, assign) NSInteger rowSize;
+@property (nonatomic, assign) NSInteger bitsSize;
 
 @end
 
 @implementation ZXBitMatrix
 
-+ (ZXBitMatrix *)bitMatrixWithDimension:(int)dimension {
++ (ZXBitMatrix *)bitMatrixWithDimension:(NSInteger)dimension {
   return [[self alloc] initWithDimension:dimension];
 }
 
-+ (ZXBitMatrix *)bitMatrixWithWidth:(int)width height:(int)height {
++ (ZXBitMatrix *)bitMatrixWithWidth:(NSInteger)width height:(NSInteger)height {
   return [[self alloc] initWithWidth:width height:height];
 }
 
-- (id)initWithDimension:(int)dimension {
+- (id)initWithDimension:(NSInteger)dimension {
   return [self initWithWidth:dimension height:dimension];
 }
 
-- (id)initWithWidth:(int)width height:(int)height {
+- (id)initWithWidth:(NSInteger)width height:(NSInteger)height {
   if (self = [super init]) {
     if (width < 1 || height < 1) {
       @throw [NSException exceptionWithName:NSInvalidArgumentException
@@ -49,7 +49,7 @@
     _height = height;
     _rowSize = _width + (31 >> 5);
     _bitsSize = _rowSize * _height;
-    _bits = (int *)malloc(_bitsSize * sizeof(int));
+    _bits = (NSInteger *)malloc(_bitsSize * sizeof(NSInteger));
     [self clear];
   }
 
@@ -66,24 +66,24 @@
 /**
  * Gets the requested bit, where true means black.
  */
-- (BOOL)getX:(int)x y:(int)y {
-  int offset = y * self.rowSize + (x >> 5);
-  return ((int)((unsigned int)self.bits[offset] >> (x & 0x1f)) & 1) != 0;
+- (BOOL)getX:(NSInteger)x y:(NSInteger)y {
+  NSInteger offset = y * self.rowSize + (x >> 5);
+  return ((NSInteger)((NSUInteger)self.bits[offset] >> (x & 0x1f)) & 1) != 0;
 }
 
 /**
  * Sets the given bit to true.
  */
-- (void)setX:(int)x y:(int)y {
-  int offset = y * self.rowSize + (x >> 5);
+- (void)setX:(NSInteger)x y:(NSInteger)y {
+  NSInteger offset = y * self.rowSize + (x >> 5);
   self.bits[offset] |= 1 << (x & 0x1f);
 }
 
 /**
  * Flips the given bit.
  */
-- (void)flipX:(int)x y:(int)y {
-  int offset = y * self.rowSize + (x >> 5);
+- (void)flipX:(NSInteger)x y:(NSInteger)y {
+  NSInteger offset = y * self.rowSize + (x >> 5);
   self.bits[offset] ^= 1 << (x & 0x1f);
 }
 
@@ -91,14 +91,14 @@
  * Clears all bits (sets to false).
  */
 - (void)clear {
-  int max = self.bitsSize;
-  memset(self.bits, 0, max * sizeof(int));
+  NSInteger max = self.bitsSize;
+  memset(self.bits, 0, max * sizeof(NSInteger));
 }
 
 /**
  * Sets a square region of the bit matrix to true.
  */
-- (void)setRegionAtLeft:(int)left top:(int)top width:(int)aWidth height:(int)aHeight {
+- (void)setRegionAtLeft:(NSInteger)left top:(NSInteger)top width:(NSInteger)aWidth height:(NSInteger)aHeight {
   if (top < 0 || left < 0) {
     @throw [NSException exceptionWithName:NSInvalidArgumentException
                                    reason:@"Left and top must be nonnegative"
@@ -109,16 +109,16 @@
                                    reason:@"Height and width must be at least 1"
                                  userInfo:nil];
   }
-  int right = left + aWidth;
-  int bottom = top + aHeight;
+  NSInteger right = left + aWidth;
+  NSInteger bottom = top + aHeight;
   if (bottom > self.height || right > self.width) {
     @throw [NSException exceptionWithName:NSInvalidArgumentException
                                    reason:@"The region must fit inside the matrix"
                                  userInfo:nil];
   }
-  for (int y = top; y < bottom; y++) {
-    int offset = y * self.rowSize;
-    for (int x = left; x < right; x++) {
+  for (NSInteger y = top; y < bottom; y++) {
+    NSInteger offset = y * self.rowSize;
+    for (NSInteger x = left; x < right; x++) {
       self.bits[offset + (x >> 5)] |= 1 << (x & 0x1f);
     }
   }
@@ -127,20 +127,20 @@
 /**
  * A fast method to retrieve one row of data from the matrix as a BitArray.
  */
-- (ZXBitArray *)rowAtY:(int)y row:(ZXBitArray *)row {
+- (ZXBitArray *)rowAtY:(NSInteger)y row:(ZXBitArray *)row {
   if (row == nil || [row size] < self.width) {
     row = [[ZXBitArray alloc] initWithSize:self.width];
   }
-  int offset = y * self.rowSize;
-  for (int x = 0; x < self.rowSize; x++) {
+  NSInteger offset = y * self.rowSize;
+  for (NSInteger x = 0; x < self.rowSize; x++) {
     [row setBulk:x << 5 newBits:self.bits[offset + x]];
   }
 
   return row;
 }
 
-- (void)setRowAtY:(int)y row:(ZXBitArray *)row {
-  for (int i = 0; i < self.rowSize; i++) {
+- (void)setRowAtY:(NSInteger)y row:(ZXBitArray *)row {
+  for (NSInteger i = 0; i < self.rowSize; i++) {
     self.bits[(y * self.rowSize) + i] = row.bits[i];
   }
 }
@@ -151,14 +151,14 @@
  * Returns {left,top,width,height} enclosing rectangle of all 1 bits, or null if it is all white
  */
 - (NSArray *)enclosingRectangle {
-  int left = self.width;
-  int top = self.height;
-  int right = -1;
-  int bottom = -1;
+  NSInteger left = self.width;
+  NSInteger top = self.height;
+  NSInteger right = -1;
+  NSInteger bottom = -1;
 
-  for (int y = 0; y < self.height; y++) {
-    for (int x32 = 0; x32 < self.rowSize; x32++) {
-      int theBits = self.bits[y * self.rowSize + x32];
+  for (NSInteger y = 0; y < self.height; y++) {
+    for (NSInteger x32 = 0; x32 < self.rowSize; x32++) {
+      NSInteger theBits = self.bits[y * self.rowSize + x32];
       if (theBits != 0) {
         if (y < top) {
           top = y;
@@ -167,7 +167,7 @@
           bottom = y;
         }
         if (x32 * 32 < left) {
-          int bit = 0;
+          NSInteger bit = 0;
           while ((theBits << (31 - bit)) == 0) {
             bit++;
           }
@@ -176,8 +176,8 @@
           }
         }
         if (x32 * 32 + 31 > right) {
-          int bit = 31;
-          while ((int)((unsigned int)theBits >> bit) == 0) {
+          NSInteger bit = 31;
+          while ((NSInteger)((NSUInteger)theBits >> bit) == 0) {
             bit--;
           }
           if ((x32 * 32 + bit) > right) {
@@ -188,8 +188,8 @@
     }
   }
 
-  int width = right - left;
-  int height = bottom - top;
+  NSInteger width = right - left;
+  NSInteger height = bottom - top;
 
   if (width < 0 || height < 0) {
     return nil;
@@ -204,18 +204,18 @@
  * Returns {x,y} coordinate of top-left-most 1 bit, or null if it is all white
  */
 - (NSArray *)topLeftOnBit {
-  int bitsOffset = 0;
+  NSInteger bitsOffset = 0;
   while (bitsOffset < self.bitsSize && self.bits[bitsOffset] == 0) {
     bitsOffset++;
   }
   if (bitsOffset == self.bitsSize) {
     return nil;
   }
-  int y = bitsOffset / self.rowSize;
-  int x = (bitsOffset % self.rowSize) << 5;
+  NSInteger y = bitsOffset / self.rowSize;
+  NSInteger x = (bitsOffset % self.rowSize) << 5;
 
-  int theBits = self.bits[bitsOffset];
-  int bit = 0;
+  NSInteger theBits = self.bits[bitsOffset];
+  NSInteger bit = 0;
   while ((theBits << (31 - bit)) == 0) {
     bit++;
   }
@@ -224,7 +224,7 @@
 }
 
 - (NSArray *)bottomRightOnBit {
-  int bitsOffset = self.bitsSize - 1;
+  NSInteger bitsOffset = self.bitsSize - 1;
   while (bitsOffset >= 0 && self.bits[bitsOffset] == 0) {
     bitsOffset--;
   }
@@ -232,12 +232,12 @@
     return nil;
   }
 
-  int y = bitsOffset / self.rowSize;
-  int x = (bitsOffset % self.rowSize) << 5;
+  NSInteger y = bitsOffset / self.rowSize;
+  NSInteger x = (bitsOffset % self.rowSize) << 5;
 
-  int theBits = self.bits[bitsOffset];
-  int bit = 31;
-  while ((int)((unsigned int)theBits >> bit) == 0) {
+  NSInteger theBits = self.bits[bitsOffset];
+  NSInteger bit = 31;
+  while ((NSInteger)((NSUInteger)theBits >> bit) == 0) {
     bit--;
   }
   x += bit;
@@ -253,7 +253,7 @@
   if (self.width != other.width || self.height != other.height || self.rowSize != other.rowSize || self.bitsSize != other.bitsSize) {
     return NO;
   }
-  for (int i = 0; i < self.bitsSize; i++) {
+  for (NSInteger i = 0; i < self.bitsSize; i++) {
     if (self.bits[i] != other.bits[i]) {
       return NO;
     }
@@ -262,11 +262,11 @@
 }
 
 - (NSUInteger)hash {
-  int hash = self.width;
+  NSInteger hash = self.width;
   hash = 31 * hash + self.width;
   hash = 31 * hash + self.height;
   hash = 31 * hash + self.rowSize;
-  for (int i = 0; i < self.bitsSize; i++) {
+  for (NSInteger i = 0; i < self.bitsSize; i++) {
     hash = 31 * hash + self.bits[i];
   }
   return hash;
@@ -274,8 +274,8 @@
 
 - (NSString *)description {
   NSMutableString *result = [NSMutableString stringWithCapacity:self.height * (self.width + 1)];
-  for (int y = 0; y < self.height; y++) {
-    for (int x = 0; x < self.width; x++) {
+  for (NSInteger y = 0; y < self.height; y++) {
+    for (NSInteger x = 0; x < self.width; x++) {
       [result appendString:[self getX:x y:y] ? @"X " : @"  "];
     }
     [result appendString:@"\n"];

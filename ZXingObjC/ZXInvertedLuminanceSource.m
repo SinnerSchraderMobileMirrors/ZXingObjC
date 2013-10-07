@@ -33,9 +33,9 @@
   return self;
 }
 
-- (int8_t *)row:(int)y {
+- (int8_t *)row:(NSInteger)y {
   int8_t *row = [self.delegate row:y];
-  for (int i = 0; i < self.width; i++) {
+  for (NSInteger i = 0; i < self.width; i++) {
     row[i] = (int8_t) (255 - (row[i] & 0xFF));
   }
   return row;
@@ -43,9 +43,9 @@
 
 - (int8_t *)matrix {
   int8_t *matrix = [self.delegate matrix];
-  int length = self.width * self.height;
+  NSInteger length = self.width * self.height;
   int8_t *invertedMatrix = (int8_t *)malloc(length * sizeof(int8_t));
-  for (int i = 0; i < length; i++) {
+  for (NSInteger i = 0; i < length; i++) {
     invertedMatrix[i] = (int8_t) (255 - (matrix[i] & 0xFF));
   }
   free(matrix);
@@ -56,7 +56,7 @@
   return self.delegate.cropSupported;
 }
 
-- (ZXLuminanceSource *)crop:(int)left top:(int)top width:(int)aWidth height:(int)aHeight {
+- (ZXLuminanceSource *)crop:(NSInteger)left top:(NSInteger)top width:(NSInteger)aWidth height:(NSInteger)aHeight {
   return [[ZXInvertedLuminanceSource alloc] initWithDelegate:[self.delegate crop:left top:top width:aWidth height:aHeight]];
 }
 

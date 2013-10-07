@@ -25,7 +25,7 @@
 
 @implementation ZXMode
 
-- (id)initWithCharacterCountBitsForVersions:(NSArray *)characterCountBitsForVersions bits:(int)bits name:(NSString *)name {
+- (id)initWithCharacterCountBitsForVersions:(NSArray *)characterCountBitsForVersions bits:(NSInteger)bits name:(NSString *)name {
   if (self = [super init]) {
     _characterCountBitsForVersions = characterCountBitsForVersions;
     _bits = bits;
@@ -35,7 +35,7 @@
   return self;
 }
 
-+ (ZXMode *)forBits:(int)bits {
++ (ZXMode *)forBits:(NSInteger)bits {
   switch (bits) {
     case 0x0:
       return [ZXMode terminatorMode];
@@ -62,9 +62,9 @@
   }
 }
 
-- (int)characterCountBits:(ZXQRCodeVersion *)version {
-  int number = version.versionNumber;
-  int offset;
+- (NSInteger)characterCountBits:(ZXQRCodeVersion *)version {
+  NSInteger number = version.versionNumber;
+  NSInteger offset;
   if (number <= 9) {
     offset = 0;
   } else if (number <= 26) {

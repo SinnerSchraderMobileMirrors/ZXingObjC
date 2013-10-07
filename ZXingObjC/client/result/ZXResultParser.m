@@ -129,11 +129,11 @@ static unichar BYTE_ORDER_MARK = L'\ufeff';
   if (backslash == NSNotFound) {
     return escaped;
   }
-  int max = [escaped length];
+  NSUInteger max = [escaped length];
   NSMutableString *unescaped = [NSMutableString stringWithCapacity:max - 1];
   [unescaped appendString:[escaped substringToIndex:backslash]];
   BOOL nextIsEscaped = NO;
-  for (int i = backslash; i < max; i++) {
+  for (NSUInteger i = backslash; i < max; i++) {
     unichar c = [escaped characterAtIndex:i];
     if (nextIsEscaped || c != '\\') {
       [unescaped appendFormat:@"%C", c];
@@ -145,7 +145,7 @@ static unichar BYTE_ORDER_MARK = L'\ufeff';
   return unescaped;
 }
 
-+ (int)parseHexDigit:(unichar)c {
++ (NSInteger)parseHexDigit:(unichar)c {
   if (c >= '0' && c <= '9') {
     return c - '0';
   }
@@ -158,7 +158,7 @@ static unichar BYTE_ORDER_MARK = L'\ufeff';
   return -1;
 }
 
-+ (BOOL)isStringOfDigits:(NSString *)value length:(unsigned int)length {
++ (BOOL)isStringOfDigits:(NSString *)value length:(NSUInteger)length {
   return value != nil && length == value.length && [DIGITS numberOfMatchesInString:value options:0 range:NSMakeRange(0, value.length)] > 0;
 }
 
@@ -167,16 +167,16 @@ static unichar BYTE_ORDER_MARK = L'\ufeff';
     return nil;
   }
 
-  int first = [self findFirstEscape:escaped];
+  NSInteger first = [self findFirstEscape:escaped];
   if (first == -1) {
     return escaped;
   }
 
-  int max = [escaped length];
+  NSUInteger max = [escaped length];
   NSMutableString *unescaped = [NSMutableString stringWithCapacity:max - 2];
   [unescaped appendString:[escaped substringToIndex:first]];
 
-  for (int i = first; i < max; i++) {
+  for (NSInteger i = first; i < max; i++) {
     unichar c = [escaped characterAtIndex:i];
     switch (c) {
       case '+':
@@ -186,8 +186,8 @@ static unichar BYTE_ORDER_MARK = L'\ufeff';
         if (i >= max - 2) {
           [unescaped appendString:@"%"];
         } else {
-          int firstDigitValue = [[self class] parseHexDigit:[escaped characterAtIndex:++i]];
-          int secondDigitValue = [[self class] parseHexDigit:[escaped characterAtIndex:++i]];
+          NSInteger firstDigitValue = [[self class] parseHexDigit:[escaped characterAtIndex:++i]];
+          NSInteger secondDigitValue = [[self class] parseHexDigit:[escaped characterAtIndex:++i]];
           if (firstDigitValue < 0 || secondDigitValue < 0) {
             [unescaped appendFormat:@"%%%C%C", [escaped characterAtIndex:i - 1], [escaped characterAtIndex:i]];
           }
@@ -203,9 +203,9 @@ static unichar BYTE_ORDER_MARK = L'\ufeff';
   return unescaped;
 }
 
-- (int)findFirstEscape:(NSString *)escaped {
-  int max = [escaped length];
-  for (int i = 0; i < max; i++) {
+- (NSInteger)findFirstEscape:(NSString *)escaped {
+  NSUInteger max = [escaped length];
+  for (NSUInteger i = 0; i < max; i++) {
     unichar c = [escaped characterAtIndex:i];
     if (c == '+' || c == '%') {
       return i;
@@ -215,19 +215,19 @@ static unichar BYTE_ORDER_MARK = L'\ufeff';
   return -1;
 }
 
-+ (BOOL)isSubstringOfDigits:(NSString *)value offset:(int)offset length:(unsigned int)length {
++ (BOOL)isSubstringOfDigits:(NSString *)value offset:(NSInteger)offset length:(NSUInteger)length {
   if (value == nil) {
     return NO;
   }
-  int max = offset + length;
+  NSInteger max = offset + length;
   return value.length >= max && [DIGITS numberOfMatchesInString:value options:0 range:NSMakeRange(offset, max - offset)] > 0;
 }
 
-+ (BOOL)isSubstringOfAlphaNumeric:(NSString *)value offset:(int)offset length:(unsigned int)length {
++ (BOOL)isSubstringOfAlphaNumeric:(NSString *)value offset:(NSInteger)offset length:(NSUInteger)length {
   if (value == nil) {
     return NO;
   }
-  int max = offset + length;
+  NSInteger max = offset + length;
   return value.length >= max && [ALPHANUM numberOfMatchesInString:value options:0 range:NSMakeRange(offset, max - offset)] > 0;
 }
 
@@ -261,15 +261,15 @@ static unichar BYTE_ORDER_MARK = L'\ufeff';
 
 + (NSArray *)matchPrefixedField:(NSString *)prefix rawText:(NSString *)rawText endChar:(unichar)endChar trim:(BOOL)trim {
   NSMutableArray *matches = nil;
-  NSUInteger i = 0;
-  int max = [rawText length];
+  NSInteger i = 0;
+  NSUInteger max = [rawText length];
   while (i < max) {
     i = [rawText rangeOfString:prefix options:NSLiteralSearch range:NSMakeRange(i, [rawText length] - i - 1)].location;
     if (i == NSNotFound) {
       break;
     }
     i += [prefix length];
-    int start = i;
+    NSInteger start = i;
     BOOL more = YES;
     while (more) {
       i = [rawText rangeOfString:[NSString stringWithFormat:@"%C", endChar] options:NSLiteralSearch range:NSMakeRange(i, [rawText length] - i)].location;

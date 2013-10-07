@@ -20,7 +20,7 @@
 
 @implementation ZXDataMatrixDataBlock
 
-- (id)initWithNumDataCodewords:(int)numDataCodewords codewords:(NSMutableArray *)codewords {
+- (id)initWithNumDataCodewords:(NSInteger)numDataCodewords codewords:(NSMutableArray *)codewords {
   if (self = [super init]) {
     _numDataCodewords = numDataCodewords;
     _codewords = codewords;
@@ -37,20 +37,20 @@
 + (NSArray *)dataBlocks:(NSArray *)rawCodewords version:(ZXDataMatrixVersion *)version {
   ZXDataMatrixECBlocks *ecBlocks = version.ecBlocks;
 
-  int totalBlocks = 0;
+  NSInteger totalBlocks = 0;
   NSArray *ecBlockArray = ecBlocks.ecBlocks;
   for (ZXDataMatrixECB *ecBlock in ecBlockArray) {
     totalBlocks += ecBlock.count;
   }
 
   NSMutableArray *result = [NSMutableArray arrayWithCapacity:totalBlocks];
-  int numResultBlocks = 0;
+  NSInteger numResultBlocks = 0;
   for (ZXDataMatrixECB *ecBlock in ecBlockArray) {
-    for (int i = 0; i < ecBlock.count; i++) {
-      int numDataCodewords = ecBlock.dataCodewords;
-      int numBlockCodewords = ecBlocks.ecCodewords + numDataCodewords;
+    for (NSInteger i = 0; i < ecBlock.count; i++) {
+      NSInteger numDataCodewords = ecBlock.dataCodewords;
+      NSInteger numBlockCodewords = ecBlocks.ecCodewords + numDataCodewords;
       NSMutableArray *tempCodewords = [NSMutableArray arrayWithCapacity:numBlockCodewords];
-      for (int j = 0; j < numBlockCodewords; j++) {
+      for (NSInteger j = 0; j < numBlockCodewords; j++) {
         [tempCodewords addObject:@0];
       }
       [result addObject:[[ZXDataMatrixDataBlock alloc] initWithNumDataCodewords:numDataCodewords codewords:tempCodewords]];
@@ -58,26 +58,26 @@
     }
   }
 
-  int longerBlocksTotalCodewords = [[result[0] codewords] count];
-  int longerBlocksNumDataCodewords = longerBlocksTotalCodewords - ecBlocks.ecCodewords;
-  int shorterBlocksNumDataCodewords = longerBlocksNumDataCodewords - 1;
-  int rawCodewordsOffset = 0;
-  for (int i = 0; i < shorterBlocksNumDataCodewords; i++) {
-    for (int j = 0; j < numResultBlocks; j++) {
+  NSInteger longerBlocksTotalCodewords = [[result[0] codewords] count];
+  NSInteger longerBlocksNumDataCodewords = longerBlocksTotalCodewords - ecBlocks.ecCodewords;
+  NSInteger shorterBlocksNumDataCodewords = longerBlocksNumDataCodewords - 1;
+  NSInteger rawCodewordsOffset = 0;
+  for (NSInteger i = 0; i < shorterBlocksNumDataCodewords; i++) {
+    for (NSInteger j = 0; j < numResultBlocks; j++) {
       [result[j] codewords][i] = rawCodewords[rawCodewordsOffset++];
     }
   }
 
   BOOL specialVersion = version.versionNumber == 24;
-  int numLongerBlocks = specialVersion ? 8 : numResultBlocks;
-  for (int j = 0; j < numLongerBlocks; j++) {
+  NSInteger numLongerBlocks = specialVersion ? 8 : numResultBlocks;
+  for (NSInteger j = 0; j < numLongerBlocks; j++) {
     [result[j] codewords][longerBlocksNumDataCodewords - 1] = rawCodewords[rawCodewordsOffset++];
   }
 
-  int max = [[result[0] codewords] count];
-  for (int i = longerBlocksNumDataCodewords; i < max; i++) {
-    for (int j = 0; j < numResultBlocks; j++) {
-      int iOffset = specialVersion && j > 7 ? i - 1 : i;
+  NSInteger max = [[result[0] codewords] count];
+  for (NSInteger i = longerBlocksNumDataCodewords; i < max; i++) {
+    for (NSInteger j = 0; j < numResultBlocks; j++) {
+      NSInteger iOffset = specialVersion && j > 7 ? i - 1 : i;
       [result[j] codewords][iOffset] = rawCodewords[rawCodewordsOffset++];
     }
   }

@@ -18,8 +18,8 @@
 
 @implementation ZXMathUtils
 
-+ (int)round:(float)d {
-  return (int)(d + 0.5f);
++ (NSInteger)round:(float)d {
+  return (NSInteger)(d + 0.5f);
 }
 
 + (float)distance:(float)aX aY:(float)aY bX:(float)bX bY:(float)bY {
@@ -28,9 +28,9 @@
   return sqrtf(xDiff * xDiff + yDiff * yDiff);
 }
 
-+ (float)distanceInt:(int)aX aY:(int)aY bX:(int)bX bY:(int)bY {
-  int xDiff = aX - bX;
-  int yDiff = aY - bY;
++ (float)distanceInt:(NSInteger)aX aY:(NSInteger)aY bX:(NSInteger)bX bY:(NSInteger)bY {
+  NSInteger xDiff = aX - bX;
+  NSInteger yDiff = aY - bY;
   return sqrtf(xDiff * xDiff + yDiff * yDiff);
 }
 

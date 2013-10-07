@@ -22,7 +22,7 @@
 
 extern char CODE39_ALPHABET[];
 extern NSString *CODE39_ALPHABET_STRING;
-extern int CODE39_CHARACTER_ENCODINGS[];
+extern NSInteger CODE39_CHARACTER_ENCODINGS[];
 
 @class ZXDecodeHints, ZXResult;
 

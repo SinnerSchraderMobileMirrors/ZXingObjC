@@ -26,18 +26,18 @@
 
 @interface ZXGenericGFPoly : NSObject
 
-@property (nonatomic, assign, readonly) int *coefficients;
-@property (nonatomic, assign, readonly) int coefficientsLen;
+@property (nonatomic, assign, readonly) NSInteger *coefficients;
+@property (nonatomic, assign, readonly) NSInteger coefficientsLen;
 
-- (id)initWithField:(ZXGenericGF *)field coefficients:(int *)coefficients coefficientsLen:(int)coefficientsLen;
-- (int)degree;
+- (id)initWithField:(ZXGenericGF *)field coefficients:(NSInteger *)coefficients coefficientsLen:(NSInteger)coefficientsLen;
+- (NSInteger)degree;
 - (BOOL)zero;
-- (int)coefficient:(int)degree;
-- (int)evaluateAt:(int)a;
+- (NSInteger)coefficient:(NSInteger)degree;
+- (NSInteger)evaluateAt:(NSInteger)a;
 - (ZXGenericGFPoly *)addOrSubtract:(ZXGenericGFPoly *)other;
 - (ZXGenericGFPoly *)multiply:(ZXGenericGFPoly *)other;
-- (ZXGenericGFPoly *)multiplyScalar:(int)scalar;
-- (ZXGenericGFPoly *)multiplyByMonomial:(int)degree coefficient:(int)coefficient;
+- (ZXGenericGFPoly *)multiplyScalar:(NSInteger)scalar;
+- (ZXGenericGFPoly *)multiplyByMonomial:(NSInteger)degree coefficient:(NSInteger)coefficient;
 - (NSArray *)divide:(ZXGenericGFPoly *)other;
 
 @end

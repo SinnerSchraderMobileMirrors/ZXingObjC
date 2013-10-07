@@ -16,14 +16,14 @@
 
 @interface TestResult : NSObject
 
-@property (nonatomic, readonly) int mustPassCount;
-@property (nonatomic, readonly) int tryHarderCount;
-@property (nonatomic, readonly) int maxMisreads;
-@property (nonatomic, readonly) int maxTryHarderMisreads;
+@property (nonatomic, readonly) NSInteger mustPassCount;
+@property (nonatomic, readonly) NSInteger tryHarderCount;
+@property (nonatomic, readonly) NSInteger maxMisreads;
+@property (nonatomic, readonly) NSInteger maxTryHarderMisreads;
 @property (nonatomic, readonly) float rotation;
 
-- (id)initWithMustPassCount:(int)mustPassCount tryHarderCount:(int)tryHarderCount maxMisreads:(int)maxMisreads
-       maxTryHarderMisreads:(int)maxTryHarderMisreads rotation:(float)rotation;
+- (id)initWithMustPassCount:(NSInteger)mustPassCount tryHarderCount:(NSInteger)tryHarderCount maxMisreads:(NSInteger)maxMisreads
+       maxTryHarderMisreads:(NSInteger)maxTryHarderMisreads rotation:(float)rotation;
 
 @end
 

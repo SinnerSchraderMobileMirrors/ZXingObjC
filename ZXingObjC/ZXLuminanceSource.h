@@ -24,15 +24,15 @@
 
 @interface ZXLuminanceSource : NSObject
 
-@property (nonatomic, assign, readonly) int width;
-@property (nonatomic, assign, readonly) int height;
+@property (nonatomic, assign, readonly) NSInteger width;
+@property (nonatomic, assign, readonly) NSInteger height;
 @property (nonatomic, assign, readonly) BOOL cropSupported;
 @property (nonatomic, assign, readonly) BOOL rotateSupported;
 
-- (id)initWithWidth:(int)width height:(int)height;
-- (int8_t *)row:(int)y;
+- (id)initWithWidth:(NSInteger)width height:(NSInteger)height;
+- (int8_t *)row:(NSInteger)y;
 - (int8_t *)matrix;
-- (ZXLuminanceSource *)crop:(int)left top:(int)top width:(int)width height:(int)height;
+- (ZXLuminanceSource *)crop:(NSInteger)left top:(NSInteger)top width:(NSInteger)width height:(NSInteger)height;
 - (ZXLuminanceSource *)invert;
 - (ZXLuminanceSource *)rotateCounterClockwise;
 - (ZXLuminanceSource *)rotateCounterClockwise45;

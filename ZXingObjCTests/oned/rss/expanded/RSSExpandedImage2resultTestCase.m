@@ -33,7 +33,7 @@
 - (void)assertCorrectImage2result:(NSString *)path expected:(ZXExpandedProductParsedResult *)expected {
   ZXImage *image = [[ZXImage alloc] initWithURL:[[NSBundle bundleForClass:[self class]] URLForResource:path withExtension:nil]];
   ZXBinaryBitmap *binaryMap = [[ZXBinaryBitmap alloc] initWithBinarizer:[[ZXGlobalHistogramBinarizer alloc] initWithSource:[[ZXCGImageLuminanceSource alloc] initWithZXImage:image]]];
-  int rowNumber = binaryMap.height / 2;
+  NSInteger rowNumber = binaryMap.height / 2;
   ZXBitArray *row = [binaryMap blackRow:rowNumber row:nil error:nil];
 
   NSError *error;

@@ -36,7 +36,7 @@
     }
     const char *msgBinary = [msgData bytes];
     NSMutableString *sb = [NSMutableString string];
-    for (int i = 0, c = msg.length; i < c; i++) {
+    for (NSInteger i = 0, c = msg.length; i < c; i++) {
       unichar ch = (unichar) (msgBinary[i] & 0xff);
       [sb appendFormat:@"%C", ch];
     }
@@ -71,11 +71,11 @@
   [self.codewords appendFormat:@"%C", codeword];
 }
 
-- (int)codewordCount {
+- (NSInteger)codewordCount {
   return self.codewords.length;
 }
 
-- (void)signalEncoderChange:(int)encoding {
+- (void)signalEncoderChange:(NSInteger)encoding {
   self.newEncoding = encoding;
 }
 
@@ -87,11 +87,11 @@
   return self.pos < [self totalMessageCharCount];
 }
 
-- (int)totalMessageCharCount {
+- (NSInteger)totalMessageCharCount {
   return self.message.length - self.skipAtEnd;
 }
 
-- (int)remainingCharacters {
+- (NSInteger)remainingCharacters {
   return [self totalMessageCharCount] - self.pos;
 }
 
@@ -99,7 +99,7 @@
   [self updateSymbolInfoWithLength:[self codewordCount]];
 }
 
-- (void)updateSymbolInfoWithLength:(int)len {
+- (void)updateSymbolInfoWithLength:(NSInteger)len {
   if (self.symbolInfo == nil || len > self.symbolInfo.dataCapacity) {
     self.symbolInfo = [ZXSymbolInfo lookup:len shape:self.symbolShape minSize:self.minSize maxSize:self.maxSize fail:YES];
   }

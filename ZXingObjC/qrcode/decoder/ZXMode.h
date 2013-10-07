@@ -23,12 +23,12 @@
 
 @interface ZXMode : NSObject
 
-@property (nonatomic, assign, readonly) int bits;
+@property (nonatomic, assign, readonly) NSInteger bits;
 @property (nonatomic, copy, readonly) NSString *name;
 
-- (id)initWithCharacterCountBitsForVersions:(NSArray *)characterCountBitsForVersions bits:(int)bits name:(NSString *)name;
-+ (ZXMode *)forBits:(int)bits;
-- (int)characterCountBits:(ZXQRCodeVersion *)version;
+- (id)initWithCharacterCountBitsForVersions:(NSArray *)characterCountBitsForVersions bits:(NSInteger)bits name:(NSString *)name;
++ (ZXMode *)forBits:(NSInteger)bits;
+- (NSInteger)characterCountBits:(ZXQRCodeVersion *)version;
 
 + (ZXMode *)terminatorMode; // Not really a mode...
 + (ZXMode *)numericMode;

@@ -25,7 +25,7 @@
 - (id)initWithBoundingBox:(ZXPDF417BoundingBox *)boundingBox isLeft:(BOOL)isLeft;
 - (void)setRowNumbers;
 - (NSArray *)rowHeights;
-- (int)adjustIndicatorColumnRowNumbers:(ZXPDF417BarcodeMetadata *)barcodeMetadata;
+- (NSInteger)adjustIndicatorColumnRowNumbers:(ZXPDF417BarcodeMetadata *)barcodeMetadata;
 - (ZXPDF417BarcodeMetadata *)barcodeMetadata;
 
 @end

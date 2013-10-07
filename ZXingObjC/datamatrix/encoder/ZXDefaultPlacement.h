@@ -21,15 +21,15 @@
 @interface ZXDefaultPlacement : NSObject
 
 @property (nonatomic, copy, readonly) NSString *codewords;
-@property (nonatomic, assign, readonly) int numrows;
-@property (nonatomic, assign, readonly) int numcols;
+@property (nonatomic, assign, readonly) NSInteger numrows;
+@property (nonatomic, assign, readonly) NSInteger numcols;
 @property (nonatomic, assign, readonly) int8_t *bits;
-@property (nonatomic, assign, readonly) int bitsLen;
+@property (nonatomic, assign, readonly) NSInteger bitsLen;
 
-- (id)initWithCodewords:(NSString *)codewords numcols:(int)numcols numrows:(int)numrows;
-- (BOOL)bitAtCol:(int)col row:(int)row;
-- (void)setBitAtCol:(int)col row:(int)row bit:(BOOL)bit;
-- (BOOL)hasBitAtCol:(int)col row:(int)row;
+- (id)initWithCodewords:(NSString *)codewords numcols:(NSInteger)numcols numrows:(NSInteger)numrows;
+- (BOOL)bitAtCol:(NSInteger)col row:(NSInteger)row;
+- (void)setBitAtCol:(NSInteger)col row:(NSInteger)row bit:(BOOL)bit;
+- (BOOL)hasBitAtCol:(NSInteger)col row:(NSInteger)row;
 - (void)place;
 
 @end

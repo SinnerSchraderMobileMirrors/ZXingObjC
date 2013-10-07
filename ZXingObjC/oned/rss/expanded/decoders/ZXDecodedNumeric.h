@@ -16,15 +16,15 @@
 
 #import "ZXDecodedObject.h"
 
-extern const int FNC1;
+extern const NSInteger FNC1;
 
 @interface ZXDecodedNumeric : ZXDecodedObject
 
-@property (nonatomic, assign, readonly) int firstDigit;
-@property (nonatomic, assign, readonly) int secondDigit;
-@property (nonatomic, assign, readonly) int value;
+@property (nonatomic, assign, readonly) NSInteger firstDigit;
+@property (nonatomic, assign, readonly) NSInteger secondDigit;
+@property (nonatomic, assign, readonly) NSInteger value;
 
-- (id)initWithNewPosition:(int)newPosition firstDigit:(int)firstDigit secondDigit:(int)secondDigit;
+- (id)initWithNewPosition:(NSInteger)newPosition firstDigit:(NSInteger)firstDigit secondDigit:(NSInteger)secondDigit;
 - (BOOL)firstDigitFNC1;
 - (BOOL)secondDigitFNC1;
 - (BOOL)anyFNC1;

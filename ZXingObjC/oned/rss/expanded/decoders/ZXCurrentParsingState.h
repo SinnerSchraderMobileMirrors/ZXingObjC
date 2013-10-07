@@ -16,7 +16,7 @@
 
 @interface ZXCurrentParsingState : NSObject
 
-@property (nonatomic, assign) int position;
+@property (nonatomic, assign) NSInteger position;
 
 - (BOOL)alpha;
 - (BOOL)numeric;

@@ -18,7 +18,7 @@
 
 @implementation ZXAI01320xDecoder
 
-- (void)addWeightCode:(NSMutableString *)buf weight:(int)weight {
+- (void)addWeightCode:(NSMutableString *)buf weight:(NSInteger)weight {
   if (weight < 10000) {
     [buf appendString:@"(3202)"];
   } else {
@@ -26,7 +26,7 @@
   }
 }
 
-- (int)checkWeight:(int)weight {
+- (NSInteger)checkWeight:(NSInteger)weight {
   if (weight < 10000) {
     return weight;
   }

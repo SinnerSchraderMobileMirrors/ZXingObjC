@@ -18,17 +18,17 @@
 
 @interface ZXBarcodeRow ()
 
-@property (nonatomic, assign) int currentLocation;
+@property (nonatomic, assign) NSInteger currentLocation;
 
 @end
 
 @implementation ZXBarcodeRow
 
-+ (ZXBarcodeRow *)barcodeRowWithWidth:(int)width {
++ (ZXBarcodeRow *)barcodeRowWithWidth:(NSInteger)width {
   return [[ZXBarcodeRow alloc] initWithWidth:width];
 }
 
-- (id)initWithWidth:(int)width {
+- (id)initWithWidth:(NSInteger)width {
   if (self = [super init]) {
     _rowLength = width;
     _row = (int8_t *)malloc(_rowLength * sizeof(int8_t));
@@ -45,23 +45,23 @@
   }
 }
 
-- (void)setX:(int)x value:(int8_t)value {
+- (void)setX:(NSInteger)x value:(int8_t)value {
   self.row[x] = value;
 }
 
-- (void)setX:(int)x black:(BOOL)black {
+- (void)setX:(NSInteger)x black:(BOOL)black {
   self.row[x] = (int8_t)(black ? 1 : 0);
 }
 
-- (void)addBar:(BOOL)black width:(int)width {
-  for (int ii = 0; ii < width; ii++) {
+- (void)addBar:(BOOL)black width:(NSInteger)width {
+  for (NSInteger ii = 0; ii < width; ii++) {
     [self setX:self.currentLocation++ black:black];
   }
 }
 
-- (int8_t *)scaledRow:(int)scale {
+- (int8_t *)scaledRow:(NSInteger)scale {
   int8_t *output = (int8_t *)malloc(self.rowLength * scale);
-  for (int i = 0; i < self.rowLength * scale; i++) {
+  for (NSInteger i = 0; i < self.rowLength * scale; i++) {
     output[i] = self.row[i / scale];
   }
   return output;

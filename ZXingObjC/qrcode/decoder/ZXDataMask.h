@@ -28,8 +28,8 @@
 
 @interface ZXDataMask : NSObject
 
-- (void)unmaskBitMatrix:(ZXBitMatrix *)bits dimension:(int)dimension;
-- (BOOL)isMasked:(int)i j:(int)j;
-+ (ZXDataMask *)forReference:(int)reference;
+- (void)unmaskBitMatrix:(ZXBitMatrix *)bits dimension:(NSInteger)dimension;
+- (BOOL)isMasked:(NSInteger)i j:(NSInteger)j;
++ (ZXDataMask *)forReference:(NSInteger)reference;
 
 @end

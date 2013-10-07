@@ -20,8 +20,8 @@
 @interface ZXPDF417BarcodeMatrix ()
 
 @property (nonatomic, strong) NSMutableDictionary *values;
-@property (nonatomic, assign) int maxRow;
-@property (nonatomic, assign) int maxColumn;
+@property (nonatomic, assign) NSInteger maxRow;
+@property (nonatomic, assign) NSInteger maxColumn;
 
 @end
 
@@ -38,11 +38,11 @@
   return self;
 }
 
-- (NSString *)key:(int)barcodeRow barcodeColumn:(int)barcodeColumn {
-  return [NSString stringWithFormat:@"%d,%d", barcodeRow, barcodeColumn];
+- (NSString *)key:(NSInteger)barcodeRow barcodeColumn:(NSInteger)barcodeColumn {
+  return [NSString stringWithFormat:@"%ld,%ld", (long)barcodeRow, (long)barcodeColumn];
 }
 
-- (void)setValue:(int)row column:(int)column value:(int)value {
+- (void)setValue:(NSInteger)row column:(NSInteger)column value:(NSInteger)value {
   self.maxRow = MAX(self.maxRow, row);
   self.maxColumn = MAX(self.maxColumn, column);
   NSString *key = [self key:row barcodeColumn:column];
@@ -54,7 +54,7 @@
   [barcodeValue setValue:value];
 }
 
-- (NSNumber *)value:(int)row column:(int)column {
+- (NSNumber *)value:(NSInteger)row column:(NSInteger)column {
   ZXPDF417BarcodeValue *barcodeValue = self.values[[self key:row barcodeColumn:column]];
   if (!barcodeValue) {
     return nil;

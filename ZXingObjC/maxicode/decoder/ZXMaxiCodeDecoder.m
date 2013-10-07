@@ -24,9 +24,9 @@
 #import "ZXMaxiCodeDecoder.h"
 #import "ZXReedSolomonDecoder.h"
 
-const int ALL = 0;
-const int EVEN = 1;
-const int ODD = 2;
+const NSInteger ALL = 0;
+const NSInteger EVEN = 1;
+const NSInteger ODD = 2;
 
 @interface ZXMaxiCodeDecoder ()
 
@@ -58,8 +58,8 @@ const int ODD = 2;
   if (![self correctErrors:codewords start:0 dataCodewords:10 ecCodewords:10 mode:ALL error:error]) {
     return nil;
   }
-  int mode = [codewords[0] charValue] & 0x0F;
-  int datawordsLen;
+  NSInteger mode = [codewords[0] charValue] & 0x0F;
+  NSInteger datawordsLen;
   switch (mode) {
     case 2:
     case 3:
@@ -87,10 +87,10 @@ const int ODD = 2;
   }
 
   int8_t *datawords = (int8_t *)malloc(datawordsLen * sizeof(int8_t));
-  for (int i = 0; i < 10; i++) {
+  for (NSInteger i = 0; i < 10; i++) {
     datawords[i] = [codewords[i] charValue];
   }
-  for (int i = 20; i < datawordsLen + 10; i++) {
+  for (NSInteger i = 20; i < datawordsLen + 10; i++) {
     datawords[i - 10] = [codewords[i] charValue];
   }
 
@@ -99,18 +99,18 @@ const int ODD = 2;
   return result;
 }
 
-- (BOOL)correctErrors:(NSMutableArray *)codewordBytes start:(int)start dataCodewords:(int)dataCodewords
-          ecCodewords:(int)ecCodewords mode:(int)mode error:(NSError **)error {
-  int codewords = dataCodewords + ecCodewords;
+- (BOOL)correctErrors:(NSMutableArray *)codewordBytes start:(NSInteger)start dataCodewords:(NSInteger)dataCodewords
+          ecCodewords:(NSInteger)ecCodewords mode:(NSInteger)mode error:(NSError **)error {
+  NSInteger codewords = dataCodewords + ecCodewords;
 
   // in EVEN or ODD mode only half the codewords
-  int divisor = mode == ALL ? 1 : 2;
+  NSInteger divisor = mode == ALL ? 1 : 2;
 
   // First read into an array of ints
-  int codewordsIntsLen = codewords / divisor;
-  int *codewordsInts = (int *)malloc(codewordsIntsLen * sizeof(int));
-  memset(codewordsInts, 0, codewordsIntsLen * sizeof(int));
-  for (int i = 0; i < codewords; i++) {
+  NSInteger codewordsIntsLen = codewords / divisor;
+  NSInteger *codewordsInts = (NSInteger *)malloc(codewordsIntsLen * sizeof(NSInteger));
+  memset(codewordsInts, 0, codewordsIntsLen * sizeof(NSInteger));
+  for (NSInteger i = 0; i < codewords; i++) {
     if ((mode == ALL) || (i % 2 == (mode - 1))) {
       codewordsInts[i / divisor] = [codewordBytes[i + start] charValue] & 0xFF;
     }
@@ -125,7 +125,7 @@ const int ODD = 2;
   }
   // Copy back into array of bytes -- only need to worry about the bytes that were data
   // We don't care about errors in the error-correction codewords
-  for (int i = 0; i < dataCodewords; i++) {
+  for (NSInteger i = 0; i < dataCodewords; i++) {
     if ((mode == ALL) || (i % 2 == (mode - 1))) {
       codewordBytes[i + start] = [NSNumber numberWithChar:codewordsInts[i / divisor]];
     }

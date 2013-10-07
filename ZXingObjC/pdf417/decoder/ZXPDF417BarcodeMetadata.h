@@ -16,13 +16,13 @@
 
 @interface ZXPDF417BarcodeMetadata : NSObject
 
-@property (nonatomic, assign, readonly) int columnCount;
-@property (nonatomic, assign, readonly) int errorCorrectionLevel;
-@property (nonatomic, assign, readonly) int rowCountUpperPart;
-@property (nonatomic, assign, readonly) int rowCountLowerPart;
-@property (nonatomic, assign, readonly) int rowCount;
+@property (nonatomic, assign, readonly) NSInteger columnCount;
+@property (nonatomic, assign, readonly) NSInteger errorCorrectionLevel;
+@property (nonatomic, assign, readonly) NSInteger rowCountUpperPart;
+@property (nonatomic, assign, readonly) NSInteger rowCountLowerPart;
+@property (nonatomic, assign, readonly) NSInteger rowCount;
 
-- (id)initWithColumnCount:(int)columnCount rowCountUpperPart:(int)rowCountUpperPart rowCountLowerPart:(int)rowCountLowerPart
-     errorCorrectionLevel:(int)errorCorrectionLevel;
+- (id)initWithColumnCount:(NSInteger)columnCount rowCountUpperPart:(NSInteger)rowCountUpperPart rowCountLowerPart:(NSInteger)rowCountLowerPart
+     errorCorrectionLevel:(NSInteger)errorCorrectionLevel;
 
 @end

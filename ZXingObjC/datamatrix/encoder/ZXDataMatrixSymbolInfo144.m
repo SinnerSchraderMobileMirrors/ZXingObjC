@@ -27,11 +27,11 @@
   return self;
 }
 
-- (int)interleavedBlockCount {
+- (NSInteger)interleavedBlockCount {
   return 10;
 }
 
-- (int)dataLengthForInterleavedBlock:(int)index {
+- (NSInteger)dataLengthForInterleavedBlock:(NSInteger)index {
   return (index <= 8) ? 156 : 155;
 }
 

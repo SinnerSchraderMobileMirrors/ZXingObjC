@@ -21,8 +21,8 @@
 - (id)initWithBits:(ZXBitMatrix *)bits
             points:(NSArray *)points
            compact:(BOOL)compact
-      nbDatablocks:(int)nbDatablocks
-          nbLayers:(int)nbLayers {
+      nbDatablocks:(NSInteger)nbDatablocks
+          nbLayers:(NSInteger)nbLayers {
   if (self = [super initWithBits:bits points:points]) {
     _compact = compact;
     _nbDatablocks = nbDatablocks;

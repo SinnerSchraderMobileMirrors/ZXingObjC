@@ -18,7 +18,7 @@
 
 @implementation ZXDecodedObject
 
-- (id)initWithNewPosition:(int)newPosition {
+- (id)initWithNewPosition:(NSInteger)newPosition {
   if (self = [super init]) {
     _theNewPosition = newPosition;
   }

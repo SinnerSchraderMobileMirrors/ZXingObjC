@@ -18,7 +18,7 @@
 
 @implementation ZXDefaultPlacement
 
-- (id)initWithCodewords:(NSString *)codewords numcols:(int)numcols numrows:(int)numrows {
+- (id)initWithCodewords:(NSString *)codewords numcols:(NSInteger)numcols numrows:(NSInteger)numrows {
   if (self = [super init]) {
     _codewords = [codewords copy];
     _numcols = numcols;
@@ -38,22 +38,22 @@
   }
 }
 
-- (BOOL)bitAtCol:(int)col row:(int)row {
+- (BOOL)bitAtCol:(NSInteger)col row:(NSInteger)row {
   return self.bits[row * self.numcols + col] == 1;
 }
 
-- (void)setBitAtCol:(int)col row:(int)row bit:(BOOL)bit {
+- (void)setBitAtCol:(NSInteger)col row:(NSInteger)row bit:(BOOL)bit {
   self.bits[row * self.numcols + col] = bit ? (int8_t) 1 : (int8_t) 0;
 }
 
-- (BOOL)hasBitAtCol:(int)col row:(int)row {
+- (BOOL)hasBitAtCol:(NSInteger)col row:(NSInteger)row {
   return self.bits[row * self.numcols + col] >= 0;
 }
 
 - (void)place {
-  int pos = 0;
-  int row = 4;
-  int col = 0;
+  NSInteger pos = 0;
+  NSInteger row = 4;
+  NSInteger col = 0;
 
   do {
     /* repeatedly first check for one of the special corner cases, then... */
@@ -101,7 +101,7 @@
   }
 }
 
-- (void)moduleAtRow:(int)row col:(int)col pos:(int)pos bit:(int)bit {
+- (void)moduleAtRow:(NSInteger)row col:(NSInteger)col pos:(NSInteger)pos bit:(NSInteger)bit {
   if (row < 0) {
     row += self.numrows;
     col += 4 - ((self.numrows + 4) % 8);
@@ -111,7 +111,7 @@
     row += 4 - ((self.numcols + 4) % 8);
   }
   // Note the conversion:
-  int v = [self.codewords characterAtIndex:pos];
+  NSInteger v = [self.codewords characterAtIndex:pos];
   v &= 1 << (8 - bit);
   [self setBitAtCol:col row:row bit:v != 0];
 }
@@ -119,7 +119,7 @@
 /**
  * Places the 8 bits of a utah-shaped symbol character in ECC200.
  */
-- (void)utahAtRow:(int)row col:(int)col pos:(int)pos {
+- (void)utahAtRow:(NSInteger)row col:(NSInteger)col pos:(NSInteger)pos {
   [self moduleAtRow:row - 2 col:col - 2 pos:pos bit:1];
   [self moduleAtRow:row - 2 col:col - 1 pos:pos bit:2];
   [self moduleAtRow:row - 1 col:col - 2 pos:pos bit:3];
@@ -130,7 +130,7 @@
   [self moduleAtRow:row col:col pos:pos bit:8];
 }
 
-- (void)corner1:(int)pos {
+- (void)corner1:(NSInteger)pos {
   [self moduleAtRow:self.numrows - 1 col:0 pos:pos bit:1];
   [self moduleAtRow:self.numrows - 1 col:1 pos:pos bit:2];
   [self moduleAtRow:self.numrows - 1 col:2 pos:pos bit:3];
@@ -141,7 +141,7 @@
   [self moduleAtRow:3 col:self.numcols - 1 pos:pos bit:8];
 }
 
-- (void)corner2:(int)pos {
+- (void)corner2:(NSInteger)pos {
   [self moduleAtRow:self.numrows - 3 col:0 pos:pos bit:1];
   [self moduleAtRow:self.numrows - 2 col:0 pos:pos bit:2];
   [self moduleAtRow:self.numrows - 1 col:0 pos:pos bit:3];
@@ -152,7 +152,7 @@
   [self moduleAtRow:1 col:self.numcols - 1 pos:pos bit:8];
 }
 
-- (void)corner3:(int)pos {
+- (void)corner3:(NSInteger)pos {
   [self moduleAtRow:self.numrows - 3 col:0 pos:pos bit:1];
   [self moduleAtRow:self.numrows - 2 col:0 pos:pos bit:2];
   [self moduleAtRow:self.numrows - 1 col:0 pos:pos bit:3];
@@ -163,7 +163,7 @@
   [self moduleAtRow:3 col:self.numcols - 1 pos:pos bit:8];
 }
 
-- (void)corner4:(int)pos {
+- (void)corner4:(NSInteger)pos {
   [self moduleAtRow:self.numrows - 1 col:0 pos:pos bit:1];
   [self moduleAtRow:self.numrows - 1 col:self.numcols - 1 pos:pos bit:2];
   [self moduleAtRow:0 col:self.numcols - 3 pos:pos bit:3];

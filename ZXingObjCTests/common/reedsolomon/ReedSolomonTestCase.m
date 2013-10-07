@@ -16,25 +16,25 @@
 
 #import "ReedSolomonTestCase.h"
 
-const int DECODER_RANDOM_TEST_ITERATIONS = 3;
-const int DECODER_TEST_ITERATIONS = 10;
-const int ReedSolomonTestCase_RANDOM_SEED = 3735928559;
+const NSInteger DECODER_RANDOM_TEST_ITERATIONS = 3;
+const NSInteger DECODER_TEST_ITERATIONS = 10;
+const NSInteger ReedSolomonTestCase_RANDOM_SEED = 3735928559;
 
 @implementation ReedSolomonTestCase
 
 - (void)testDataMatrix {
   // real life test cases
-  int dataWords1[3] = { 142, 164, 186 };
-  int ecWords1[5] = { 114, 25, 5, 88, 102 };
+  NSInteger dataWords1[3] = { 142, 164, 186 };
+  NSInteger ecWords1[5] = { 114, 25, 5, 88, 102 };
   [self testEncodeDecode:[ZXGenericGF DataMatrixField256] dataWords:dataWords1 dataWordsLen:3 ecWords:ecWords1 ecWordsLen:5];
 
-  int dataWords2[36] = {
+  NSInteger dataWords2[36] = {
     0x69, 0x75, 0x75, 0x71, 0x3B, 0x30, 0x30, 0x64,
     0x70, 0x65, 0x66, 0x2F, 0x68, 0x70, 0x70, 0x68,
     0x6D, 0x66, 0x2F, 0x64, 0x70, 0x6E, 0x30, 0x71,
     0x30, 0x7B, 0x79, 0x6A, 0x6F, 0x68, 0x30, 0x81,
     0xF0, 0x88, 0x1F, 0xB5 };
-  int ecWords2[24] = {
+  NSInteger ecWords2[24] = {
     0x1C, 0x64, 0xEE, 0xEB, 0xD0, 0x1D, 0x00, 0x03,
     0xF0, 0x1C, 0xF1, 0xD0, 0x6D, 0x00, 0x98, 0xDA,
     0x80, 0x88, 0xBE, 0xFF, 0xB7, 0xFA, 0xA9, 0x95 };
@@ -48,20 +48,20 @@ const int ReedSolomonTestCase_RANDOM_SEED = 3735928559;
 
 - (void)testQRCode {
   // Test case from example given in ISO 18004, Annex I
-  int dataWords1[16] = {
+  NSInteger dataWords1[16] = {
     0x10, 0x20, 0x0C, 0x56, 0x61, 0x80, 0xEC, 0x11,
     0xEC, 0x11, 0xEC, 0x11, 0xEC, 0x11, 0xEC, 0x11 };
-  int ecWords1[10] = {
+  NSInteger ecWords1[10] = {
     0xA5, 0x24, 0xD4, 0xC1, 0xED, 0x36, 0xC7, 0x87,
     0x2C, 0x55 };
   [self testEncodeDecode:[ZXGenericGF QrCodeField256] dataWords:dataWords1 dataWordsLen:16 ecWords:ecWords1 ecWordsLen:10];
 
-  int dataWords2[32] = {
+  NSInteger dataWords2[32] = {
     0x72, 0x67, 0x2F, 0x77, 0x69, 0x6B, 0x69, 0x2F,
     0x4D, 0x61, 0x69, 0x6E, 0x5F, 0x50, 0x61, 0x67,
     0x65, 0x3B, 0x3B, 0x00, 0xEC, 0x11, 0xEC, 0x11,
     0xEC, 0x11, 0xEC, 0x11, 0xEC, 0x11, 0xEC, 0x11 };
-  int ecWords2[18] = {
+  NSInteger ecWords2[18] = {
     0xD8, 0xB8, 0xEF, 0x14, 0xEC, 0xD0, 0xCC, 0x85,
     0x73, 0x40, 0x0B, 0xB5, 0x5A, 0xB8, 0x8B, 0x2E,
     0x08, 0x62 };
@@ -76,25 +76,25 @@ const int ReedSolomonTestCase_RANDOM_SEED = 3735928559;
 
 - (void)testAztec {
   // real life test cases
-  int dataWords1[2] = { 0x5, 0x6 };
-  int ecWords1[5] = { 0x3, 0x2, 0xB, 0xB, 0x7 };
+  NSInteger dataWords1[2] = { 0x5, 0x6 };
+  NSInteger ecWords1[5] = { 0x3, 0x2, 0xB, 0xB, 0x7 };
   [self testEncodeDecode:[ZXGenericGF AztecParam] dataWords:dataWords1 dataWordsLen:2 ecWords:ecWords1 ecWordsLen:5];
 
-  int dataWords2[4] = { 0x0, 0x0, 0x0, 0x9 };
-  int ecWords2[6] = { 0xA, 0xD, 0x8, 0x6, 0x5, 0x6 };
+  NSInteger dataWords2[4] = { 0x0, 0x0, 0x0, 0x9 };
+  NSInteger ecWords2[6] = { 0xA, 0xD, 0x8, 0x6, 0x5, 0x6 };
   [self testEncodeDecode:[ZXGenericGF AztecParam] dataWords:dataWords2 dataWordsLen:4 ecWords:ecWords2 ecWordsLen:6];
 
-  int dataWords3[4] = { 0x2, 0x8, 0x8, 0x7 };
-  int ecWords3[6] = { 0xE, 0xC, 0xA, 0x9, 0x6, 0x8 };
+  NSInteger dataWords3[4] = { 0x2, 0x8, 0x8, 0x7 };
+  NSInteger ecWords3[6] = { 0xE, 0xC, 0xA, 0x9, 0x6, 0x8 };
   [self testEncodeDecode:[ZXGenericGF AztecParam] dataWords:dataWords3 dataWordsLen:4 ecWords:ecWords3 ecWordsLen:6];
 
-  int dataWords4[10] = {
+  NSInteger dataWords4[10] = {
     0x9, 0x32, 0x1, 0x29, 0x2F, 0x2, 0x27, 0x25, 0x1, 0x1B };
-  int ecWords4[11] = {
+  NSInteger ecWords4[11] = {
     0x2C, 0x2, 0xD, 0xD, 0xA, 0x16, 0x28, 0x9, 0x22, 0xA, 0x14 };
   [self testEncodeDecode:[ZXGenericGF AztecData6] dataWords:dataWords4 dataWordsLen:10 ecWords:ecWords4 ecWordsLen:11];
 
-  int dataWords5[69] = {
+  NSInteger dataWords5[69] = {
     0xE0, 0x86, 0x42, 0x98, 0xE8, 0x4A, 0x96, 0xC6,
     0xB9, 0xF0, 0x8C, 0xA7, 0x4A, 0xDA, 0xF8, 0xCE,
     0xB7, 0xDE, 0x88, 0x64, 0x29, 0x8E, 0x84, 0xA9,
@@ -104,7 +104,7 @@ const int ReedSolomonTestCase_RANDOM_SEED = 3735928559;
     0x5F, 0x19, 0xD6, 0xFB, 0xD1, 0x0C, 0x85, 0x31,
     0xD0, 0x95, 0x2D, 0x8D, 0x73, 0xE1, 0x19, 0x4E,
     0x95, 0xB5, 0xF1, 0x9D, 0x6F };
-  int ecWords5[51] = {
+  NSInteger ecWords5[51] = {
     0x31, 0xD7, 0x04, 0x46, 0xB2, 0xC1, 0x06, 0x94,
     0x17, 0xE5, 0x0C, 0x2B, 0xA3, 0x99, 0x15, 0x7F,
     0x16, 0x3C, 0x66, 0xBA, 0x33, 0xD9, 0xE8, 0x87,
@@ -114,7 +114,7 @@ const int ReedSolomonTestCase_RANDOM_SEED = 3735928559;
     0x9F, 0xC1, 0x75 };
   [self testEncodeDecode:[ZXGenericGF AztecData8] dataWords:dataWords5 dataWordsLen:69 ecWords:ecWords5 ecWordsLen:51];
 
-  int dataWords6[330] = {
+  NSInteger dataWords6[330] = {
     0x15C, 0x1E1, 0x2D5, 0x02E, 0x048, 0x1E2, 0x037, 0x0CD,
     0x02E, 0x056, 0x26A, 0x281, 0x1C2, 0x1A6, 0x296, 0x045,
     0x041, 0x0AA, 0x095, 0x2CE, 0x003, 0x38F, 0x2CD, 0x1A2,
@@ -157,7 +157,7 @@ const int ReedSolomonTestCase_RANDOM_SEED = 3735928559;
     0x201, 0x0AA, 0x04E, 0x004, 0x1B0, 0x070, 0x275, 0x154,
     0x026, 0x2C1, 0x2B3, 0x154, 0x2AA, 0x256, 0x0C1, 0x044,
     0x004, 0x23F };
-  int ecWords6[140] = {
+  NSInteger ecWords6[140] = {
     0x379, 0x099, 0x348, 0x010, 0x090, 0x196, 0x09C, 0x1FF,
     0x1B0, 0x32D, 0x244, 0x0DE, 0x201, 0x386, 0x163, 0x11F,
     0x39B, 0x344, 0x3FE, 0x02F, 0x188, 0x113, 0x3D9, 0x102,
@@ -178,7 +178,7 @@ const int ReedSolomonTestCase_RANDOM_SEED = 3735928559;
     0x17A, 0x166, 0x03C, 0x007 };
   [self testEncodeDecode:[ZXGenericGF AztecData10] dataWords:dataWords6 dataWordsLen:330 ecWords:ecWords6 ecWordsLen:140];
 
-  int dataWords7[1229] = {
+  NSInteger dataWords7[1229] = {
     0x571, 0xE1B, 0x542, 0xE12, 0x1E2, 0x0DC, 0xCD0, 0xB85,
     0x69A, 0xA81, 0x709, 0xA6A, 0x584, 0x510, 0x4AA, 0x256,
     0xCE0, 0x0F8, 0xFB3, 0x5A2, 0x0D9, 0xAD1, 0x389, 0x09C,
@@ -333,7 +333,7 @@ const int ReedSolomonTestCase_RANDOM_SEED = 3735928559;
     0x69C, 0xC41, 0x34C, 0x550, 0x10C, 0x835, 0x429, 0x33C,
     0xB33, 0x4D5, 0x509, 0xCCD, 0x550, 0x35B, 0x4E2, 0xAA0,
     0x5E6, 0x205, 0xB09, 0x99C, 0x09F };
-  int ecWords7[435] = {
+  NSInteger ecWords7[435] = {
     0xD54, 0x221, 0x154, 0x7CD, 0xBF3, 0x112, 0x89B, 0xC5E,
     0x9CD, 0x07E, 0xFB6, 0x78F, 0x7FA, 0x16F, 0x377, 0x4B4,
     0x62D, 0x475, 0xBC2, 0x861, 0xB72, 0x9D0, 0x76A, 0x5A1,
@@ -402,15 +402,15 @@ const int ReedSolomonTestCase_RANDOM_SEED = 3735928559;
   [self testEncodeDecodeRandom:[ZXGenericGF AztecData12] dataSize:3072 ecSize:1023];
 }
 
-- (void)corrupt:(int *)received receivedLen:(int)receivedLen howMany:(int)howMany max:(int)max {
+- (void)corrupt:(NSInteger *)received receivedLen:(NSInteger)receivedLen howMany:(NSInteger)howMany max:(NSInteger)max {
   BOOL corrupted[receivedLen];
-  for (int i = 0; i < receivedLen; i++) {
+  for (NSInteger i = 0; i < receivedLen; i++) {
     corrupted[i] = NO;
   }
 
-  for (int j = 0; j < howMany; j++) {
-    int location = rand() % receivedLen;
-    int value = rand() % max;
+  for (NSInteger j = 0; j < howMany; j++) {
+    NSInteger location = rand() % receivedLen;
+    NSInteger value = rand() % max;
     if (corrupted[location] || received[location] == value) {
       j--;
     } else {
@@ -420,63 +420,63 @@ const int ReedSolomonTestCase_RANDOM_SEED = 3735928559;
   }
 }
 
-- (void)testEncodeDecodeRandom:(ZXGenericGF *)field dataSize:(int)dataSize ecSize:(int)ecSize {
+- (void)testEncodeDecodeRandom:(ZXGenericGF *)field dataSize:(NSInteger)dataSize ecSize:(NSInteger)ecSize {
   STAssertTrue(dataSize > 0 && dataSize <= field.size - 3, @"Invalid data size for %@", field);
   STAssertTrue(ecSize > 0 && ecSize + dataSize <= field.size, @"Invalid ECC size for %@", field);
   ZXReedSolomonEncoder *encoder = [[ZXReedSolomonEncoder alloc] initWithField:field];
-  int message[dataSize + ecSize];
-  int dataWords[dataSize];
-  int ecWords[ecSize];
+  NSInteger message[dataSize + ecSize];
+  NSInteger dataWords[dataSize];
+  NSInteger ecWords[ecSize];
   srand(ReedSolomonTestCase_RANDOM_SEED);
-  int iterations = field.size > 256 ? 1 : DECODER_RANDOM_TEST_ITERATIONS;
-  for (int i = 0; i < iterations; i++) {
+  NSInteger iterations = field.size > 256 ? 1 : DECODER_RANDOM_TEST_ITERATIONS;
+  for (NSInteger i = 0; i < iterations; i++) {
     // generate random data
-    for (int k = 0; k < dataSize; k++) {
+    for (NSInteger k = 0; k < dataSize; k++) {
       dataWords[k] = rand() % field.size;
     }
     // generate ECC words
-    memcpy(message, dataWords, dataSize * sizeof(int));
+    memcpy(message, dataWords, dataSize * sizeof(NSInteger));
     [encoder encode:message toEncodeLen:dataSize + ecSize ecBytes:ecSize];
-    memcpy(ecWords, message + dataSize, ecSize * sizeof(int));
+    memcpy(ecWords, message + dataSize, ecSize * sizeof(NSInteger));
     // check to see if Decoder can fix up to ecWords/2 random errors
     [self testDecoder:field dataWords:dataWords dataWordsLen:dataSize ecWords:ecWords ecWordsLen:ecSize];
   }
 }
 
-- (void)testEncodeDecode:(ZXGenericGF *)field dataWords:(int *)dataWords dataWordsLen:(int)dataWordsLen ecWords:(int *)ecWords ecWordsLen:(int)ecWordsLen {
+- (void)testEncodeDecode:(ZXGenericGF *)field dataWords:(NSInteger *)dataWords dataWordsLen:(NSInteger)dataWordsLen ecWords:(NSInteger *)ecWords ecWordsLen:(NSInteger)ecWordsLen {
   [self testEncoder:field dataWords:dataWords dataWordsLen:dataWordsLen ecWords:ecWords ecWordsLen:ecWordsLen];
   [self testDecoder:field dataWords:dataWords dataWordsLen:dataWordsLen ecWords:ecWords ecWordsLen:ecWordsLen];
 }
 
-- (void)testEncoder:(ZXGenericGF *)field dataWords:(int *)dataWords dataWordsLen:(int)dataWordsLen ecWords:(int *)ecWords ecWordsLen:(int)ecWordsLen {
+- (void)testEncoder:(ZXGenericGF *)field dataWords:(NSInteger *)dataWords dataWordsLen:(NSInteger)dataWordsLen ecWords:(NSInteger *)ecWords ecWordsLen:(NSInteger)ecWordsLen {
   ZXReedSolomonEncoder *encoder = [[ZXReedSolomonEncoder alloc] initWithField:field];
 
-  int length = dataWordsLen + ecWordsLen;
-  int messageExpected[length];
-  int message[length];
-  memcpy(messageExpected, dataWords, dataWordsLen * sizeof(int));
-  memcpy(messageExpected + dataWordsLen, ecWords, ecWordsLen * sizeof(int));
-  memcpy(message, dataWords, dataWordsLen * sizeof(int));
+  NSInteger length = dataWordsLen + ecWordsLen;
+  NSInteger messageExpected[length];
+  NSInteger message[length];
+  memcpy(messageExpected, dataWords, dataWordsLen * sizeof(NSInteger));
+  memcpy(messageExpected + dataWordsLen, ecWords, ecWordsLen * sizeof(NSInteger));
+  memcpy(message, dataWords, dataWordsLen * sizeof(NSInteger));
   [encoder encode:message toEncodeLen:length ecBytes:ecWordsLen];
   [self assertDataEqualsExpected:messageExpected received:message length:length
-                         message:[NSString stringWithFormat:@"Encode in %@ (%d,%d) failed", field, dataWordsLen, ecWordsLen]];
+                         message:[NSString stringWithFormat:@"Encode in %@ (%ld,%ld) failed", field, (long)dataWordsLen, (long) (long)ecWordsLen]];
 }
 
-- (void)testDecoder:(ZXGenericGF *)field dataWords:(int *)dataWords dataWordsLen:(int)dataWordsLen ecWords:(int *)ecWords ecWordsLen:(int)ecWordsLen {
+- (void)testDecoder:(ZXGenericGF *)field dataWords:(NSInteger *)dataWords dataWordsLen:(NSInteger)dataWordsLen ecWords:(NSInteger *)ecWords ecWordsLen:(NSInteger)ecWordsLen {
   ZXReedSolomonDecoder *decoder = [[ZXReedSolomonDecoder alloc] initWithField:field];
-  int length = dataWordsLen + ecWordsLen;
-  int message[length];
-  int maxErrors = ecWordsLen / 2;
+  NSInteger length = dataWordsLen + ecWordsLen;
+  NSInteger message[length];
+  NSInteger maxErrors = ecWordsLen / 2;
   srand(ReedSolomonTestCase_RANDOM_SEED);
-  int iterations = field.size > 256 ? 1 : DECODER_TEST_ITERATIONS;
-  for (int j = 0; j < iterations; j++) {
-    for (int i = 0; i < ecWordsLen; i++) {
+  NSInteger iterations = field.size > 256 ? 1 : DECODER_TEST_ITERATIONS;
+  for (NSInteger j = 0; j < iterations; j++) {
+    for (NSInteger i = 0; i < ecWordsLen; i++) {
       if (i > 10 && i < ecWordsLen / 2 - 10) {
         // performance improvement - skip intermediate cases in long-running tests
         i += ecWordsLen / 10;
       }
-      memcpy(message, dataWords, dataWordsLen * sizeof(int));
-      memcpy(message + dataWordsLen, ecWords, ecWordsLen * sizeof(int));
+      memcpy(message, dataWords, dataWordsLen * sizeof(NSInteger));
+      memcpy(message + dataWordsLen, ecWords, ecWordsLen * sizeof(NSInteger));
       [self corrupt:message receivedLen:length howMany:i max:field.size];
 
       NSError *error;
@@ -489,24 +489,24 @@ const int ReedSolomonTestCase_RANDOM_SEED = 3735928559;
       }
       if (i < maxErrors) {
         [self assertDataEqualsExpected:dataWords received:message length:dataWordsLen
-                               message:[NSString stringWithFormat:@"Decode in %@ (%d,%d) failed at %d errors", field, dataWordsLen, ecWordsLen, i]];
+                               message:[NSString stringWithFormat:@"Decode in %@ (%ld,%ld) failed at %ld errors", field, (long)dataWordsLen, (long)ecWordsLen, (long)i]];
       }
     }
   }
 }
 
-- (void)assertDataEqualsExpected:(int *)expected received:(int *)received length:(int)length message:(NSString *)message {
-  for (int i = 0; i < length; i++) {
+- (void)assertDataEqualsExpected:(NSInteger *)expected received:(NSInteger *)received length:(NSInteger)length message:(NSString *)message {
+  for (NSInteger i = 0; i < length; i++) {
     if (expected[i] != received[i]) {
       STFail(@"%@. Mismatch at %d. Expected %@, got %@", message, i, [self arrayToString:expected length:length], [self arrayToString:received length:length]);
     }
   }
 }
 
-- (NSString *)arrayToString:(int *)data length:(int)length {
+- (NSString *)arrayToString:(NSInteger *)data length:(NSInteger)length {
   NSMutableString *sb = [NSMutableString stringWithString:@"{"];
-  for (int i=0; i < length; i++) {
-    [sb appendFormat:i > 0 ? @",%X" : @"%X", data[i]];
+  for (NSInteger i=0; i < length; i++) {
+    [sb appendFormat:i > 0 ? @",%lX" : @"%lX", (long)data[i]];
   }
   [sb appendString:@"}"];
 

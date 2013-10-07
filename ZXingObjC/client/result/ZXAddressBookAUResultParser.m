@@ -54,11 +54,11 @@
                                                                  geo:nil];
 }
 
-- (NSArray *)matchMultipleValuePrefix:(NSString *)prefix max:(int)max rawText:(NSString *)rawText trim:(BOOL)trim {
+- (NSArray *)matchMultipleValuePrefix:(NSString *)prefix max:(NSInteger)max rawText:(NSString *)rawText trim:(BOOL)trim {
   NSMutableArray *values = nil;
 
-  for (int i = 1; i <= max; i++) {
-    NSString *value = [[self class] matchSinglePrefixedField:[NSString stringWithFormat:@"%@%d:", prefix, i]
+  for (NSInteger i = 1; i <= max; i++) {
+    NSString *value = [[self class] matchSinglePrefixedField:[NSString stringWithFormat:@"%@%ld:", prefix, (long)i]
                                               rawText:rawText
                                               endChar:'\r'
                                                  trim:trim];

@@ -39,7 +39,7 @@
 @property (nonatomic, assign) BOOL assumeGS1;
 
 /**
- * Allowed lengths of encoded data -- reject anything else. Maps to an int[].
+ * Allowed lengths of encoded data -- reject anything else. Maps to an NSInteger[].
  */
 @property (nonatomic, strong) NSArray *allowedLengths;
 
@@ -74,7 +74,7 @@
  */
 - (void)addPossibleFormat:(ZXBarcodeFormat)format;
 - (BOOL)containsFormat:(ZXBarcodeFormat)format;
-- (int)numberOfPossibleFormats;
+- (NSInteger)numberOfPossibleFormats;
 - (void)removePossibleFormat:(ZXBarcodeFormat)format;
 
 @end

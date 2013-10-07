@@ -30,7 +30,7 @@
 
 - (id)initWithBitMatrix:(ZXBitMatrix *)bitMatrix error:(NSError **)error {
   if (self = [super init]) {
-    int dimension = bitMatrix.height;
+    NSInteger dimension = bitMatrix.height;
     if (dimension < 8 || dimension > 144 || (dimension & 0x01) != 0) {
       if (error) *error = FormatErrorInstance();
       return nil;
@@ -55,8 +55,8 @@
  * See ISO 16022:2006 Table 7 - ECC 200 symbol attributes
  */
 - (ZXDataMatrixVersion *)readVersion:(ZXBitMatrix *)bitMatrix {
-  int numRows = bitMatrix.height;
-  int numColumns = bitMatrix.width;
+  NSInteger numRows = bitMatrix.height;
+  NSInteger numColumns = bitMatrix.width;
   return [ZXDataMatrixVersion versionForDimensions:numRows numColumns:numColumns];
 }
 
@@ -69,11 +69,11 @@
 - (NSArray *)readCodewords {
   NSMutableArray *result = [NSMutableArray arrayWithCapacity:self.version.totalCodewords];
   
-  int row = 4;
-  int column = 0;
+  NSInteger row = 4;
+  NSInteger column = 0;
   
-  int numRows = self.mappingBitMatrix.height;
-  int numColumns = self.mappingBitMatrix.width;
+  NSInteger numRows = self.mappingBitMatrix.height;
+  NSInteger numColumns = self.mappingBitMatrix.width;
   
   BOOL corner1Read = NO;
   BOOL corner2Read = NO;
@@ -134,7 +134,7 @@
 /**
  * Reads a bit of the mapping matrix accounting for boundary wrapping.
  */
-- (BOOL)readModule:(int)row column:(int)column numRows:(int)numRows numColumns:(int)numColumns {
+- (BOOL)readModule:(NSInteger)row column:(NSInteger)column numRows:(NSInteger)numRows numColumns:(NSInteger)numColumns {
   if (row < 0) {
     row += numRows;
     column += 4 - ((numRows + 4) & 0x07);
@@ -153,8 +153,8 @@
  * 
  * See ISO 16022:2006, 5.8.1 Figure 6
  */
-- (int)readUtah:(int)row column:(int)column numRows:(int)numRows numColumns:(int)numColumns {
-  int currentByte = 0;
+- (NSInteger)readUtah:(NSInteger)row column:(NSInteger)column numRows:(NSInteger)numRows numColumns:(NSInteger)numColumns {
+  NSInteger currentByte = 0;
   if ([self readModule:row - 2 column:column - 2 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
@@ -195,8 +195,8 @@
  * 
  * See ISO 16022:2006, Figure F.3
  */
-- (int)readCorner1:(int)numRows numColumns:(int)numColumns {
-  int currentByte = 0;
+- (NSInteger)readCorner1:(NSInteger)numRows numColumns:(NSInteger)numColumns {
+  NSInteger currentByte = 0;
   if ([self readModule:numRows - 1 column:0 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
@@ -237,8 +237,8 @@
  * 
  * See ISO 16022:2006, Figure F.4
  */
-- (int)readCorner2:(int)numRows numColumns:(int)numColumns {
-  int currentByte = 0;
+- (NSInteger)readCorner2:(NSInteger)numRows numColumns:(NSInteger)numColumns {
+  NSInteger currentByte = 0;
   if ([self readModule:numRows - 3 column:0 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
@@ -279,8 +279,8 @@
  * 
  * See ISO 16022:2006, Figure F.5
  */
-- (int)readCorner3:(int)numRows numColumns:(int)numColumns {
-  int currentByte = 0;
+- (NSInteger)readCorner3:(NSInteger)numRows numColumns:(NSInteger)numColumns {
+  NSInteger currentByte = 0;
   if ([self readModule:numRows - 1 column:0 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
@@ -321,8 +321,8 @@
  * 
  * See ISO 16022:2006, Figure F.6
  */
-- (int)readCorner4:(int)numRows numColumns:(int)numColumns {
-  int currentByte = 0;
+- (NSInteger)readCorner4:(NSInteger)numRows numColumns:(NSInteger)numColumns {
+  NSInteger currentByte = 0;
   if ([self readModule:numRows - 3 column:0 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
@@ -363,34 +363,34 @@
  * alignment patterns.
  */
 - (ZXBitMatrix *)extractDataRegion:(ZXBitMatrix *)bitMatrix {
-  int symbolSizeRows = self.version.symbolSizeRows;
-  int symbolSizeColumns = self.version.symbolSizeColumns;
+  NSInteger symbolSizeRows = self.version.symbolSizeRows;
+  NSInteger symbolSizeColumns = self.version.symbolSizeColumns;
   
   if (bitMatrix.height != symbolSizeRows) {
     [NSException raise:NSInvalidArgumentException format:@"Dimension of bitMatrix must match the version size"];
   }
   
-  int dataRegionSizeRows = self.version.dataRegionSizeRows;
-  int dataRegionSizeColumns = self.version.dataRegionSizeColumns;
+  NSInteger dataRegionSizeRows = self.version.dataRegionSizeRows;
+  NSInteger dataRegionSizeColumns = self.version.dataRegionSizeColumns;
   
-  int numDataRegionsRow = symbolSizeRows / dataRegionSizeRows;
-  int numDataRegionsColumn = symbolSizeColumns / dataRegionSizeColumns;
+  NSInteger numDataRegionsRow = symbolSizeRows / dataRegionSizeRows;
+  NSInteger numDataRegionsColumn = symbolSizeColumns / dataRegionSizeColumns;
   
-  int sizeDataRegionRow = numDataRegionsRow * dataRegionSizeRows;
-  int sizeDataRegionColumn = numDataRegionsColumn * dataRegionSizeColumns;
+  NSInteger sizeDataRegionRow = numDataRegionsRow * dataRegionSizeRows;
+  NSInteger sizeDataRegionColumn = numDataRegionsColumn * dataRegionSizeColumns;
   
   ZXBitMatrix *bitMatrixWithoutAlignment = [[ZXBitMatrix alloc] initWithWidth:sizeDataRegionColumn height:sizeDataRegionRow];
-  for (int dataRegionRow = 0; dataRegionRow < numDataRegionsRow; ++dataRegionRow) {
-    int dataRegionRowOffset = dataRegionRow * dataRegionSizeRows;
-    for (int dataRegionColumn = 0; dataRegionColumn < numDataRegionsColumn; ++dataRegionColumn) {
-      int dataRegionColumnOffset = dataRegionColumn * dataRegionSizeColumns;
-      for (int i = 0; i < dataRegionSizeRows; ++i) {
-        int readRowOffset = dataRegionRow * (dataRegionSizeRows + 2) + 1 + i;
-        int writeRowOffset = dataRegionRowOffset + i;
-        for (int j = 0; j < dataRegionSizeColumns; ++j) {
-          int readColumnOffset = dataRegionColumn * (dataRegionSizeColumns + 2) + 1 + j;
+  for (NSInteger dataRegionRow = 0; dataRegionRow < numDataRegionsRow; ++dataRegionRow) {
+    NSInteger dataRegionRowOffset = dataRegionRow * dataRegionSizeRows;
+    for (NSInteger dataRegionColumn = 0; dataRegionColumn < numDataRegionsColumn; ++dataRegionColumn) {
+      NSInteger dataRegionColumnOffset = dataRegionColumn * dataRegionSizeColumns;
+      for (NSInteger i = 0; i < dataRegionSizeRows; ++i) {
+        NSInteger readRowOffset = dataRegionRow * (dataRegionSizeRows + 2) + 1 + i;
+        NSInteger writeRowOffset = dataRegionRowOffset + i;
+        for (NSInteger j = 0; j < dataRegionSizeColumns; ++j) {
+          NSInteger readColumnOffset = dataRegionColumn * (dataRegionSizeColumns + 2) + 1 + j;
           if ([bitMatrix getX:readColumnOffset y:readRowOffset]) {
-            int writeColumnOffset = dataRegionColumnOffset + j;
+            NSInteger writeColumnOffset = dataRegionColumnOffset + j;
             [bitMatrixWithoutAlignment setX:writeColumnOffset y:writeRowOffset];
           }
         }

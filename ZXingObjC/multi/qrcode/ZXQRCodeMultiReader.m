@@ -37,7 +37,7 @@
   if (!detectorResult) {
     return nil;
   }
-  for (int i = 0; i < [detectorResult count]; i++) {
+  for (NSInteger i = 0; i < [detectorResult count]; i++) {
     ZXDecoderResult *decoderResult = [[self decoder] decodeMatrix:[(ZXDetectorResult *)detectorResult[i] bits] hints:hints error:nil];
     if (decoderResult) {
       NSArray *points = [(ZXDetectorResult *)detectorResult[i] points];

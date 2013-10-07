@@ -30,8 +30,8 @@
  * http://en.wikipedia.org/wiki/Interleaved_2_of_5 is a great reference for Interleaved 2 of 5 information.
  */
 
-extern const int PATTERNS_LEN;
-extern const int PATTERNS[][5];
+extern const NSInteger PATTERNS_LEN;
+extern const NSInteger PATTERNS[][5];
 
 @class ZXResult;
 

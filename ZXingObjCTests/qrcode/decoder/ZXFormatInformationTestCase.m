@@ -16,8 +16,8 @@
 
 #import "ZXFormatInformationTestCase.h"
 
-const int MASKED_TEST_FORMAT_INFO = 0x2BED;
-const int UNMASKED_TEST_FORMAT_INFO = MASKED_TEST_FORMAT_INFO ^ 0x5412;
+const NSInteger MASKED_TEST_FORMAT_INFO = 0x2BED;
+const NSInteger UNMASKED_TEST_FORMAT_INFO = MASKED_TEST_FORMAT_INFO ^ 0x5412;
 
 @implementation ZXFormatInformationTestCase
 

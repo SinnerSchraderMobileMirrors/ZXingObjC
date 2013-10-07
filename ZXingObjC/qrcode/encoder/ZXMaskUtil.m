@@ -19,10 +19,10 @@
 #import "ZXQRCode.h"
 
 // Penalty weights from section 6.8.2.1
-const int N1 = 3;
-const int N2 = 3;
-const int N3 = 40;
-const int N4 = 10;
+const NSInteger N1 = 3;
+const NSInteger N2 = 3;
+const NSInteger N3 = 40;
+const NSInteger N4 = 10;
 
 @implementation ZXMaskUtil
 
@@ -30,7 +30,7 @@ const int N4 = 10;
  * Apply mask penalty rule 1 and return the penalty. Find repetitive cells with the same color and
  * give penalty to them. Example: 00000 or 11111.
  */
-+ (int)applyMaskPenaltyRule1:(ZXByteMatrix *)matrix {
++ (NSInteger)applyMaskPenaltyRule1:(ZXByteMatrix *)matrix {
   return [self applyMaskPenaltyRule1Internal:matrix isHorizontal:YES] + [self applyMaskPenaltyRule1Internal:matrix isHorizontal:NO];
 }
 
@@ -39,15 +39,15 @@ const int N4 = 10;
  * penalty to them. This is actually equivalent to the spec's rule, which is to find MxN blocks and give a
  * penalty proportional to (M-1)x(N-1), because this is the number of 2x2 blocks inside such a block.
  */
-+ (int)applyMaskPenaltyRule2:(ZXByteMatrix *)matrix {
-  int penalty = 0;
++ (NSInteger)applyMaskPenaltyRule2:(ZXByteMatrix *)matrix {
+  NSInteger penalty = 0;
   int8_t **array = matrix.array;
-  int width = matrix.width;
-  int height = matrix.height;
+  NSInteger width = matrix.width;
+  NSInteger height = matrix.height;
 
-  for (int y = 0; y < height - 1; y++) {
-    for (int x = 0; x < width - 1; x++) {
-      int value = array[y][x];
+  for (NSInteger y = 0; y < height - 1; y++) {
+    for (NSInteger x = 0; x < width - 1; x++) {
+      NSInteger value = array[y][x];
       if (value == array[y][x + 1] && value == array[y + 1][x] && value == array[y + 1][x + 1]) {
         penalty++;
       }
@@ -62,14 +62,14 @@ const int N4 = 10;
  * 10111010000, and give penalty to them.  If we find patterns like 000010111010000, we give
  * penalties twice (i.e. 40 * 2).
  */
-+ (int)applyMaskPenaltyRule3:(ZXByteMatrix *)matrix {
-  int penalty = 0;
++ (NSInteger)applyMaskPenaltyRule3:(ZXByteMatrix *)matrix {
+  NSInteger penalty = 0;
   int8_t **array = matrix.array;
-  int width = matrix.width;
-  int height = matrix.height;
+  NSInteger width = matrix.width;
+  NSInteger height = matrix.height;
 
-  for (int y = 0; y < height; y++) {
-    for (int x = 0; x < width; x++) {
+  for (NSInteger y = 0; y < height; y++) {
+    for (NSInteger x = 0; x < width; x++) {
       if (x + 6 < width &&
           array[y][x] == 1 &&
           array[y][x +  1] == 0 &&
@@ -119,22 +119,22 @@ const int N4 = 10;
  * Apply mask penalty rule 4 and return the penalty. Calculate the ratio of dark cells and give
  * penalty if the ratio is far from 50%. It gives 10 penalty for 5% distance.
  */
-+ (int)applyMaskPenaltyRule4:(ZXByteMatrix *)matrix {
-  int numDarkCells = 0;
++ (NSInteger)applyMaskPenaltyRule4:(ZXByteMatrix *)matrix {
+  NSInteger numDarkCells = 0;
   int8_t **array = matrix.array;
-  int width = matrix.width;
-  int height = matrix.height;
-  for (int y = 0; y < height; y++) {
+  NSInteger width = matrix.width;
+  NSInteger height = matrix.height;
+  for (NSInteger y = 0; y < height; y++) {
     int8_t *arrayY = array[y];
-    for (int x = 0; x < width; x++) {
+    for (NSInteger x = 0; x < width; x++) {
       if (arrayY[x] == 1) {
         numDarkCells++;
       }
     }
   }
-  int numTotalCells = [matrix height] * [matrix width];
+  NSInteger numTotalCells = [matrix height] * [matrix width];
   double darkRatio = (double) numDarkCells / numTotalCells;
-  int fivePercentVariances = abs((int)(darkRatio * 100 - 50)) / 5; // * 100.0 / 5.0
+  NSInteger fivePercentVariances = ABS((NSInteger)(darkRatio * 100 - 50)) / 5; // * 100.0 / 5.0
   return fivePercentVariances * N4;
 }
 
@@ -142,9 +142,9 @@ const int N4 = 10;
  * Return the mask bit for "getMaskPattern" at "x" and "y". See 8.8 of JISX0510:2004 for mask
  * pattern conditions.
  */
-+ (BOOL)dataMaskBit:(int)maskPattern x:(int)x y:(int)y {
-  int intermediate;
-  int temp;
++ (BOOL)dataMaskBit:(NSInteger)maskPattern x:(NSInteger)x y:(NSInteger)y {
+  NSInteger intermediate;
+  NSInteger temp;
   switch (maskPattern) {
   case 0:
     intermediate = (y + x) & 0x1;
@@ -159,7 +159,7 @@ const int N4 = 10;
     intermediate = (y + x) % 3;
     break;
   case 4:
-    intermediate = ((int)((unsigned int)y >> 1) + (x / 3)) & 0x1;
+    intermediate = ((NSInteger)((NSUInteger)y >> 1) + (x / 3)) & 0x1;
     break;
   case 5:
     temp = y * x;
@@ -175,7 +175,7 @@ const int N4 = 10;
     break;
   default:
       [NSException raise:NSInvalidArgumentException 
-                  format:@"Invalid mask pattern: %d", maskPattern];
+                  format:@"Invalid mask pattern: %ld", (long)maskPattern];
   }
   return intermediate == 0;
 }
@@ -184,16 +184,16 @@ const int N4 = 10;
  * Helper function for applyMaskPenaltyRule1. We need this for doing this calculation in both
  * vertical and horizontal orders respectively.
  */
-+ (int)applyMaskPenaltyRule1Internal:(ZXByteMatrix *)matrix isHorizontal:(BOOL)isHorizontal {
-  int penalty = 0;
-  int iLimit = isHorizontal ? matrix.height : matrix.width;
-  int jLimit = isHorizontal ? matrix.width : matrix.height;
++ (NSInteger)applyMaskPenaltyRule1Internal:(ZXByteMatrix *)matrix isHorizontal:(BOOL)isHorizontal {
+  NSInteger penalty = 0;
+  NSInteger iLimit = isHorizontal ? matrix.height : matrix.width;
+  NSInteger jLimit = isHorizontal ? matrix.width : matrix.height;
   int8_t **array = matrix.array;
-  for (int i = 0; i < iLimit; i++) {
-    int numSameBitCells = 0;
-    int prevBit = -1;
-    for (int j = 0; j < jLimit; j++) {
-      int bit = isHorizontal ? array[i][j] : array[j][i];
+  for (NSInteger i = 0; i < iLimit; i++) {
+    NSInteger numSameBitCells = 0;
+    NSInteger prevBit = -1;
+    for (NSInteger j = 0; j < jLimit; j++) {
+      NSInteger bit = isHorizontal ? array[i][j] : array[j][i];
       if (bit == prevBit) {
         numSameBitCells++;
       } else {

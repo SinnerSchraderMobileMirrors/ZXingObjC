@@ -19,9 +19,9 @@
 @interface ZXBitSource ()
 
 @property (nonatomic, assign) int8_t *bytes;
-@property (nonatomic, assign) int byteOffset;
-@property (nonatomic, assign) int bitOffset;
-@property (nonatomic, assign) int length;
+@property (nonatomic, assign) NSInteger byteOffset;
+@property (nonatomic, assign) NSInteger bitOffset;
+@property (nonatomic, assign) NSInteger length;
 
 @end
 
@@ -31,7 +31,7 @@
  * bytes is the bytes from which this will read bits. Bits will be read from the first byte first.
  * Bits are read within a byte from most-significant to least-significant bit.
  */
-- (id)initWithBytes:(int8_t *)bytes length:(unsigned int)length {
+- (id)initWithBytes:(int8_t *)bytes length:(NSUInteger)length {
   if (self = [super init]) {
     _bytes = bytes;
     _length = length;
@@ -40,17 +40,17 @@
 }
 
 
-- (int)readBits:(int)numBits {
+- (NSInteger)readBits:(NSInteger)numBits {
   if (numBits < 1 || numBits > 32 || numBits > self.available) {
     [NSException raise:NSInvalidArgumentException 
-                format:@"Invalid number of bits: %d", numBits];
+                format:@"Invalid number of bits: %ld", (long)numBits];
   }
-  int result = 0;
+  NSInteger result = 0;
   if (self.bitOffset > 0) {
-    int bitsLeft = 8 - self.bitOffset;
-    int toRead = numBits < bitsLeft ? numBits : bitsLeft;
-    int bitsToNotRead = bitsLeft - toRead;
-    int mask = (0xFF >> (8 - toRead)) << bitsToNotRead;
+    NSInteger bitsLeft = 8 - self.bitOffset;
+    NSInteger toRead = numBits < bitsLeft ? numBits : bitsLeft;
+    NSInteger bitsToNotRead = bitsLeft - toRead;
+    NSInteger mask = (0xFF >> (8 - toRead)) << bitsToNotRead;
     result = (self.bytes[self.byteOffset] & mask) >> bitsToNotRead;
     numBits -= toRead;
     self.bitOffset += toRead;
@@ -68,8 +68,8 @@
     }
 
     if (numBits > 0) {
-      int bitsToNotRead = 8 - numBits;
-      int mask = (0xFF >> bitsToNotRead) << bitsToNotRead;
+      NSInteger bitsToNotRead = 8 - numBits;
+      NSInteger mask = (0xFF >> bitsToNotRead) << bitsToNotRead;
       result = (result << numBits) | ((self.bytes[self.byteOffset] & mask) >> bitsToNotRead);
       self.bitOffset += numBits;
     }
@@ -77,7 +77,7 @@
   return result;
 }
 
-- (int)available {
+- (NSInteger)available {
   return 8 * (self.length - self.byteOffset) - self.bitOffset;
 }
 

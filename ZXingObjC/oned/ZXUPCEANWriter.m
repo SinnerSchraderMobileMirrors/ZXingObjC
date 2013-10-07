@@ -21,7 +21,7 @@
 
 @implementation ZXUPCEANWriter
 
-- (int)defaultMargin {
+- (NSInteger)defaultMargin {
   // Use a different default more appropriate for UPC/EAN
   return START_END_PATTERN_LEN;
 }

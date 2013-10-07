@@ -37,16 +37,16 @@
 - (NSString *)lookupCountryIdentifier:(NSString *)productCode {
   [self initIfNeeded];
   
-  int prefix = [[productCode substringToIndex:3] intValue];
-  int max = self.ranges.count;
+  NSInteger prefix = [[productCode substringToIndex:3] intValue];
+  NSInteger max = self.ranges.count;
 
-  for (int i = 0; i < max; i++) {
+  for (NSInteger i = 0; i < max; i++) {
     NSArray *range = self.ranges[i];
-    int start = [range[0] intValue];
+    NSInteger start = [range[0] intValue];
     if (prefix < start) {
       return nil;
     }
-    int end = [range count] == 1 ? start : [range[1] intValue];
+    NSInteger end = [range count] == 1 ? start : [range[1] intValue];
     if (prefix <= end) {
       return self.countryIdentifiers[i];
     }

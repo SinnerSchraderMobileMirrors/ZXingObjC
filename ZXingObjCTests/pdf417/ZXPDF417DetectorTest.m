@@ -16,11 +16,11 @@
 
 #import "ZXPDF417DetectorTest.h"
 
-const int BIT_SET_INDEX_LEN = 4;
-const int BIT_SET_INDEX[BIT_SET_INDEX_LEN] = { 1, 2, 3, 5 };
+const NSInteger BIT_SET_INDEX_LEN = 4;
+const NSInteger BIT_SET_INDEX[BIT_SET_INDEX_LEN] = { 1, 2, 3, 5 };
 
-const int BIT_MATRIX_POINTS_LEN = 6;
-const int BIT_MATRIX_POINTS[BIT_MATRIX_POINTS_LEN] = { 1, 2, 2, 0, 3, 1 };
+const NSInteger BIT_MATRIX_POINTS_LEN = 6;
+const NSInteger BIT_MATRIX_POINTS[BIT_MATRIX_POINTS_LEN] = { 1, 2, 2, 0, 3, 1 };
 
 @implementation ZXPDF417DetectorTest
 
@@ -29,7 +29,7 @@ const int BIT_MATRIX_POINTS[BIT_MATRIX_POINTS_LEN] = { 1, 2, 2, 0, 3, 1 };
   [self testMirror:8];
 }
 
-- (void)testMirror:(int)size {
+- (void)testMirror:(NSInteger)size {
   ZXBitArray *result = [[ZXBitArray alloc] initWithSize:size];
   [ZXPDF417Detector mirror:[self input:size] result:result];
 
@@ -44,47 +44,47 @@ const int BIT_MATRIX_POINTS[BIT_MATRIX_POINTS_LEN] = { 1, 2, 2, 0, 3, 1 };
   [self testRotate180:8 height:5];
 }
 
-- (void)testRotate180:(int)width height:(int)height {
+- (void)testRotate180:(NSInteger)width height:(NSInteger)height {
   ZXBitMatrix *input = [self input:width height:height];
   [ZXPDF417Detector rotate180:input];
   ZXBitMatrix *expected = [self expected:width height:height];
 
-  for (int y = 0; y < height; y++) {
-    for (int x = 0; x < width; x++) {
+  for (NSInteger y = 0; y < height; y++) {
+    for (NSInteger x = 0; x < width; x++) {
       STAssertEquals([input getX:x y:y], [expected getX:x y:y], @"(%d,%d)", x, y);
     }
   }
 }
 
-- (ZXBitMatrix *)expected:(int)width height:(int)height {
+- (ZXBitMatrix *)expected:(NSInteger)width height:(NSInteger)height {
   ZXBitMatrix *result = [[ZXBitMatrix alloc] initWithWidth:width height:height];
-  for (int i = 0; i < BIT_MATRIX_POINTS_LEN; i += 2) {
+  for (NSInteger i = 0; i < BIT_MATRIX_POINTS_LEN; i += 2) {
     [result setX:width - 1 - BIT_MATRIX_POINTS[i] y:height - 1 - BIT_MATRIX_POINTS[i + 1]];
   }
   return result;
 }
 
-- (ZXBitMatrix *)input:(int)width height:(int)height {
+- (ZXBitMatrix *)input:(NSInteger)width height:(NSInteger)height {
   ZXBitMatrix *result = [[ZXBitMatrix alloc] initWithWidth:width height:height];
-  for (int i = 0; i < BIT_MATRIX_POINTS_LEN; i += 2) {
+  for (NSInteger i = 0; i < BIT_MATRIX_POINTS_LEN; i += 2) {
     [result setX:BIT_MATRIX_POINTS[i] y:BIT_MATRIX_POINTS[i + 1]];
   }
   return result;
 }
 
-- (ZXBitArray *)expected:(int)size {
+- (ZXBitArray *)expected:(NSInteger)size {
   ZXBitArray *expected = [[ZXBitArray alloc] initWithSize:size];
-  for (int i = 0; i < BIT_SET_INDEX_LEN; i++) {
-    int index = BIT_SET_INDEX[i];
+  for (NSInteger i = 0; i < BIT_SET_INDEX_LEN; i++) {
+    NSInteger index = BIT_SET_INDEX[i];
     [expected set:size - 1 - index];
   }
   return expected;
 }
 
-- (ZXBitArray *)input:(int)size {
+- (ZXBitArray *)input:(NSInteger)size {
   ZXBitArray *input = [[ZXBitArray alloc] initWithSize:size];
-  for (int i = 0; i < BIT_SET_INDEX_LEN; i++) {
-    int index = BIT_SET_INDEX[i];
+  for (NSInteger i = 0; i < BIT_SET_INDEX_LEN; i++) {
+    NSInteger index = BIT_SET_INDEX[i];
     [input set:index];
   }
   return input;

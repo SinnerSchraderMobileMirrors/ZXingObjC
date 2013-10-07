@@ -18,7 +18,7 @@
 #import "ZXErrors.h"
 #import "ZXMaxiCodeBitMatrixParser.h"
 
-const int BITNR[33][30] = {
+const NSInteger BITNR[33][30] = {
   {121,120,127,126,133,132,139,138,145,144,151,150,157,156,163,162,169,168,175,174,181,180,187,186,193,192,199,198, -2, -2},
   {123,122,129,128,135,134,141,140,147,146,153,152,159,158,165,164,171,170,177,176,183,182,189,188,195,194,201,200,816, -3},
   {125,124,131,130,137,136,143,142,149,148,155,154,161,160,167,166,173,172,179,178,185,184,191,190,197,196,203,202,818,817},
@@ -71,16 +71,16 @@ const int BITNR[33][30] = {
 }
 
 - (NSArray *)readCodewords {
-  const int resultLength = 144;
+  const NSInteger resultLength = 144;
   int8_t result[resultLength];
   memset(result, 0, resultLength * sizeof(int8_t));
 
-  int height = self.bitMatrix.height;
-  int width = self.bitMatrix.width;
-  for (int y = 0; y < height; y++) {
-    int *bitnrRow = (int *)BITNR[y];
-    for (int x = 0; x < width; x++) {
-      int bit = bitnrRow[x];
+  NSInteger height = self.bitMatrix.height;
+  NSInteger width = self.bitMatrix.width;
+  for (NSInteger y = 0; y < height; y++) {
+    NSInteger *bitnrRow = (NSInteger *)BITNR[y];
+    for (NSInteger x = 0; x < width; x++) {
+      NSInteger bit = bitnrRow[x];
       if (bit >= 0 && [self.bitMatrix getX:x y:y]) {
         result[bit / 6] |= (int8_t) (1 << (5 - (bit % 6)));
       }
@@ -88,7 +88,7 @@ const int BITNR[33][30] = {
   }
 
   NSMutableArray *resultArray = [NSMutableArray arrayWithCapacity:resultLength];
-  for (int i = 0; i < resultLength; i++) {
+  for (NSInteger i = 0; i < resultLength; i++) {
     [resultArray addObject:[NSNumber numberWithChar:result[i]]];
   }
 

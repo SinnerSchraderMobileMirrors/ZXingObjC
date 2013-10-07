@@ -45,7 +45,7 @@
   NSString *priceCurrency = nil;
   NSMutableDictionary *uncommonAIs = [NSMutableDictionary dictionary];
 
-  int i = 0;
+  NSInteger i = 0;
 
   while (i < [rawText length]) {
     NSString *ai = [self findAIvalue:i rawText:rawText];
@@ -112,7 +112,7 @@
                                                                    uncommonAIs:uncommonAIs];
 }
 
-- (NSString *)findAIvalue:(int)i rawText:(NSString *)rawText {
+- (NSString *)findAIvalue:(NSInteger)i rawText:(NSString *)rawText {
   unichar c = [rawText characterAtIndex:i];
   if (c != '(') {
     return nil;
@@ -121,7 +121,7 @@
   NSString *rawTextAux = [rawText substringFromIndex:i + 1];
 
   NSMutableString *buf = [NSMutableString string];
-  for (int index = 0; index < [rawTextAux length]; index++) {
+  for (NSInteger index = 0; index < [rawTextAux length]; index++) {
     unichar currentChar = [rawTextAux characterAtIndex:index];
     if (currentChar == ')') {
       return buf;
@@ -134,11 +134,11 @@
   return buf;
 }
 
-- (NSString *)findValue:(int)i rawText:(NSString *)rawText {
+- (NSString *)findValue:(NSInteger)i rawText:(NSString *)rawText {
   NSMutableString *buf = [NSMutableString string];
   NSString *rawTextAux = [rawText substringFromIndex:i];
 
-  for (int index = 0; index < [rawTextAux length]; index++) {
+  for (NSInteger index = 0; index < [rawTextAux length]; index++) {
     unichar c = [rawTextAux characterAtIndex:index];
     if (c == '(') {
       if ([self findAIvalue:index rawText:rawTextAux] == nil) {

@@ -20,9 +20,9 @@
 
 @interface ZXDimension : NSObject
 
-@property (nonatomic, assign, readonly) int height;
-@property (nonatomic, assign, readonly) int width;
+@property (nonatomic, assign, readonly) NSInteger height;
+@property (nonatomic, assign, readonly) NSInteger width;
 
-- (id)initWithWidth:(int)width height:(int)height;
+- (id)initWithWidth:(NSInteger)width height:(NSInteger)height;
 
 @end

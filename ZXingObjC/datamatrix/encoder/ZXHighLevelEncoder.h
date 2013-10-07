@@ -74,12 +74,12 @@
  */
 + (unichar)x12Unlatch;
 
-+ (int)asciiEncodation;
-+ (int)c40Encodation;
-+ (int)textEncodation;
-+ (int)x12Encodation;
-+ (int)edifactEncodation;
-+ (int)base256Encodation;
++ (NSInteger)asciiEncodation;
++ (NSInteger)c40Encodation;
++ (NSInteger)textEncodation;
++ (NSInteger)x12Encodation;
++ (NSInteger)edifactEncodation;
++ (NSInteger)base256Encodation;
 
 /**
  * Converts the message to a byte array using the default encoding (cp437) as defined by the
@@ -100,12 +100,12 @@
 + (NSString *)encodeHighLevel:(NSString *)msg shape:(ZXSymbolShapeHint *)shape
                       minSize:(ZXDimension *)minSize maxSize:(ZXDimension *)maxSize;
 
-+ (int)lookAheadTest:(NSString *)msg startpos:(int)startpos currentMode:(int)currentMode;
++ (NSInteger)lookAheadTest:(NSString *)msg startpos:(NSInteger)startpos currentMode:(NSInteger)currentMode;
 
 /**
  * Determines the number of consecutive characters that are encodable using numeric compaction.
  */
-+ (int)determineConsecutiveDigitCount:(NSString *)msg startpos:(int)startpos;
++ (NSInteger)determineConsecutiveDigitCount:(NSString *)msg startpos:(NSInteger)startpos;
 
 + (BOOL)isDigit:(unichar)ch;
 + (BOOL)isExtendedASCII:(unichar)ch;

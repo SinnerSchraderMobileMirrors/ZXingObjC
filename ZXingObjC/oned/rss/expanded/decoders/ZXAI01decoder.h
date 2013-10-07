@@ -16,11 +16,11 @@
 
 #import "ZXAbstractExpandedDecoder.h"
 
-extern const int GTIN_SIZE;
+extern const NSInteger GTIN_SIZE;
 
 @interface ZXAI01decoder : ZXAbstractExpandedDecoder
 
-- (void)encodeCompressedGtin:(NSMutableString *)buf currentPos:(int)currentPos;
-- (void)encodeCompressedGtinWithoutAI:(NSMutableString *)buf currentPos:(int)currentPos initialBufferPosition:(int)initialBufferPosition;
+- (void)encodeCompressedGtin:(NSMutableString *)buf currentPos:(NSInteger)currentPos;
+- (void)encodeCompressedGtinWithoutAI:(NSMutableString *)buf currentPos:(NSInteger)currentPos initialBufferPosition:(NSInteger)initialBufferPosition;
 
 @end

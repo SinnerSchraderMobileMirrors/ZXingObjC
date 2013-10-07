@@ -27,7 +27,7 @@
 
 @implementation ZXDataMask000
 
-- (BOOL)isMasked:(int)i j:(int)j {
+- (BOOL)isMasked:(NSInteger)i j:(NSInteger)j {
   return ((i + j) & 0x01) == 0;
 }
 
@@ -44,7 +44,7 @@
 
 @implementation ZXDataMask001
 
-- (BOOL)isMasked:(int)i j:(int)j {
+- (BOOL)isMasked:(NSInteger)i j:(NSInteger)j {
   return (i & 0x01) == 0;
 }
 
@@ -61,7 +61,7 @@
 
 @implementation ZXDataMask010
 
-- (BOOL)isMasked:(int)i j:(int)j {
+- (BOOL)isMasked:(NSInteger)i j:(NSInteger)j {
   return j % 3 == 0;
 }
 
@@ -78,7 +78,7 @@
 
 @implementation ZXDataMask011
 
-- (BOOL)isMasked:(int)i j:(int)j {
+- (BOOL)isMasked:(NSInteger)i j:(NSInteger)j {
   return (i + j) % 3 == 0;
 }
 
@@ -95,8 +95,8 @@
 
 @implementation ZXDataMask100
 
-- (BOOL)isMasked:(int)i j:(int)j {
-  return (((int)((unsigned int)i >> 1) + (j / 3)) & 0x01) == 0;
+- (BOOL)isMasked:(NSInteger)i j:(NSInteger)j {
+  return (((NSInteger)((NSUInteger)i >> 1) + (j / 3)) & 0x01) == 0;
 }
 
 @end
@@ -112,8 +112,8 @@
 
 @implementation ZXDataMask101
 
-- (BOOL)isMasked:(int)i j:(int)j {
-  int temp = i * j;
+- (BOOL)isMasked:(NSInteger)i j:(NSInteger)j {
+  NSInteger temp = i * j;
   return (temp & 0x01) + (temp % 3) == 0;
 }
 
@@ -130,8 +130,8 @@
 
 @implementation ZXDataMask110
 
-- (BOOL)isMasked:(int)i j:(int)j {
-  int temp = i * j;
+- (BOOL)isMasked:(NSInteger)i j:(NSInteger)j {
+  NSInteger temp = i * j;
   return (((temp & 0x01) + (temp % 3)) & 0x01) == 0;
 }
 
@@ -148,7 +148,7 @@
 
 @implementation ZXDataMask111
 
-- (BOOL)isMasked:(int)i j:(int)j {
+- (BOOL)isMasked:(NSInteger)i j:(NSInteger)j {
   return ((((i + j) & 0x01) + ((i * j) % 3)) & 0x01) == 0;
 }
 
@@ -163,9 +163,9 @@ static NSArray *DATA_MASKS = nil;
  * Implementations of this method reverse the data masking process applied to a QR Code and
  * make its bits ready to read.
  */
-- (void)unmaskBitMatrix:(ZXBitMatrix *)bits dimension:(int)dimension {
-  for (int i = 0; i < dimension; i++) {
-    for (int j = 0; j < dimension; j++) {
+- (void)unmaskBitMatrix:(ZXBitMatrix *)bits dimension:(NSInteger)dimension {
+  for (NSInteger i = 0; i < dimension; i++) {
+    for (NSInteger j = 0; j < dimension; j++) {
       if ([self isMasked:i j:j]) {
         [bits flipX:j y:i];
       }
@@ -173,14 +173,14 @@ static NSArray *DATA_MASKS = nil;
   }
 }
 
-- (BOOL)isMasked:(int)i j:(int)j {
+- (BOOL)isMasked:(NSInteger)i j:(NSInteger)j {
   @throw [NSException exceptionWithName:NSInternalInconsistencyException
                                  reason:[NSString stringWithFormat:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)]
                                userInfo:nil];
 }
 
 
-+ (ZXDataMask *)forReference:(int)reference {
++ (ZXDataMask *)forReference:(NSInteger)reference {
   if (!DATA_MASKS) {
     /**
      * See ISO 18004:2006 6.8.1

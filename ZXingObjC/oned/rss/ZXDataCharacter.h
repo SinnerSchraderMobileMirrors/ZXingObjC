@@ -16,9 +16,9 @@
 
 @interface ZXDataCharacter : NSObject
 
-@property (nonatomic, assign, readonly) int value;
-@property (nonatomic, assign, readonly) int checksumPortion;
+@property (nonatomic, assign, readonly) NSInteger value;
+@property (nonatomic, assign, readonly) NSInteger checksumPortion;
 
-- (id)initWithValue:(int)value checksumPortion:(int)checksumPortion;
+- (id)initWithValue:(NSInteger)value checksumPortion:(NSInteger)checksumPortion;
 
 @end

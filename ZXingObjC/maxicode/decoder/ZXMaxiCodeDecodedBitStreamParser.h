@@ -23,6 +23,6 @@
 
 @interface ZXMaxiCodeDecodedBitStreamParser : NSObject
 
-+ (ZXDecoderResult *)decode:(int8_t *)bytes length:(unsigned int)length mode:(int)mode;
++ (ZXDecoderResult *)decode:(int8_t *)bytes length:(NSUInteger)length mode:(NSInteger)mode;
 
 @end

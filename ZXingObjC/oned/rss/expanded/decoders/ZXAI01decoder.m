@@ -18,37 +18,37 @@
 #import "ZXBitArray.h"
 #import "ZXGeneralAppIdDecoder.h"
 
-int const GTIN_SIZE = 40;
+NSInteger const GTIN_SIZE = 40;
 
 @implementation ZXAI01decoder
 
-- (void)encodeCompressedGtin:(NSMutableString *)buf currentPos:(int)currentPos {
+- (void)encodeCompressedGtin:(NSMutableString *)buf currentPos:(NSInteger)currentPos {
   [buf appendString:@"(01)"];
-  int initialPosition = [buf length];
+  NSInteger initialPosition = [buf length];
   [buf appendString:@"9"];
 
   [self encodeCompressedGtinWithoutAI:buf currentPos:currentPos initialBufferPosition:initialPosition];
 }
 
-- (void)encodeCompressedGtinWithoutAI:(NSMutableString *)buf currentPos:(int)currentPos initialBufferPosition:(int)initialBufferPosition {
-  for (int i = 0; i < 4; ++i) {
-    int currentBlock = [self.generalDecoder extractNumericValueFromBitArray:currentPos + 10 * i bits:10];
+- (void)encodeCompressedGtinWithoutAI:(NSMutableString *)buf currentPos:(NSInteger)currentPos initialBufferPosition:(NSInteger)initialBufferPosition {
+  for (NSInteger i = 0; i < 4; ++i) {
+    NSInteger currentBlock = [self.generalDecoder extractNumericValueFromBitArray:currentPos + 10 * i bits:10];
     if (currentBlock / 100 == 0) {
       [buf appendString:@"0"];
     }
     if (currentBlock / 10 == 0) {
       [buf appendString:@"0"];
     }
-    [buf appendFormat:@"%d", currentBlock];
+    [buf appendFormat:@"%ld", (long)currentBlock];
   }
 
   [self appendCheckDigit:buf currentPos:initialBufferPosition];
 }
 
-- (void)appendCheckDigit:(NSMutableString *)buf currentPos:(int)currentPos {
-  int checkDigit = 0;
-  for (int i = 0; i < 13; i++) {
-    int digit = [buf characterAtIndex:i + currentPos] - '0';
+- (void)appendCheckDigit:(NSMutableString *)buf currentPos:(NSInteger)currentPos {
+  NSInteger checkDigit = 0;
+  for (NSInteger i = 0; i < 13; i++) {
+    NSInteger digit = [buf characterAtIndex:i + currentPos] - '0';
     checkDigit += (i & 0x01) == 0 ? 3 * digit : digit;
   }
 
@@ -57,7 +57,7 @@ int const GTIN_SIZE = 40;
     checkDigit = 0;
   }
 
-  [buf appendFormat:@"%d", checkDigit];
+  [buf appendFormat:@"%ld", (long)checkDigit];
 }
 
 @end

@@ -24,7 +24,7 @@
 @interface ZXDataMatrixECBlocks : NSObject
 
 @property (nonatomic, strong, readonly) NSArray *ecBlocks;
-@property (nonatomic, assign, readonly) int ecCodewords;
+@property (nonatomic, assign, readonly) NSInteger ecCodewords;
 
 @end
 
@@ -36,8 +36,8 @@
 
 @interface ZXDataMatrixECB : NSObject
 
-@property (nonatomic, assign, readonly) int count;
-@property (nonatomic, assign, readonly) int dataCodewords;
+@property (nonatomic, assign, readonly) NSInteger count;
+@property (nonatomic, assign, readonly) NSInteger dataCodewords;
 
 @end
 
@@ -49,13 +49,13 @@
 @interface ZXDataMatrixVersion : NSObject
 
 @property (nonatomic, strong, readonly) ZXDataMatrixECBlocks *ecBlocks;
-@property (nonatomic, assign, readonly) int dataRegionSizeColumns;
-@property (nonatomic, assign, readonly) int dataRegionSizeRows;
-@property (nonatomic, assign, readonly) int symbolSizeColumns;
-@property (nonatomic, assign, readonly) int symbolSizeRows;
-@property (nonatomic, assign, readonly) int totalCodewords;
-@property (nonatomic, assign, readonly) int versionNumber;
+@property (nonatomic, assign, readonly) NSInteger dataRegionSizeColumns;
+@property (nonatomic, assign, readonly) NSInteger dataRegionSizeRows;
+@property (nonatomic, assign, readonly) NSInteger symbolSizeColumns;
+@property (nonatomic, assign, readonly) NSInteger symbolSizeRows;
+@property (nonatomic, assign, readonly) NSInteger totalCodewords;
+@property (nonatomic, assign, readonly) NSInteger versionNumber;
 
-+ (ZXDataMatrixVersion *)versionForDimensions:(int)numRows numColumns:(int)numColumns;
++ (ZXDataMatrixVersion *)versionForDimensions:(NSInteger)numRows numColumns:(NSInteger)numColumns;
 
 @end

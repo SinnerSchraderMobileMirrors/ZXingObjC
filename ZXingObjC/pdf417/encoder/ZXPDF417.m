@@ -24,18 +24,18 @@
 /**
  * The start pattern (17 bits)
  */
-const int START_PATTERN_INT = 0x1fea8;
+const NSInteger START_PATTERN_INT = 0x1fea8;
 /**
  * The stop pattern (18 bits)
  */
-const int STOP_PATTERN_INT = 0x3fa29;
+const NSInteger STOP_PATTERN_INT = 0x3fa29;
 
 /**
  * The codeword table from the Annex A of ISO/IEC 15438:2001(E).
  */
 #define CODEWORD_TABLE_LEN 3
 #define CODEWORD_TABLE_SUB_LEN 929
-const int PDF_CODEWORD_TABLE[CODEWORD_TABLE_LEN][CODEWORD_TABLE_SUB_LEN] = {
+const NSInteger PDF_CODEWORD_TABLE[CODEWORD_TABLE_LEN][CODEWORD_TABLE_SUB_LEN] = {
   {0x1d5c0, 0x1eaf0, 0x1f57c, 0x1d4e0, 0x1ea78, 0x1f53e,
     0x1a8c0, 0x1d470, 0x1a860, 0x15040, 0x1a830, 0x15020,
     0x1adc0, 0x1d6f0, 0x1eb7c, 0x1ace0, 0x1d678, 0x1eb3e,
@@ -509,10 +509,10 @@ static float HEIGHT = 2.0f; //mm
 @interface ZXPDF417 ()
 
 @property (nonatomic, strong) ZXBarcodeMatrix *barcodeMatrix;
-@property (nonatomic, assign) int minCols;
-@property (nonatomic, assign) int maxCols;
-@property (nonatomic, assign) int minRows;
-@property (nonatomic, assign) int maxRows;
+@property (nonatomic, assign) NSInteger minCols;
+@property (nonatomic, assign) NSInteger maxCols;
+@property (nonatomic, assign) NSInteger minRows;
+@property (nonatomic, assign) NSInteger maxRows;
 
 @end
 
@@ -538,8 +538,8 @@ static float HEIGHT = 2.0f; //mm
 /**
  * Calculates the necessary number of rows as described in annex Q of ISO/IEC 15438:2001(E).
  */
-- (int)calculateNumberOfRowsM:(int)m k:(int)k c:(int)c {
-  int r = ((m + 1 + k) / c) + 1;
+- (NSInteger)calculateNumberOfRowsM:(NSInteger)m k:(NSInteger)k c:(NSInteger)c {
+  NSInteger r = ((m + 1 + k) / c) + 1;
   if (c * r >= (m + 1 + k + c)) {
     r--;
   }
@@ -549,16 +549,16 @@ static float HEIGHT = 2.0f; //mm
 /**
  * Calculates the number of pad codewords as described in 4.9.2 of ISO/IEC 15438:2001(E).
  */
-- (int)numberOfPadCodewordsM:(int)m k:(int)k c:(int)c r:(int)r {
-  int n = c * r - k;
+- (NSInteger)numberOfPadCodewordsM:(NSInteger)m k:(NSInteger)k c:(NSInteger)c r:(NSInteger)r {
+  NSInteger n = c * r - k;
   return n > m + 1 ? n - m - 1 : 0;
 }
 
-- (void)encodeCharPattern:(int)pattern len:(int)len logic:(ZXBarcodeRow *)logic {
-  int map = 1 << (len - 1);
+- (void)encodeCharPattern:(NSInteger)pattern len:(NSUInteger)len logic:(ZXBarcodeRow *)logic {
+  NSInteger map = 1 << (len - 1);
   BOOL last = (pattern & map) != 0; //Initialize to inverse of first bit
-  int width = 0;
-  for (int i = 0; i < len; i++) {
+  NSInteger width = 0;
+  for (NSInteger i = 0; i < len; i++) {
     BOOL black = (pattern & map) != 0;
     if (last == black) {
       width++;
@@ -573,15 +573,15 @@ static float HEIGHT = 2.0f; //mm
   [logic addBar:last width:width];
 }
 
-- (void)encodeLowLevel:(NSString *)fullCodewords c:(int)c r:(int)r errorCorrectionLevel:(int)errorCorrectionLevel logic:(ZXBarcodeMatrix *)logic {
-  int idx = 0;
-  for (int y = 0; y < r; y++) {
-    int cluster = y % 3;
+- (void)encodeLowLevel:(NSString *)fullCodewords c:(NSInteger)c r:(NSInteger)r errorCorrectionLevel:(NSInteger)errorCorrectionLevel logic:(ZXBarcodeMatrix *)logic {
+  NSInteger idx = 0;
+  for (NSInteger y = 0; y < r; y++) {
+    NSInteger cluster = y % 3;
     [logic startRow];
     [self encodeCharPattern:START_PATTERN_INT len:17 logic:logic.currentRow];
 
-    int left;
-    int right;
+    NSInteger left;
+    NSInteger right;
     if (cluster == 0) {
       left = (30 * (y / 3)) + ((r - 1) / 3);
       right = (30 * (y / 3)) + (c - 1);
@@ -593,10 +593,10 @@ static float HEIGHT = 2.0f; //mm
       right = (30 * (y / 3)) + (errorCorrectionLevel * 3) + ((r - 1) % 3);
     }
 
-    int pattern = PDF_CODEWORD_TABLE[cluster][left];
+    NSInteger pattern = PDF_CODEWORD_TABLE[cluster][left];
     [self encodeCharPattern:pattern len:17 logic:logic.currentRow];
 
-    for (int x = 0; x < c; x++) {
+    for (NSInteger x = 0; x < c; x++) {
       pattern = PDF_CODEWORD_TABLE[cluster][[fullCodewords characterAtIndex:idx]];
       [self encodeCharPattern:pattern len:17 logic:logic.currentRow];
       idx++;
@@ -616,39 +616,39 @@ static float HEIGHT = 2.0f; //mm
 /**
  * Generates the barcode logic.
  */
-- (BOOL)generateBarcodeLogic:(NSString *)msg errorCorrectionLevel:(int)anErrorCorrectionLevel error:(NSError **)error {
+- (BOOL)generateBarcodeLogic:(NSString *)msg errorCorrectionLevel:(NSInteger)anErrorCorrectionLevel error:(NSError **)error {
 
   //1. step: High-level encoding
-  int errorCorrectionCodeWords = [ZXPDF417ErrorCorrection errorCorrectionCodewordCount:anErrorCorrectionLevel];
+  NSInteger errorCorrectionCodeWords = [ZXPDF417ErrorCorrection errorCorrectionCodewordCount:anErrorCorrectionLevel];
   NSString *highLevel = [ZXPDF417HighLevelEncoder encodeHighLevel:msg compaction:self.compaction error:error];
   if (!highLevel) {
     return NO;
   }
-  int sourceCodeWords = highLevel.length;
+  NSInteger sourceCodeWords = highLevel.length;
 
-  int dimension[2] = {0};
+  NSInteger dimension[2] = {0};
   if (![self determineDimensions:dimension sourceCodeWords:sourceCodeWords errorCorrectionCodeWords:errorCorrectionCodeWords error:error]) {
     return NO;
   }
 
-  int cols = dimension[0];
-  int rows = dimension[1];
+  NSInteger cols = dimension[0];
+  NSInteger rows = dimension[1];
 
-  int pad = [self numberOfPadCodewordsM:sourceCodeWords k:errorCorrectionCodeWords c:cols r:rows];
+  NSInteger pad = [self numberOfPadCodewordsM:sourceCodeWords k:errorCorrectionCodeWords c:cols r:rows];
 
   //2. step: construct data codewords
   if (sourceCodeWords + errorCorrectionCodeWords + 1 > 929) { // +1 for symbol length CW
-    NSDictionary *userInfo = @{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Encoded message contains to many code words, message to big (%d bytes)", (int)msg.length]};
+    NSDictionary *userInfo = @{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Encoded message contains to many code words, message to big (%ld bytes)", (long)msg.length]};
 
     if (error) *error = [[NSError alloc] initWithDomain:ZXErrorDomain code:ZXWriterError userInfo:userInfo];
     return NO;
   }
 
-  int n = sourceCodeWords + pad + 1;
+  NSInteger n = sourceCodeWords + pad + 1;
   NSMutableString *sb = [NSMutableString stringWithCapacity:n];
   [sb appendFormat:@"%C", (unichar)n];
   [sb appendFormat:@"%@", highLevel];
-  for (int i = 0; i < pad; i++) {
+  for (NSInteger i = 0; i < pad; i++) {
     [sb appendFormat:@"%C", (unichar) 900]; //PAD characters
   }
   NSString *dataCodewords = sb;
@@ -668,13 +668,13 @@ static float HEIGHT = 2.0f; //mm
  * Determine optimal nr of columns and rows for the specified number of
  * codewords.
  */
-- (BOOL)determineDimensions:(int *)dimension sourceCodeWords:(int)sourceCodeWords errorCorrectionCodeWords:(int)errorCorrectionCodeWords error:(NSError **)error{
+- (BOOL)determineDimensions:(NSInteger *)dimension sourceCodeWords:(NSInteger)sourceCodeWords errorCorrectionCodeWords:(NSInteger)errorCorrectionCodeWords error:(NSError **)error{
   float ratio = 0.0f;
   BOOL result = NO;
 
-  for (int cols = self.minCols; cols <= self.maxCols; cols++) {
+  for (NSInteger cols = self.minCols; cols <= self.maxCols; cols++) {
 
-    int rows = [self calculateNumberOfRowsM:sourceCodeWords k:errorCorrectionCodeWords c:cols];
+    NSInteger rows = [self calculateNumberOfRowsM:sourceCodeWords k:errorCorrectionCodeWords c:cols];
 
     if (rows < self.minRows) {
       break;
@@ -699,7 +699,7 @@ static float HEIGHT = 2.0f; //mm
 
   // Handle case when min values were larger than necessary
   if (!result) {
-    int rows = [self calculateNumberOfRowsM:sourceCodeWords k:errorCorrectionCodeWords c:self.minCols];
+    NSInteger rows = [self calculateNumberOfRowsM:sourceCodeWords k:errorCorrectionCodeWords c:self.minCols];
     if (rows < self.minRows) {
       dimension[0] = self.minCols;
       dimension[1] = self.minRows;
@@ -719,7 +719,7 @@ static float HEIGHT = 2.0f; //mm
 /**
  * Sets max/min row/col values
  */
-- (void)setDimensionsWithMaxCols:(int)maxCols minCols:(int)minCols maxRows:(int)maxRows minRows:(int)minRows {
+- (void)setDimensionsWithMaxCols:(NSInteger)maxCols minCols:(NSInteger)minCols maxRows:(NSInteger)maxRows minRows:(NSInteger)minRows {
   self.maxCols = maxCols;
   self.minCols = minCols;
   self.maxRows = maxRows;

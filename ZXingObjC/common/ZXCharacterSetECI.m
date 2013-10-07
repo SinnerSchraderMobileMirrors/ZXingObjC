@@ -57,7 +57,7 @@ static NSMutableDictionary *ENCODING_TO_ECI = nil;
   [self addCharacterSet:170 encoding:NSASCIIStringEncoding];
 }
 
-- (id)initWithValue:(int)value encoding:(NSStringEncoding)encoding {
+- (id)initWithValue:(NSInteger)value encoding:(NSStringEncoding)encoding {
   if (self = [super initWithValue:value]) {
     _encoding = encoding;
   }
@@ -65,13 +65,13 @@ static NSMutableDictionary *ENCODING_TO_ECI = nil;
   return self;
 }
 
-+ (void)addCharacterSet:(int)value encoding:(NSStringEncoding)encoding {
++ (void)addCharacterSet:(NSInteger)value encoding:(NSStringEncoding)encoding {
   ZXCharacterSetECI *eci = [[ZXCharacterSetECI alloc] initWithValue:value encoding:encoding];
   VALUE_TO_ECI[@(value)] = eci;
   ENCODING_TO_ECI[@(encoding)] = eci;
 }
 
-+ (ZXCharacterSetECI *)characterSetECIByValue:(int)value {
++ (ZXCharacterSetECI *)characterSetECIByValue:(NSInteger)value {
   if (VALUE_TO_ECI == nil) {
     [self initialize];
   }

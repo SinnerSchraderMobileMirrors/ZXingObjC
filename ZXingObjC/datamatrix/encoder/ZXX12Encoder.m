@@ -21,7 +21,7 @@
 
 @implementation ZXX12Encoder
 
-- (int)encodingMode {
+- (NSInteger)encodingMode {
   return [ZXHighLevelEncoder x12Encodation];
 }
 
@@ -34,11 +34,11 @@
 
     [self encodeChar:c buffer:buffer];
 
-    int count = buffer.length;
+    NSInteger count = buffer.length;
     if ((count % 3) == 0) {
       [self writeNextTriplet:context buffer:buffer];
 
-      int newMode = [ZXHighLevelEncoder lookAheadTest:context.message startpos:context.pos currentMode:[self encodingMode]];
+      NSInteger newMode = [ZXHighLevelEncoder lookAheadTest:context.message startpos:context.pos currentMode:[self encodingMode]];
       if (newMode != [self encodingMode]) {
         [context signalEncoderChange:newMode];
         break;
@@ -48,7 +48,7 @@
   [self handleEOD:context buffer:buffer];
 }
 
-- (int)encodeChar:(unichar)c buffer:(NSMutableString *)sb {
+- (NSInteger)encodeChar:(unichar)c buffer:(NSMutableString *)sb {
   if (c == '\r') {
     [sb appendString:@"\0"];
   } else if (c == '*') {
@@ -69,8 +69,8 @@
 
 - (void)handleEOD:(ZXEncoderContext *)context buffer:(NSMutableString *)buffer {
   [context updateSymbolInfo];
-  int available = context.symbolInfo.dataCapacity - [context codewordCount];
-  int count = buffer.length;
+  NSInteger available = context.symbolInfo.dataCapacity - [context codewordCount];
+  NSInteger count = buffer.length;
   if (count == 2) {
     [context writeCodeword:[ZXHighLevelEncoder x12Unlatch]];
     context.pos -= 2;

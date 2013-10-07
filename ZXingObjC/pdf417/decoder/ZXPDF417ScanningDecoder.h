@@ -16,7 +16,7 @@
 
 @class ZXBitMatrix, ZXDecoderResult, ZXResultPoint;
 
-extern const int ZXPDF417_CODEWORD_SKEW_SIZE;
+extern const NSInteger ZXPDF417_CODEWORD_SKEW_SIZE;
 
 @interface ZXPDF417ScanningDecoder : NSObject
 
@@ -25,7 +25,7 @@ extern const int ZXPDF417_CODEWORD_SKEW_SIZE;
             imageBottomLeft:(ZXResultPoint *)imageBottomLeft
               imageTopRight:(ZXResultPoint *)imageTopRight
            imageBottomRight:(ZXResultPoint *)imageBottomRight
-           minCodewordWidth:(int)minCodewordWidth
-           maxCodewordWidth:(int)maxCodewordWidth;
+           minCodewordWidth:(NSInteger)minCodewordWidth
+           maxCodewordWidth:(NSInteger)maxCodewordWidth;
 
 @end

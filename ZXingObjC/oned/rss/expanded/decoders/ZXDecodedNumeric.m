@@ -16,28 +16,28 @@
 
 #import "ZXDecodedNumeric.h"
 
-const int FNC1 = 10;
+const NSInteger FNC1 = 10;
 
 @implementation ZXDecodedNumeric
 
-- (id)initWithNewPosition:(int)newPosition firstDigit:(int)aFirstDigit secondDigit:(int)aSecondDigit {
+- (id)initWithNewPosition:(NSInteger)newPosition firstDigit:(NSInteger)aFirstDigit secondDigit:(NSInteger)aSecondDigit {
   if (self = [super initWithNewPosition:newPosition]) {
     _firstDigit = aFirstDigit;
     _secondDigit = aSecondDigit;
 
     if (_firstDigit < 0 || _firstDigit > 10) {
-      [NSException raise:NSInvalidArgumentException format:@"Invalid firstDigit: %d", _firstDigit];
+      [NSException raise:NSInvalidArgumentException format:@"Invalid firstDigit: %ld", (long)_firstDigit];
     }
 
     if (_secondDigit < 0 || _secondDigit > 10) {
-      [NSException raise:NSInvalidArgumentException format:@"Invalid secondDigit: %d", _secondDigit];
+      [NSException raise:NSInvalidArgumentException format:@"Invalid secondDigit: %ld", (long)_secondDigit];
     }
   }
 
   return self;
 }
 
-- (int)value {
+- (NSInteger)value {
   return self.firstDigit * 10 + self.secondDigit;
 }
 

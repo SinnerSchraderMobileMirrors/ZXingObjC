@@ -18,22 +18,22 @@
 
 @implementation ZXRSSUtils
 
-+ (NSArray *)rssWidths:(int)val n:(int)n elements:(int)elements maxWidth:(int)maxWidth noNarrow:(BOOL)noNarrow {
++ (NSArray *)rssWidths:(NSInteger)val n:(NSInteger)n elements:(NSInteger)elements maxWidth:(NSInteger)maxWidth noNarrow:(BOOL)noNarrow {
   NSMutableArray *widths = [NSMutableArray arrayWithCapacity:elements];
-  int bar;
-  int narrowMask = 0;
+  NSInteger bar;
+  NSInteger narrowMask = 0;
   for (bar = 0; bar < elements - 1; bar++) {
     narrowMask |= 1 << bar;
-    int elmWidth = 1;
-    int subVal;
+    NSInteger elmWidth = 1;
+    NSInteger subVal;
     while (YES) {
       subVal = [self combins:n - elmWidth - 1 r:elements - bar - 2];
       if (noNarrow && (narrowMask == 0) && (n - elmWidth - (elements - bar - 1) >= elements - bar - 1)) {
         subVal -= [self combins:n - elmWidth - (elements - bar) r:elements - bar - 2];
       }
       if (elements - bar - 1 > 1) {
-        int lessVal = 0;
-        for (int mxwElement = n - elmWidth - (elements - bar - 2); mxwElement > maxWidth; mxwElement--) {
+        NSInteger lessVal = 0;
+        for (NSInteger mxwElement = n - elmWidth - (elements - bar - 2); mxwElement > maxWidth; mxwElement--) {
           lessVal += [self combins:n - elmWidth - mxwElement - 1 r:elements - bar - 3];
         }
         subVal -= lessVal * (elements - 1 - bar);
@@ -56,28 +56,28 @@
   return widths;
 }
 
-+ (int)rssValue:(int *)widths widthsLen:(unsigned int)widthsLen maxWidth:(int)maxWidth noNarrow:(BOOL)noNarrow {
-  int elements = widthsLen;
-  int n = 0;
-  for (int i = 0; i < elements; i++) {
++ (NSInteger)rssValue:(NSInteger *)widths widthsLen:(NSUInteger)widthsLen maxWidth:(NSInteger)maxWidth noNarrow:(BOOL)noNarrow {
+  NSInteger elements = widthsLen;
+  NSInteger n = 0;
+  for (NSInteger i = 0; i < elements; i++) {
     n += widths[i];
   }
-  int val = 0;
-  int narrowMask = 0;
-  for (int bar = 0; bar < elements - 1; bar++) {
-    int elmWidth;
+  NSInteger val = 0;
+  NSInteger narrowMask = 0;
+  for (NSInteger bar = 0; bar < elements - 1; bar++) {
+    NSInteger elmWidth;
     for (elmWidth = 1, narrowMask |= 1 << bar;
          elmWidth < widths[bar];
          elmWidth++, narrowMask &= ~(1 << bar)) {
-      int subVal = [self combins:n - elmWidth - 1 r:elements - bar - 2];
+      NSInteger subVal = [self combins:n - elmWidth - 1 r:elements - bar - 2];
       if (noNarrow && (narrowMask == 0) &&
           (n - elmWidth - (elements - bar - 1) >= elements - bar - 1)) {
         subVal -= [self combins:n - elmWidth - (elements - bar)
                               r:elements - bar - 2];
       }
       if (elements - bar - 1 > 1) {
-        int lessVal = 0;
-        for (int mxwElement = n - elmWidth - (elements - bar - 2);
+        NSInteger lessVal = 0;
+        for (NSInteger mxwElement = n - elmWidth - (elements - bar - 2);
              mxwElement > maxWidth; mxwElement--) {
           lessVal += [self combins:n - elmWidth - mxwElement - 1
                                  r:elements - bar - 3];
@@ -93,9 +93,9 @@
   return val;
 }
 
-+ (int)combins:(int)n r:(int)r {
-  int maxDenom;
-  int minDenom;
++ (NSInteger)combins:(NSInteger)n r:(NSInteger)r {
+  NSInteger maxDenom;
+  NSInteger minDenom;
   if (n - r > r) {
     minDenom = r;
     maxDenom = n - r;
@@ -103,9 +103,9 @@
     minDenom = n - r;
     maxDenom = r;
   }
-  int val = 1;
-  int j = 1;
-  for (int i = n; i > maxDenom; i--) {
+  NSInteger val = 1;
+  NSInteger j = 1;
+  for (NSInteger i = n; i > maxDenom; i--) {
     val *= i;
     if (j <= minDenom) {
       val /= j;
@@ -119,13 +119,13 @@
   return val;
 }
 
-+ (NSArray *)elements:(NSArray *)eDist N:(int)N K:(int)K {
++ (NSArray *)elements:(NSArray *)eDist N:(NSInteger)N K:(NSInteger)K {
   NSMutableArray *widths = [NSMutableArray arrayWithCapacity:[eDist count] + 2];
-  int twoK = K << 1;
+  NSInteger twoK = K << 1;
   [widths addObject:@1];
-  int i;
-  int minEven = 10;
-  int barSum = 1;
+  NSInteger i;
+  NSInteger minEven = 10;
+  NSInteger barSum = 1;
   for (i = 1; i < twoK - 2; i += 2) {
     [widths addObject:@([eDist[i - 1] intValue] - [widths[i - 1] intValue])];
     [widths addObject:@([eDist[i] intValue] - [widths[i] intValue])];    

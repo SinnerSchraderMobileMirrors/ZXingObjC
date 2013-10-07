@@ -27,11 +27,11 @@
 
 @implementation ZXDataMatrixWriter
 
-- (ZXBitMatrix *)encode:(NSString *)contents format:(ZXBarcodeFormat)format width:(int)width height:(int)height error:(NSError **)error {
+- (ZXBitMatrix *)encode:(NSString *)contents format:(ZXBarcodeFormat)format width:(NSInteger)width height:(NSInteger)height error:(NSError **)error {
   return [self encode:contents format:format width:width height:height hints:nil error:error];
 }
 
-- (ZXBitMatrix *)encode:(NSString *)contents format:(ZXBarcodeFormat)format width:(int)width height:(int)height hints:(ZXEncodeHints *)hints error:(NSError **)error {
+- (ZXBitMatrix *)encode:(NSString *)contents format:(ZXBarcodeFormat)format width:(NSInteger)width height:(NSInteger)height hints:(ZXEncodeHints *)hints error:(NSError **)error {
   if (contents.length == 0) {
     [NSException raise:NSInvalidArgumentException format:@"Found empty contents"];
   }
@@ -42,7 +42,7 @@
 
   if (width < 0 || height < 0) {
     [NSException raise:NSInvalidArgumentException
-                format:@"Requested dimensions are too small: %dx%d", width, height];
+                format:@"Requested dimensions are too small: %ldx%ld", (long)width, (long)height];
   }
 
   // Try to get force shape & min / max size
@@ -84,26 +84,26 @@
  * Encode the given symbol info to a bit matrix.
  */
 - (ZXBitMatrix *)encodeLowLevel:(ZXDefaultPlacement *)placement symbolInfo:(ZXSymbolInfo *)symbolInfo {
-  int symbolWidth = symbolInfo.symbolDataWidth;
-  int symbolHeight = symbolInfo.symbolDataHeight;
+  NSInteger symbolWidth = symbolInfo.symbolDataWidth;
+  NSInteger symbolHeight = symbolInfo.symbolDataHeight;
 
   ZXByteMatrix *matrix = [[ZXByteMatrix alloc] initWithWidth:symbolInfo.symbolWidth height:symbolInfo.symbolHeight];
 
-  int matrixY = 0;
+  NSInteger matrixY = 0;
 
-  for (int y = 0; y < symbolHeight; y++) {
+  for (NSInteger y = 0; y < symbolHeight; y++) {
     // Fill the top edge with alternate 0 / 1
-    int matrixX;
+    NSInteger matrixX;
     if ((y % symbolInfo.matrixHeight) == 0) {
       matrixX = 0;
-      for (int x = 0; x < symbolInfo.symbolWidth; x++) {
+      for (NSInteger x = 0; x < symbolInfo.symbolWidth; x++) {
         [matrix setX:matrixX y:matrixY boolValue:(x % 2) == 0];
         matrixX++;
       }
       matrixY++;
     }
     matrixX = 0;
-    for (int x = 0; x < symbolWidth; x++) {
+    for (NSInteger x = 0; x < symbolWidth; x++) {
       // Fill the right edge with full 1
       if ((x % symbolInfo.matrixWidth) == 0) {
         [matrix setX:matrixX y:matrixY boolValue:YES];
@@ -121,7 +121,7 @@
     // Fill the bottom edge with full 1
     if ((y % symbolInfo.matrixHeight) == symbolInfo.matrixHeight - 1) {
       matrixX = 0;
-      for (int x = 0; x < symbolInfo.symbolWidth; x++) {
+      for (NSInteger x = 0; x < symbolInfo.symbolWidth; x++) {
         [matrix setX:matrixX y:matrixY boolValue:YES];
         matrixX++;
       }
@@ -136,13 +136,13 @@
  * Convert the ByteMatrix to BitMatrix.
  */
 - (ZXBitMatrix *)convertByteMatrixToBitMatrix:(ZXByteMatrix *)matrix {
-  int matrixWidgth = matrix.width;
-  int matrixHeight = matrix.height;
+  NSInteger matrixWidgth = matrix.width;
+  NSInteger matrixHeight = matrix.height;
 
   ZXBitMatrix *output = [[ZXBitMatrix alloc] initWithWidth:matrixWidgth height:matrixHeight];
   [output clear];
-  for (int i = 0; i < matrixWidgth; i++) {
-    for (int j = 0; j < matrixHeight; j++) {
+  for (NSInteger i = 0; i < matrixWidgth; i++) {
+    for (NSInteger j = 0; j < matrixHeight; j++) {
       // Zero is white in the bytematrix
       if ([matrix getX:i y:j] == 1) {
         [output setX:i y:j];

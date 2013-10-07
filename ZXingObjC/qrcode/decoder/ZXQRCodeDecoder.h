@@ -23,8 +23,8 @@
 
 @interface ZXQRCodeDecoder : NSObject
 
-- (ZXDecoderResult *)decode:(BOOL **)image length:(unsigned int)length error:(NSError **)error;
-- (ZXDecoderResult *)decode:(BOOL **)image length:(unsigned int)length hints:(ZXDecodeHints *)hints error:(NSError **)error;
+- (ZXDecoderResult *)decode:(BOOL **)image length:(NSUInteger)length error:(NSError **)error;
+- (ZXDecoderResult *)decode:(BOOL **)image length:(NSUInteger)length hints:(ZXDecodeHints *)hints error:(NSError **)error;
 - (ZXDecoderResult *)decodeMatrix:(ZXBitMatrix *)bits error:(NSError **)error;
 - (ZXDecoderResult *)decodeMatrix:(ZXBitMatrix *)bits hints:(ZXDecodeHints *)hints error:(NSError **)error;
 

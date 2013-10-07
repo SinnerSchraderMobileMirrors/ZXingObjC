@@ -20,8 +20,8 @@
 
 @interface ZXAI01weightDecoder : ZXAI01decoder
 
-- (void)encodeCompressedWeight:(NSMutableString *)buf currentPos:(int)currentPos weightSize:(int)weightSize;
-- (void)addWeightCode:(NSMutableString *)buf weight:(int)weight;
-- (int)checkWeight:(int)weight;
+- (void)encodeCompressedWeight:(NSMutableString *)buf currentPos:(NSInteger)currentPos weightSize:(NSInteger)weightSize;
+- (void)addWeightCode:(NSMutableString *)buf weight:(NSInteger)weight;
+- (NSInteger)checkWeight:(NSInteger)weight;
 
 @end

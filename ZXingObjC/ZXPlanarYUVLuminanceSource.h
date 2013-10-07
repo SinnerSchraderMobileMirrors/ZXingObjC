@@ -27,12 +27,12 @@
 
 @interface ZXPlanarYUVLuminanceSource : ZXLuminanceSource
 
-@property (nonatomic, assign, readonly) int thumbnailWidth;
-@property (nonatomic, assign, readonly) int thumbnailHeight;
+@property (nonatomic, assign, readonly) NSInteger thumbnailWidth;
+@property (nonatomic, assign, readonly) NSInteger thumbnailHeight;
 
-- (id)initWithYuvData:(int8_t *)yuvData yuvDataLen:(int)yuvDataLen dataWidth:(int)dataWidth
-           dataHeight:(int)dataHeight left:(int)left top:(int)top width:(int)width height:(int)height
+- (id)initWithYuvData:(int8_t *)yuvData yuvDataLen:(NSInteger)yuvDataLen dataWidth:(NSInteger)dataWidth
+           dataHeight:(NSInteger)dataHeight left:(NSInteger)left top:(NSInteger)top width:(NSInteger)width height:(NSInteger)height
     reverseHorizontal:(BOOL)reverseHorizontal;
-- (int *)renderThumbnail;
+- (NSInteger *)renderThumbnail;
 
 @end

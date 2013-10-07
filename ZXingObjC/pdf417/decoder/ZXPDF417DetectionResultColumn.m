@@ -18,7 +18,7 @@
 #import "ZXPDF417Codeword.h"
 #import "ZXPDF417DetectionResultColumn.h"
 
-int const MAX_NEARBY_DISTANCE = 5;
+NSInteger const MAX_NEARBY_DISTANCE = 5;
 
 @interface ZXPDF417DetectionResultColumn ()
 
@@ -34,7 +34,7 @@ int const MAX_NEARBY_DISTANCE = 5;
   if (self) {
     _boundingBox = [[ZXPDF417BoundingBox alloc] initWithBoundingBox:boundingBox];
     _codewords = [NSMutableArray array];
-    for (int i = 0; i < boundingBox.maxY - boundingBox.minY + 1; i++) {
+    for (NSInteger i = 0; i < boundingBox.maxY - boundingBox.minY + 1; i++) {
       [_codewords addObject:[NSNull null]];
     }
   }
@@ -42,13 +42,13 @@ int const MAX_NEARBY_DISTANCE = 5;
   return self;
 }
 
-- (ZXPDF417Codeword *)codewordNearby:(int)imageRow {
+- (ZXPDF417Codeword *)codewordNearby:(NSInteger)imageRow {
   ZXPDF417Codeword *codeword = [self codeword:imageRow];
   if (codeword) {
     return codeword;
   }
-  for (int i = 1; i < MAX_NEARBY_DISTANCE; i++) {
-    int nearImageRow = [self codewordsIndex:imageRow] - i;
+  for (NSInteger i = 1; i < MAX_NEARBY_DISTANCE; i++) {
+    NSInteger nearImageRow = [self codewordsIndex:imageRow] - i;
     if (nearImageRow >= 0) {
       codeword = self.codewords[nearImageRow];
       if ((id)codeword != [NSNull null]) {
@@ -66,19 +66,19 @@ int const MAX_NEARBY_DISTANCE = 5;
   return nil;
 }
 
-- (int)codewordsIndex:(int)imageRow {
+- (NSInteger)codewordsIndex:(NSInteger)imageRow {
   return imageRow - self.boundingBox.minY;
 }
 
-- (int)imageRow:(int)codewordIndex {
+- (NSInteger)imageRow:(NSInteger)codewordIndex {
   return self.boundingBox.minY + codewordIndex;
 }
 
-- (void)setCodeword:(int)imageRow codeword:(ZXPDF417Codeword *)codeword {
+- (void)setCodeword:(NSInteger)imageRow codeword:(ZXPDF417Codeword *)codeword {
   _codewords[[self codewordsIndex:imageRow]] = codeword;
 }
 
-- (ZXPDF417Codeword *)codeword:(int)imageRow {
+- (ZXPDF417Codeword *)codeword:(NSInteger)imageRow {
   NSUInteger index = [self codewordsIndex:imageRow];
   if (_codewords[index] == [NSNull null]) {
     return nil;

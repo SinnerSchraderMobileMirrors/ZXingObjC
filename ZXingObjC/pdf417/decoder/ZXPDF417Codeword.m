@@ -16,11 +16,11 @@
 
 #import "ZXPDF417Codeword.h"
 
-const int BARCODE_ROW_UNKNOWN = -1;
+const NSInteger BARCODE_ROW_UNKNOWN = -1;
 
 @implementation ZXPDF417Codeword
 
-- (id)initWithStartX:(int)startX endX:(int)endX bucket:(int)bucket value:(int)value {
+- (id)initWithStartX:(NSInteger)startX endX:(NSInteger)endX bucket:(NSInteger)bucket value:(NSInteger)value {
   self = [super init];
   if (self) {
     _startX = startX;
@@ -37,7 +37,7 @@ const int BARCODE_ROW_UNKNOWN = -1;
   return [self isValidRowNumber:self.rowNumber];
 }
 
-- (BOOL)isValidRowNumber:(int)rowNumber {
+- (BOOL)isValidRowNumber:(NSInteger)rowNumber {
   return rowNumber != BARCODE_ROW_UNKNOWN && self.bucket == (rowNumber % 3) * 3;
 }
 
@@ -45,7 +45,7 @@ const int BARCODE_ROW_UNKNOWN = -1;
   self.rowNumber = (self.value / 30) * 3 + self.bucket / 3;
 }
 
-- (int)width {
+- (NSInteger)width {
   return self.endX - self.startX;
 }
 

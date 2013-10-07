@@ -117,30 +117,30 @@
     return nil;
   }
 
-  int moduleSize = [self moduleSize:leftTopBlack image:image];
+  NSInteger moduleSize = [self moduleSize:leftTopBlack image:image];
   if (moduleSize == -1) {
     return nil;
   }
 
-  int top = [leftTopBlack[1] intValue];
-  int bottom = [rightBottomBlack[1] intValue];
-  int left = [leftTopBlack[0] intValue];
-  int right = [rightBottomBlack[0] intValue];
+  NSInteger top = [leftTopBlack[1] intValue];
+  NSInteger bottom = [rightBottomBlack[1] intValue];
+  NSInteger left = [leftTopBlack[0] intValue];
+  NSInteger right = [rightBottomBlack[0] intValue];
 
-  int matrixWidth = (right - left + 1) / moduleSize;
-  int matrixHeight = (bottom - top + 1) / moduleSize;
+  NSInteger matrixWidth = (right - left + 1) / moduleSize;
+  NSInteger matrixHeight = (bottom - top + 1) / moduleSize;
   if (matrixWidth <= 0 || matrixHeight <= 0) {
     return nil;
   }
 
-  int nudge = moduleSize >> 1;
+  NSInteger nudge = moduleSize >> 1;
   top += nudge;
   left += nudge;
 
   ZXBitMatrix *bits = [[ZXBitMatrix alloc] initWithWidth:matrixWidth height:matrixHeight];
-  for (int y = 0; y < matrixHeight; y++) {
-    int iOffset = top + y * moduleSize;
-    for (int x = 0; x < matrixWidth; x++) {
+  for (NSInteger y = 0; y < matrixHeight; y++) {
+    NSInteger iOffset = top + y * moduleSize;
+    for (NSInteger x = 0; x < matrixWidth; x++) {
       if ([image getX:left + x * moduleSize y:iOffset]) {
         [bits setX:x y:y];
       }
@@ -150,10 +150,10 @@
   return bits;
 }
 
-- (int)moduleSize:(NSArray *)leftTopBlack image:(ZXBitMatrix *)image {
-  int width = image.width;
-  int x = [leftTopBlack[0] intValue];
-  int y = [leftTopBlack[1] intValue];
+- (NSInteger)moduleSize:(NSArray *)leftTopBlack image:(ZXBitMatrix *)image {
+  NSInteger width = image.width;
+  NSInteger x = [leftTopBlack[0] intValue];
+  NSInteger y = [leftTopBlack[1] intValue];
   while (x < width && [image getX:x y:y]) {
     x++;
   }
@@ -161,7 +161,7 @@
     return -1;
   }
 
-  int moduleSize = x - [leftTopBlack[0] intValue];
+  NSInteger moduleSize = x - [leftTopBlack[0] intValue];
   if (moduleSize == 0) {
     return -1;
   }

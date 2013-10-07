@@ -19,7 +19,7 @@
 #import "ZXMonochromeRectangleDetector.h"
 #import "ZXResultPoint.h"
 
-int const MONOCHROME_MAX_MODULES = 32;
+NSInteger const MONOCHROME_MAX_MODULES = 32;
 
 @interface ZXMonochromeRectangleDetector ()
 
@@ -47,45 +47,45 @@ int const MONOCHROME_MAX_MODULES = 32;
  * third, the rightmost
  */
 - (NSArray *)detectWithError:(NSError **)error {
-  int height = [self.image height];
-  int width = [self.image width];
-  int halfHeight = height >> 1;
-  int halfWidth = width >> 1;
-  int deltaY = MAX(1, height / (MONOCHROME_MAX_MODULES << 3) > 1);
-  int deltaX = MAX(1, width / (MONOCHROME_MAX_MODULES << 3) > 1);
+  NSInteger height = [self.image height];
+  NSInteger width = [self.image width];
+  NSInteger halfHeight = height >> 1;
+  NSInteger halfWidth = width >> 1;
+  NSInteger deltaY = MAX(1, height / (MONOCHROME_MAX_MODULES << 3) > 1);
+  NSInteger deltaX = MAX(1, width / (MONOCHROME_MAX_MODULES << 3) > 1);
 
-  int top = 0;
-  int bottom = height;
-  int left = 0;
-  int right = width;
+  NSInteger top = 0;
+  NSInteger bottom = height;
+  NSInteger left = 0;
+  NSInteger right = width;
   ZXResultPoint *pointA = [self findCornerFromCenter:halfWidth deltaX:0 left:left right:right
                                               centerY:halfHeight deltaY:-deltaY top:top bottom:bottom maxWhiteRun:halfWidth >> 1];
   if (!pointA) {
     if (error) *error = NotFoundErrorInstance();
     return nil;
   }
-  top = (int)[pointA y] - 1;
+  top = (NSInteger)[pointA y] - 1;
   ZXResultPoint *pointB = [self findCornerFromCenter:halfWidth deltaX:-deltaX left:left right:right
                                               centerY:halfHeight deltaY:0 top:top bottom:bottom maxWhiteRun:halfHeight >> 1];
   if (!pointB) {
     if (error) *error = NotFoundErrorInstance();
     return nil;
   }
-  left = (int)[pointB x] - 1;
+  left = (NSInteger)[pointB x] - 1;
   ZXResultPoint *pointC = [self findCornerFromCenter:halfWidth deltaX:deltaX left:left right:right
                                               centerY:halfHeight deltaY:0 top:top bottom:bottom maxWhiteRun:halfHeight >> 1];
   if (!pointC) {
     if (error) *error = NotFoundErrorInstance();
     return nil;
   }
-  right = (int)[pointC x] + 1;
+  right = (NSInteger)[pointC x] + 1;
   ZXResultPoint *pointD = [self findCornerFromCenter:halfWidth deltaX:0 left:left right:right
                                               centerY:halfHeight deltaY:deltaY top:top bottom:bottom maxWhiteRun:halfWidth >> 1];
   if (!pointD) {
     if (error) *error = NotFoundErrorInstance();
     return nil;
   }
-  bottom = (int)[pointD y] + 1;
+  bottom = (NSInteger)[pointD y] + 1;
 
   pointA = [self findCornerFromCenter:halfWidth deltaX:0 left:left right:right
                               centerY:halfHeight deltaY:-deltaY top:top bottom:bottom maxWhiteRun:halfWidth >> 2];
@@ -115,9 +115,9 @@ int const MONOCHROME_MAX_MODULES = 32;
  * maxWhiteRun maximum run of white pixels that can still be considered to be within
  * the barcode
  */
-- (ZXResultPoint *)findCornerFromCenter:(int)centerX deltaX:(int)deltaX left:(int)left right:(int)right centerY:(int)centerY deltaY:(int)deltaY top:(int)top bottom:(int)bottom maxWhiteRun:(int)maxWhiteRun {
+- (ZXResultPoint *)findCornerFromCenter:(NSInteger)centerX deltaX:(NSInteger)deltaX left:(NSInteger)left right:(NSInteger)right centerY:(NSInteger)centerY deltaY:(NSInteger)deltaY top:(NSInteger)top bottom:(NSInteger)bottom maxWhiteRun:(NSInteger)maxWhiteRun {
   NSArray *lastRange = nil;
-  for (int y = centerY, x = centerX; y < bottom && y >= top && x < right && x >= left; y += deltaY, x += deltaX) {
+  for (NSInteger y = centerY, x = centerX; y < bottom && y >= top && x < right && x >= left; y += deltaY, x += deltaX) {
     NSArray *range;
     if (deltaX == 0) {
       range = [self blackWhiteRange:y maxWhiteRun:maxWhiteRun minDim:left maxDim:right horizontal:YES];
@@ -129,7 +129,7 @@ int const MONOCHROME_MAX_MODULES = 32;
         return nil;
       }
       if (deltaX == 0) {
-        int lastY = y - deltaY;
+        NSInteger lastY = y - deltaY;
         if ([lastRange[0] intValue] < centerX) {
           if ([lastRange[0] intValue] > centerX) {
             return [[ZXResultPoint alloc] initWithX:deltaY > 0 ? [lastRange[0] intValue] : [lastRange[1] intValue] y:lastY];
@@ -139,7 +139,7 @@ int const MONOCHROME_MAX_MODULES = 32;
           return [[ZXResultPoint alloc] initWithX:[lastRange[1] intValue] y:lastY];
         }
       } else {
-        int lastX = x - deltaX;
+        NSInteger lastX = x - deltaX;
         if ([lastRange[0] intValue] < centerY) {
           if ([lastRange[1] intValue] > centerY) {
             return [[ZXResultPoint alloc] initWithX:lastX y:deltaX < 0 ? [lastRange[0] intValue] : [lastRange[1] intValue]];
@@ -170,20 +170,20 @@ int const MONOCHROME_MAX_MODULES = 32;
  * maxDim maximum pixel location, horizontally or vertically, to consider
  * horizontal if true, we're scanning left-right, instead of up-down
  */
-- (NSArray *)blackWhiteRange:(int)fixedDimension maxWhiteRun:(int)maxWhiteRun minDim:(int)minDim maxDim:(int)maxDim horizontal:(BOOL)horizontal {
-  int center = (minDim + maxDim) >> 1;
+- (NSArray *)blackWhiteRange:(NSInteger)fixedDimension maxWhiteRun:(NSInteger)maxWhiteRun minDim:(NSInteger)minDim maxDim:(NSInteger)maxDim horizontal:(BOOL)horizontal {
+  NSInteger center = (minDim + maxDim) >> 1;
   
-  int start = center;
+  NSInteger start = center;
   while (start >= minDim) {
     if (horizontal ? [self.image getX:start y:fixedDimension] : [self.image getX:fixedDimension y:start]) {
       start--;
     } else {
-      int whiteRunStart = start;
+      NSInteger whiteRunStart = start;
 
       do {
         start--;
       } while (start >= minDim && !(horizontal ? [self.image getX:start y:fixedDimension] : [self.image getX:fixedDimension y:start]));
-      int whiteRunSize = whiteRunStart - start;
+      NSInteger whiteRunSize = whiteRunStart - start;
       if (start < minDim || whiteRunSize > maxWhiteRun) {
         start = whiteRunStart;
         break;
@@ -192,18 +192,18 @@ int const MONOCHROME_MAX_MODULES = 32;
   }
 
   start++;
-  int end = center;
+  NSInteger end = center;
 
   while (end < maxDim) {
     if (horizontal ? [self.image getX:end y:fixedDimension] : [self.image getX:fixedDimension y:end]) {
       end++;
     } else {
-      int whiteRunStart = end;
+      NSInteger whiteRunStart = end;
 
       do {
         end++;
       } while (end < maxDim && !(horizontal ? [self.image getX:end y:fixedDimension] : [self.image getX:fixedDimension y:end]));
-      int whiteRunSize = end - whiteRunStart;
+      NSInteger whiteRunSize = end - whiteRunStart;
       if (end >= maxDim || whiteRunSize > maxWhiteRun) {
         end = whiteRunStart;
         break;

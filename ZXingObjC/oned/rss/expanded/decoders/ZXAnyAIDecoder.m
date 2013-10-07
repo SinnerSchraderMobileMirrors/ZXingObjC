@@ -17,7 +17,7 @@
 #import "ZXAnyAIDecoder.h"
 #import "ZXGeneralAppIdDecoder.h"
 
-int const ANY_AI_HEADER_SIZE = 2 + 1 + 2;
+NSInteger const ANY_AI_HEADER_SIZE = 2 + 1 + 2;
 
 @implementation ZXAnyAIDecoder
 

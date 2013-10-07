@@ -18,8 +18,8 @@
 
 @interface ZXBitSourceBuilder ()
 
-@property (nonatomic, assign) int bitsLeftInNextByte;
-@property (nonatomic, assign) int nextByte;
+@property (nonatomic, assign) NSInteger bitsLeftInNextByte;
+@property (nonatomic, assign) NSInteger nextByte;
 @property (nonatomic, strong) NSMutableData *output;
 
 @end
@@ -40,7 +40,7 @@
   return self;
 }
 
-- (void)write:(int)value numBits:(int)numBits {
+- (void)write:(NSInteger)value numBits:(NSInteger)numBits {
   if (numBits <= self.bitsLeftInNextByte) {
     self.nextByte <<= numBits;
     self.nextByte |= value;
@@ -51,10 +51,10 @@
       self.bitsLeftInNextByte = 8;
     }
   } else {
-    int bitsToWriteNow = self.bitsLeftInNextByte;
-    int numRestOfBits = numBits - bitsToWriteNow;
-    int mask = 0xFF >> (8 - bitsToWriteNow);
-    int valueToWriteNow = (int)(((unsigned int)value) >> numRestOfBits) & mask;
+    NSInteger bitsToWriteNow = self.bitsLeftInNextByte;
+    NSInteger numRestOfBits = numBits - bitsToWriteNow;
+    NSInteger mask = 0xFF >> (8 - bitsToWriteNow);
+    NSInteger valueToWriteNow = (NSInteger)(((NSUInteger)value) >> numRestOfBits) & mask;
     [self write:valueToWriteNow numBits:bitsToWriteNow];
     [self write:value numBits:numRestOfBits];
   }
@@ -67,8 +67,8 @@
   return (int8_t *)[self.output bytes];
 }
 
-- (int)byteArrayLength {
-  return (int)[self.output length];
+- (NSInteger)byteArrayLength {
+  return (NSInteger)[self.output length];
 }
 
 @end

@@ -20,7 +20,7 @@ unichar const FNC1char = '$';
 
 @implementation ZXDecodedChar
 
-- (id)initWithNewPosition:(int)newPosition value:(unichar)value {
+- (id)initWithNewPosition:(NSInteger)newPosition value:(unichar)value {
   if (self = [super initWithNewPosition:newPosition]) {
     _value = value;
   }

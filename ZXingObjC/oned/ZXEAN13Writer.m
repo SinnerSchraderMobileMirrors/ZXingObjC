@@ -19,7 +19,7 @@
 #import "ZXEAN13Writer.h"
 #import "ZXUPCEANReader.h"
 
-const int EAN13_CODE_WIDTH = 3 + // start guard
+const NSInteger EAN13_CODE_WIDTH = 3 + // start guard
   (7 * 6) + // left bars
   5 + // middle guard
   (7 * 6) + // right bars
@@ -27,7 +27,7 @@ const int EAN13_CODE_WIDTH = 3 + // start guard
 
 @implementation ZXEAN13Writer
 
-- (ZXBitMatrix *)encode:(NSString *)contents format:(ZXBarcodeFormat)format width:(int)width height:(int)height hints:(ZXEncodeHints *)hints error:(NSError **)error {
+- (ZXBitMatrix *)encode:(NSString *)contents format:(ZXBarcodeFormat)format width:(NSInteger)width height:(NSInteger)height hints:(ZXEncodeHints *)hints error:(NSError **)error {
   if (format != kBarcodeFormatEan13) {
     @throw [NSException exceptionWithName:NSInvalidArgumentException
                                    reason:[NSString stringWithFormat:@"Can only encode EAN_13, but got %d", format]
@@ -37,10 +37,10 @@ const int EAN13_CODE_WIDTH = 3 + // start guard
   return [super encode:contents format:format width:width height:height hints:hints error:error];
 }
 
-- (BOOL *)encode:(NSString *)contents length:(int *)pLength {
+- (BOOL *)encode:(NSString *)contents length:(NSInteger *)pLength {
   if ([contents length] != 13) {
     [NSException raise:NSInvalidArgumentException
-                format:@"Requested contents should be 13 digits long, but got %d", (int)[contents length]];
+                format:@"Requested contents should be 13 digits long, but got %ld", (long)[contents length]];
   }
 
   if (![ZXUPCEANReader checkStandardUPCEANChecksum:contents]) {
@@ -48,30 +48,30 @@ const int EAN13_CODE_WIDTH = 3 + // start guard
                 format:@"Contents do not pass checksum"];
   }
 
-  int firstDigit = [[contents substringToIndex:1] intValue];
-  int parities = FIRST_DIGIT_ENCODINGS[firstDigit];
+  NSInteger firstDigit = [[contents substringToIndex:1] intValue];
+  NSInteger parities = FIRST_DIGIT_ENCODINGS[firstDigit];
   if (pLength) *pLength = EAN13_CODE_WIDTH;
   BOOL *result = (BOOL *)malloc(EAN13_CODE_WIDTH * sizeof(BOOL));
   memset(result, 0, EAN13_CODE_WIDTH * sizeof(int8_t));
-  int pos = 0;
+  NSInteger pos = 0;
 
-  pos += [super appendPattern:result pos:pos pattern:(int *)START_END_PATTERN patternLen:START_END_PATTERN_LEN startColor:TRUE];
+  pos += [super appendPattern:result pos:pos pattern:(NSInteger *)START_END_PATTERN patternLen:START_END_PATTERN_LEN startColor:TRUE];
 
-  for (int i = 1; i <= 6; i++) {
-    int digit = [[contents substringWithRange:NSMakeRange(i, 1)] intValue];
+  for (NSInteger i = 1; i <= 6; i++) {
+    NSInteger digit = [[contents substringWithRange:NSMakeRange(i, 1)] intValue];
     if ((parities >> (6 - i) & 1) == 1) {
       digit += 10;
     }
-    pos += [super appendPattern:result pos:pos pattern:(int *)L_AND_G_PATTERNS[digit] patternLen:L_PATTERNS_SUB_LEN startColor:FALSE];
+    pos += [super appendPattern:result pos:pos pattern:(NSInteger *)L_AND_G_PATTERNS[digit] patternLen:L_PATTERNS_SUB_LEN startColor:FALSE];
   }
 
-  pos += [super appendPattern:result pos:pos pattern:(int *)MIDDLE_PATTERN patternLen:MIDDLE_PATTERN_LEN startColor:FALSE];
+  pos += [super appendPattern:result pos:pos pattern:(NSInteger *)MIDDLE_PATTERN patternLen:MIDDLE_PATTERN_LEN startColor:FALSE];
 
-  for (int i = 7; i <= 12; i++) {
-    int digit = [[contents substringWithRange:NSMakeRange(i, 1)] intValue];
-    pos += [super appendPattern:result pos:pos pattern:(int *)L_PATTERNS[digit] patternLen:L_PATTERNS_SUB_LEN startColor:TRUE];
+  for (NSInteger i = 7; i <= 12; i++) {
+    NSInteger digit = [[contents substringWithRange:NSMakeRange(i, 1)] intValue];
+    pos += [super appendPattern:result pos:pos pattern:(NSInteger *)L_PATTERNS[digit] patternLen:L_PATTERNS_SUB_LEN startColor:TRUE];
   }
-  pos += [super appendPattern:result pos:pos pattern:(int *)START_END_PATTERN patternLen:START_END_PATTERN_LEN startColor:TRUE];
+  pos += [super appendPattern:result pos:pos pattern:(NSInteger *)START_END_PATTERN patternLen:START_END_PATTERN_LEN startColor:TRUE];
 
   return result;
 }

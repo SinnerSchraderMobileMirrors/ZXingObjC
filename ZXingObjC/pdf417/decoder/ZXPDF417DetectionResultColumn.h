@@ -22,11 +22,11 @@
 @property (nonatomic, strong, readonly) NSMutableArray *codewords;
 
 - (id)initWithBoundingBox:(ZXPDF417BoundingBox *)boundingBox;
-- (ZXPDF417Codeword *)codewordNearby:(int)imageRow;
-- (int)codewordsIndex:(int)imageRow;
-- (int)imageRow:(int)codewordIndex;
-- (void)setCodeword:(int)imageRow codeword:(ZXPDF417Codeword *)codeword;
-- (ZXPDF417Codeword *)codeword:(int)imageRow;
+- (ZXPDF417Codeword *)codewordNearby:(NSInteger)imageRow;
+- (NSInteger)codewordsIndex:(NSInteger)imageRow;
+- (NSInteger)imageRow:(NSInteger)codewordIndex;
+- (void)setCodeword:(NSInteger)imageRow codeword:(ZXPDF417Codeword *)codeword;
+- (ZXPDF417Codeword *)codeword:(NSInteger)imageRow;
 - (ZXPDF417BoundingBox *)boundingBox;
 
 @end

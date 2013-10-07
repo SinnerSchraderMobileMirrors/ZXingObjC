@@ -50,7 +50,7 @@
     return [[ZXAnyAIDecoder alloc] initWithInformation:information];
   }
 
-  int fourBitEncodationMethod = [ZXGeneralAppIdDecoder extractNumericValueFromBitArray:information pos:1 bits:4];
+  NSInteger fourBitEncodationMethod = [ZXGeneralAppIdDecoder extractNumericValueFromBitArray:information pos:1 bits:4];
 
   switch (fourBitEncodationMethod) {
   case 4:
@@ -59,7 +59,7 @@
     return [[ZXAI01320xDecoder alloc] initWithInformation:information];
   }
 
-  int fiveBitEncodationMethod = [ZXGeneralAppIdDecoder extractNumericValueFromBitArray:information pos:1 bits:5];
+  NSInteger fiveBitEncodationMethod = [ZXGeneralAppIdDecoder extractNumericValueFromBitArray:information pos:1 bits:5];
   switch (fiveBitEncodationMethod) {
   case 12:
     return [[ZXAI01392xDecoder alloc] initWithInformation:information];
@@ -67,7 +67,7 @@
     return [[ZXAI01393xDecoder alloc] initWithInformation:information];
   }
   
-  int sevenBitEncodationMethod = [ZXGeneralAppIdDecoder extractNumericValueFromBitArray:information pos:1 bits:7];
+  NSInteger sevenBitEncodationMethod = [ZXGeneralAppIdDecoder extractNumericValueFromBitArray:information pos:1 bits:7];
   switch (sevenBitEncodationMethod) {
   case 56:
     return [[ZXAI013x0x1xDecoder alloc] initWithInformation:information firstAIdigits:@"310" dateCode:@"11"];

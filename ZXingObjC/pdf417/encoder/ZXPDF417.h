@@ -28,8 +28,8 @@
 @property (nonatomic, assign) ZXCompaction compaction;
 
 - (id)initWithCompact:(BOOL)compact;
-- (BOOL)generateBarcodeLogic:(NSString *)msg errorCorrectionLevel:(int)errorCorrectionLevel error:(NSError **)error;
-- (BOOL)determineDimensions:(int *)dimension sourceCodeWords:(int)sourceCodeWords errorCorrectionCodeWords:(int)errorCorrectionCodeWords error:(NSError **)error;
-- (void)setDimensionsWithMaxCols:(int)maxCols minCols:(int)minCols maxRows:(int)maxRows minRows:(int)minRows;
+- (BOOL)generateBarcodeLogic:(NSString *)msg errorCorrectionLevel:(NSInteger)errorCorrectionLevel error:(NSError **)error;
+- (BOOL)determineDimensions:(NSInteger *)dimension sourceCodeWords:(NSInteger)sourceCodeWords errorCorrectionCodeWords:(NSInteger)errorCorrectionCodeWords error:(NSError **)error;
+- (void)setDimensionsWithMaxCols:(NSInteger)maxCols minCols:(NSInteger)minCols maxRows:(NSInteger)maxRows minRows:(NSInteger)minRows;
 
 @end

@@ -57,8 +57,8 @@ ZX(<CAAction ZXAVC(AVCaptureVideoDataOutputSampleBufferDelegate)>) {
     __unsafe_unretained id<ZXCaptureDelegate> delegate;
     )
     
-  int order_in_skip;
-  int order_out_skip;
+  NSInteger order_in_skip;
+  NSInteger order_out_skip;
   BOOL running;
   BOOL on_screen;
   CALayer *luminance;
@@ -69,10 +69,10 @@ ZX(<CAAction ZXAVC(AVCaptureVideoDataOutputSampleBufferDelegate)>) {
   size_t reported_height;
   NSString *captureToFilename;
   BOOL hard_stop;
-  int camera;
+  NSInteger camera;
   BOOL torch;
   BOOL mirror;
-  int capture_device_index;
+  NSInteger capture_device_index;
   CGAffineTransform transform;
   BOOL cameraIsReady;
 }
@@ -103,10 +103,10 @@ ZX(<CAAction ZXAVC(AVCaptureVideoDataOutputSampleBufferDelegate)>) {
 @property (nonatomic, readonly) BOOL hasBack;
 @property (nonatomic, readonly) BOOL hasTorch;
 
-@property (nonatomic, readonly) int front;
-@property (nonatomic, readonly) int back;
+@property (nonatomic, readonly) NSInteger front;
+@property (nonatomic, readonly) NSInteger back;
 
-@property (nonatomic) int camera;
+@property (nonatomic) NSInteger camera;
 @property (nonatomic) BOOL torch;
 
 @end
@@ -139,10 +139,10 @@ ZX(<CAAction ZXAVC(AVCaptureVideoDataOutputSampleBufferDelegate)>) {
 @property (nonatomic,readonly) BOOL hasBack;
 @property (nonatomic,readonly) BOOL hasTorch;
 
-@property (nonatomic,readonly) int front;
-@property (nonatomic,readonly) int back;
+@property (nonatomic,readonly) NSInteger front;
+@property (nonatomic,readonly) NSInteger back;
 
-@property (nonatomic) int camera;
+@property (nonatomic) NSInteger camera;
 @property (nonatomic) BOOL torch;
 
 @property (nonatomic, assign) BOOL mirror;

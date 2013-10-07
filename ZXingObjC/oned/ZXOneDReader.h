@@ -21,16 +21,16 @@
  * of one-dimensional barcodes.
  */
 
-extern int const INTEGER_MATH_SHIFT;
-extern int const PATTERN_MATCH_RESULT_SCALE_FACTOR;
+extern NSInteger const INTEGER_MATH_SHIFT;
+extern NSInteger const PATTERN_MATCH_RESULT_SCALE_FACTOR;
 
 @class ZXBitArray, ZXDecodeHints, ZXResult;
 
 @interface ZXOneDReader : NSObject <ZXReader>
 
-+ (BOOL)recordPattern:(ZXBitArray *)row start:(int)start counters:(int[])counters countersSize:(int)countersSize;
-+ (BOOL)recordPatternInReverse:(ZXBitArray *)row start:(int)start counters:(int[])counters countersSize:(int)countersSize;
-+ (int)patternMatchVariance:(int[])counters countersSize:(int)countersSize pattern:(int[])pattern maxIndividualVariance:(int)maxIndividualVariance;
-- (ZXResult *)decodeRow:(int)rowNumber row:(ZXBitArray *)row hints:(ZXDecodeHints *)hints error:(NSError **)error;
++ (BOOL)recordPattern:(ZXBitArray *)row start:(NSInteger)start counters:(NSInteger[])counters countersSize:(NSInteger)countersSize;
++ (BOOL)recordPatternInReverse:(ZXBitArray *)row start:(NSInteger)start counters:(NSInteger[])counters countersSize:(NSInteger)countersSize;
++ (NSInteger)patternMatchVariance:(NSInteger[])counters countersSize:(NSInteger)countersSize pattern:(NSInteger[])pattern maxIndividualVariance:(NSInteger)maxIndividualVariance;
+- (ZXResult *)decodeRow:(NSInteger)rowNumber row:(ZXBitArray *)row hints:(ZXDecodeHints *)hints error:(NSError **)error;
 
 @end

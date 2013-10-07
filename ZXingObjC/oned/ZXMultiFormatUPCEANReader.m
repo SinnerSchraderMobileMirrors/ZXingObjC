@@ -62,7 +62,7 @@
   return self;
 }
 
-- (ZXResult *)decodeRow:(int)rowNumber row:(ZXBitArray *)row hints:(ZXDecodeHints *)hints error:(NSError **)error {
+- (ZXResult *)decodeRow:(NSInteger)rowNumber row:(ZXBitArray *)row hints:(ZXDecodeHints *)hints error:(NSError **)error {
   NSRange startGuardPattern = [ZXUPCEANReader findStartGuardPattern:row error:error];
   if (startGuardPattern.location == NSNotFound) {
     return nil;

@@ -25,7 +25,7 @@
 
 @property (nonatomic, readonly) NSStringEncoding encoding;
 
-+ (ZXCharacterSetECI *)characterSetECIByValue:(int)value;
++ (ZXCharacterSetECI *)characterSetECIByValue:(NSInteger)value;
 + (ZXCharacterSetECI *)characterSetECIByEncoding:(NSStringEncoding)encoding;
 
 @end

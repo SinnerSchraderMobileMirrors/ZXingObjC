@@ -18,7 +18,7 @@
 
 @interface ZXQRCodeFinderPattern ()
 
-@property (nonatomic, assign) int count;
+@property (nonatomic, assign) NSInteger count;
 
 @end
 
@@ -28,7 +28,7 @@
   return [self initWithPosX:posX posY:posY estimatedModuleSize:estimatedModuleSize count:1];
 }
 
-- (id)initWithPosX:(float)posX posY:(float)posY estimatedModuleSize:(float)estimatedModuleSize count:(int)count {
+- (id)initWithPosX:(float)posX posY:(float)posY estimatedModuleSize:(float)estimatedModuleSize count:(NSInteger)count {
   if (self = [super initWithX:posX y:posY]) {
     _estimatedModuleSize = estimatedModuleSize;
     _count = count;
@@ -59,7 +59,7 @@
  * based on count.
  */
 - (ZXQRCodeFinderPattern *)combineEstimateI:(float)i j:(float)j newModuleSize:(float)newModuleSize {
-  int combinedCount = self.count + 1;
+  NSInteger combinedCount = self.count + 1;
   float combinedX = (self.count * self.x + j) / combinedCount;
   float combinedY = (self.count * self.y + i) / combinedCount;
   float combinedModuleSize = (self.count * self.estimatedModuleSize + newModuleSize) / combinedCount;

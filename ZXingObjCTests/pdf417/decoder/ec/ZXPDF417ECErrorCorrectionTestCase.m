@@ -26,13 +26,13 @@
 
 static NSMutableArray *PDF417_TEST = nil;
 static NSMutableArray *PDF417_TEST_WITH_EC = nil;
-static int ECC_BYTES;
+static NSInteger ECC_BYTES;
 // Example is EC level 1 (s=1). The number of erasures (l) and substitutions (f) must obey:
 // l + 2f <= 2^(s+1) - 3
-const int EC_LEVEL = 5;
-const int ERROR_LIMIT = (1 << (EC_LEVEL + 1)) - 3;
-const int MAX_ERRORS = ERROR_LIMIT / 2;
-//const int MAX_ERASURES = ERROR_LIMIT;
+const NSInteger EC_LEVEL = 5;
+const NSInteger ERROR_LIMIT = (1 << (EC_LEVEL + 1)) - 3;
+const NSInteger MAX_ERRORS = ERROR_LIMIT / 2;
+//const NSInteger MAX_ERASURES = ERROR_LIMIT;
 
 + (void)initialize {
 //  PDF417_TEST = [[NSMutableArray alloc] initWithObjects:
@@ -66,7 +66,7 @@ const int MAX_ERRORS = ERROR_LIMIT / 2;
                            @273, @194, @917, @237, @420, @859, @340, @115, @222, @808, @866, @836, @417, @121, @833,
                            @459, @64, @159] mutableCopy];
 
-  ECC_BYTES = (int)PDF417_TEST_WITH_EC.count - (int)PDF417_TEST.count;
+  ECC_BYTES = (NSInteger)PDF417_TEST_WITH_EC.count - (NSInteger)PDF417_TEST.count;
 }
 
 - (id)initWithInvocation:(NSInvocation *)invocation {
@@ -84,7 +84,7 @@ const int MAX_ERRORS = ERROR_LIMIT / 2;
 }
 
 - (void)testOneError {
-  for (int i = 0; i < PDF417_TEST_WITH_EC.count; i++) {
+  for (NSInteger i = 0; i < PDF417_TEST_WITH_EC.count; i++) {
     NSMutableArray *received = [NSMutableArray arrayWithArray:PDF417_TEST_WITH_EC];
     received[i] = [NSNumber numberWithInt:arc4random() % 256];
     [self checkDecode:received];
@@ -92,7 +92,7 @@ const int MAX_ERRORS = ERROR_LIMIT / 2;
 }
 
 - (void)testMaxErrors {
-  for (int i = 0; i < PDF417_TEST.count; i++) { // # iterations is kind of arbitrary
+  for (NSInteger i = 0; i < PDF417_TEST.count; i++) { // # iterations is kind of arbitrary
     NSMutableArray *received = [NSMutableArray arrayWithArray:PDF417_TEST_WITH_EC];
     [self corrupt:received howMany:MAX_ERRORS];
     [self checkDecode:received];
@@ -108,7 +108,7 @@ const int MAX_ERRORS = ERROR_LIMIT / 2;
 
 /*
 - (void)testMaxErasures {
-  for (int i = 0; i < PDF417_TEST.count; i++) { // # iterations is kind of arbitrary
+  for (NSInteger i = 0; i < PDF417_TEST.count; i++) { // # iterations is kind of arbitrary
     NSMutableArray *received = [NSMutableArray arrayWithArray:PDF417_TEST_WITH_EC];
     NSArray *erasures = [self erase:received howMany:MAX_ERASURES];
     [self checkDecode:received erasures:erasures];
@@ -132,7 +132,7 @@ const int MAX_ERRORS = ERROR_LIMIT / 2;
     return NO;
   }
 
-  for (int i = 0; i < PDF417_TEST.count; i++) {
+  for (NSInteger i = 0; i < PDF417_TEST.count; i++) {
     STAssertEquals([received[i] intValue], [PDF417_TEST[i] intValue], @"Expected %@ to equal %@", received[i], PDF417_TEST[i]);
   }
   return YES;

@@ -47,8 +47,8 @@ static ZXGridSampler *gridSampler = nil;
  * Samples an image for a rectangular matrix of bits of the given dimension.
  */
 - (ZXBitMatrix *)sampleGrid:(ZXBitMatrix *)image
-                 dimensionX:(int)dimensionX
-                 dimensionY:(int)dimensionY
+                 dimensionX:(NSInteger)dimensionX
+                 dimensionY:(NSInteger)dimensionY
                       p1ToX:(float)p1ToX p1ToY:(float)p1ToY
                       p2ToX:(float)p2ToX p2ToY:(float)p2ToY
                       p3ToX:(float)p3ToX p3ToY:(float)p3ToY
@@ -64,8 +64,8 @@ static ZXGridSampler *gridSampler = nil;
 }
 
 - (ZXBitMatrix *)sampleGrid:(ZXBitMatrix *)image
-                 dimensionX:(int)dimensionX
-                 dimensionY:(int)dimensionY
+                 dimensionX:(NSInteger)dimensionX
+                 dimensionY:(NSInteger)dimensionY
                   transform:(ZXPerspectiveTransform *)transform
                       error:(NSError **)error {
   @throw [NSException exceptionWithName:NSInternalInconsistencyException
@@ -85,14 +85,14 @@ static ZXGridSampler *gridSampler = nil;
  * For efficiency, the method will check points from either end of the line until one is found
  * to be within the image. Because the set of points are assumed to be linear, this is valid.
  */
-+ (BOOL)checkAndNudgePoints:(ZXBitMatrix *)image points:(float *)points pointsLen:(int)pointsLen error:(NSError **)error {
-  int width = image.width;
-  int height = image.height;
++ (BOOL)checkAndNudgePoints:(ZXBitMatrix *)image points:(float *)points pointsLen:(NSInteger)pointsLen error:(NSError **)error {
+  NSInteger width = image.width;
+  NSInteger height = image.height;
 
   BOOL nudged = YES;
-  for (int offset = 0; offset < pointsLen && nudged; offset += 2) {
-    int x = (int) points[offset];
-    int y = (int) points[offset + 1];
+  for (NSInteger offset = 0; offset < pointsLen && nudged; offset += 2) {
+    NSInteger x = (NSInteger) points[offset];
+    NSInteger y = (NSInteger) points[offset + 1];
     if (x < -1 || x > width || y < -1 || y > height) {
       if (error) *error = NotFoundErrorInstance();
       return NO;
@@ -115,9 +115,9 @@ static ZXGridSampler *gridSampler = nil;
   }
 
   nudged = YES;
-  for (int offset = pointsLen - 2; offset >= 0 && nudged; offset -= 2) {
-    int x = (int) points[offset];
-    int y = (int) points[offset + 1];
+  for (NSInteger offset = pointsLen - 2; offset >= 0 && nudged; offset -= 2) {
+    NSInteger x = (NSInteger) points[offset];
+    NSInteger y = (NSInteger) points[offset + 1];
     if (x < -1 || x > width || y < -1 || y > height) {
       if (error) *error = NotFoundErrorInstance();
       return NO;

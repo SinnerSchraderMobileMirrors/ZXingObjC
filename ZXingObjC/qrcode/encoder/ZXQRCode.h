@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-extern int const NUM_MASK_PATTERNS;
+extern NSInteger const NUM_MASK_PATTERNS;
 
 @class ZXByteMatrix, ZXErrorCorrectionLevel, ZXMode, ZXQRCodeVersion;
 
@@ -23,9 +23,9 @@ extern int const NUM_MASK_PATTERNS;
 @property (nonatomic, strong) ZXMode *mode;
 @property (nonatomic, strong) ZXErrorCorrectionLevel *ecLevel;
 @property (nonatomic, strong) ZXQRCodeVersion *version;
-@property (nonatomic, assign) int maskPattern;
+@property (nonatomic, assign) NSInteger maskPattern;
 @property (nonatomic, strong) ZXByteMatrix *matrix;
 
-+ (BOOL)isValidMaskPattern:(int)maskPattern;
++ (BOOL)isValidMaskPattern:(NSInteger)maskPattern;
 
 @end

@@ -230,10 +230,10 @@ static NSArray *TEST_SYMBOLS;
   STAssertTrue([visualized hasSuffix:@"146 40 190 87"], @"");
 }
 
-- (NSString *)createBinaryMessage:(int)len {
+- (NSString *)createBinaryMessage:(NSInteger)len {
   NSMutableString *sb = [NSMutableString string];
   [sb appendString:@"\u00ABäöüéàá-"];
-  for (int i = 0; i < len - 9; i++) {
+  for (NSInteger i = 0; i < len - 9; i++) {
     [sb appendFormat:@"%C", (unichar)0x00B7];
   }
   [sb appendString:@"\u00BB"];
@@ -293,7 +293,7 @@ static NSArray *TEST_SYMBOLS;
 
 + (NSString *)visualize:(NSString *)codewords {
   NSMutableString *sb = [NSMutableString string];
-  for (int i = 0; i < codewords.length; i++) {
+  for (NSInteger i = 0; i < codewords.length; i++) {
     if (i > 0) {
       [sb appendString:@" "];
     }

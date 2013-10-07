@@ -23,21 +23,21 @@
  * There is no "second half" to a UPC-E barcode.
  */
 #define MIDDLE_END_PATTERN_LEN 6
-const int MIDDLE_END_PATTERN[MIDDLE_END_PATTERN_LEN] = {1, 1, 1, 1, 1, 1};
+const NSInteger MIDDLE_END_PATTERN[MIDDLE_END_PATTERN_LEN] = {1, 1, 1, 1, 1, 1};
 
 /**
  * See {@link #L_AND_G_PATTERNS}; these values similarly represent patterns of
  * even-odd parity encodings of digits that imply both the number system (0 or 1)
  * used, and the check digit.
  */
-const int NUMSYS_AND_CHECK_DIGIT_PATTERNS[2][10] = {
+const NSInteger NUMSYS_AND_CHECK_DIGIT_PATTERNS[2][10] = {
   {0x38, 0x34, 0x32, 0x31, 0x2C, 0x26, 0x23, 0x2A, 0x29, 0x25},
   {0x07, 0x0B, 0x0D, 0x0E, 0x13, 0x19, 0x1C, 0x15, 0x16, 0x1A}
 };
 
 @interface ZXUPCEReader ()
 
-@property (nonatomic, assign) int *decodeMiddleCounters;
+@property (nonatomic, assign) NSInteger *decodeMiddleCounters;
 
 @end
 
@@ -45,7 +45,7 @@ const int NUMSYS_AND_CHECK_DIGIT_PATTERNS[2][10] = {
 
 - (id)init {
   if (self = [super init]) {
-    _decodeMiddleCounters = (int *)malloc(sizeof(4) * sizeof(int));
+    _decodeMiddleCounters = (NSInteger *)malloc(sizeof(4) * sizeof(NSInteger));
     _decodeMiddleCounters[0] = 0;
     _decodeMiddleCounters[1] = 0;
     _decodeMiddleCounters[2] = 0;
@@ -62,23 +62,23 @@ const int NUMSYS_AND_CHECK_DIGIT_PATTERNS[2][10] = {
   }
 }
 
-- (int)decodeMiddle:(ZXBitArray *)row startRange:(NSRange)startRange result:(NSMutableString *)result error:(NSError **)error {
-  const int countersLen = 4;
-  int counters[countersLen];
-  memset(counters, 0, countersLen * sizeof(int));
+- (NSInteger)decodeMiddle:(ZXBitArray *)row startRange:(NSRange)startRange result:(NSMutableString *)result error:(NSError **)error {
+  const NSInteger countersLen = 4;
+  NSInteger counters[countersLen];
+  memset(counters, 0, countersLen * sizeof(NSInteger));
 
-  int end = [row size];
-  int rowOffset = NSMaxRange(startRange);
-  int lgPatternFound = 0;
+  NSInteger end = [row size];
+  NSInteger rowOffset = NSMaxRange(startRange);
+  NSInteger lgPatternFound = 0;
 
-  for (int x = 0; x < 6 && rowOffset < end; x++) {
-    int bestMatch = [ZXUPCEANReader decodeDigit:row counters:counters countersLen:countersLen rowOffset:rowOffset patternType:UPC_EAN_PATTERNS_L_AND_G_PATTERNS error:error];
+  for (NSInteger x = 0; x < 6 && rowOffset < end; x++) {
+    NSInteger bestMatch = [ZXUPCEANReader decodeDigit:row counters:counters countersLen:countersLen rowOffset:rowOffset patternType:UPC_EAN_PATTERNS_L_AND_G_PATTERNS error:error];
     if (bestMatch == -1) {
       return -1;
     }
     [result appendFormat:@"%C", (unichar)('0' + bestMatch % 10)];
 
-    for (int i = 0; i < sizeof(counters) / sizeof(int); i++) {
+    for (NSInteger i = 0; i < sizeof(counters) / sizeof(NSInteger); i++) {
       rowOffset += counters[i];
     }
 
@@ -94,17 +94,17 @@ const int NUMSYS_AND_CHECK_DIGIT_PATTERNS[2][10] = {
   return rowOffset;
 }
 
-- (NSRange)decodeEnd:(ZXBitArray *)row endStart:(int)endStart error:(NSError **)error {
-  return [ZXUPCEANReader findGuardPattern:row rowOffset:endStart whiteFirst:YES pattern:(int *)MIDDLE_END_PATTERN patternLen:MIDDLE_END_PATTERN_LEN error:error];
+- (NSRange)decodeEnd:(ZXBitArray *)row endStart:(NSInteger)endStart error:(NSError **)error {
+  return [ZXUPCEANReader findGuardPattern:row rowOffset:endStart whiteFirst:YES pattern:(NSInteger *)MIDDLE_END_PATTERN patternLen:MIDDLE_END_PATTERN_LEN error:error];
 }
 
 - (BOOL)checkChecksum:(NSString *)s error:(NSError **)error {
   return [super checkChecksum:[ZXUPCEReader convertUPCEtoUPCA:s] error:error];
 }
 
-- (BOOL)determineNumSysAndCheckDigit:(NSMutableString *)resultString lgPatternFound:(int)lgPatternFound {
-  for (int numSys = 0; numSys <= 1; numSys++) {
-    for (int d = 0; d < 10; d++) {
+- (BOOL)determineNumSysAndCheckDigit:(NSMutableString *)resultString lgPatternFound:(NSInteger)lgPatternFound {
+  for (NSInteger numSys = 0; numSys <= 1; numSys++) {
+    for (NSInteger d = 0; d < 10; d++) {
       if (lgPatternFound == NUMSYS_AND_CHECK_DIGIT_PATTERNS[numSys][d]) {
         [resultString insertString:[NSString stringWithFormat:@"%C", (unichar)('0' + numSys)] atIndex:0];
         [resultString appendFormat:@"%C", (unichar)('0' + d)];

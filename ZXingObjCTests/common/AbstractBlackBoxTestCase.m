@@ -38,14 +38,14 @@
   return self;
 }
 
-- (void)addTest:(int)mustPassCount tryHarderCount:(int)tryHarderCount rotation:(float)rotation {
+- (void)addTest:(NSInteger)mustPassCount tryHarderCount:(NSInteger)tryHarderCount rotation:(float)rotation {
   [self addTest:mustPassCount tryHarderCount:tryHarderCount maxMisreads:0 maxTryHarderMisreads:0 rotation:rotation];
 }
 
 /**
  * Adds a new test for the current directory of images.
  */
-- (void)addTest:(int)mustPassCount tryHarderCount:(int)tryHarderCount maxMisreads:(int)maxMisreads maxTryHarderMisreads:(int)maxTryHarderMisreads rotation:(float)rotation {
+- (void)addTest:(NSInteger)mustPassCount tryHarderCount:(NSInteger)tryHarderCount maxMisreads:(NSInteger)maxMisreads maxTryHarderMisreads:(NSInteger)maxTryHarderMisreads rotation:(float)rotation {
   [self.testResults addObject:[[TestResult alloc] initWithMustPassCount:mustPassCount tryHarderCount:tryHarderCount maxMisreads:maxMisreads maxTryHarderMisreads:maxTryHarderMisreads rotation:rotation]];
 }
 
@@ -141,19 +141,19 @@
 
   NSFileManager *fileManager = [NSFileManager defaultManager];
   NSArray *imageFiles = [self imageFiles];
-  int testCount = (int)[self.testResults count];
+  NSInteger testCount = (NSInteger)[self.testResults count];
 
-  int passedCounts[testCount];
-  memset(passedCounts, 0, testCount * sizeof(int));
+  NSInteger passedCounts[testCount];
+  memset(passedCounts, 0, testCount * sizeof(NSInteger));
 
-  int misreadCounts[testCount];
-  memset(misreadCounts, 0, testCount * sizeof(int));
+  NSInteger misreadCounts[testCount];
+  memset(misreadCounts, 0, testCount * sizeof(NSInteger));
 
-  int tryHarderCounts[testCount];
-  memset(tryHarderCounts, 0, testCount * sizeof(int));
+  NSInteger tryHarderCounts[testCount];
+  memset(tryHarderCounts, 0, testCount * sizeof(NSInteger));
 
-  int tryHarderMisreadCounts[testCount];
-  memset(tryHarderMisreadCounts, 0, testCount * sizeof(int));
+  NSInteger tryHarderMisreadCounts[testCount];
+  memset(tryHarderMisreadCounts, 0, testCount * sizeof(NSInteger));
 
   for (NSURL *testImage in imageFiles) {
     NSLog(@"Starting %@", [self pathInBundle:testImage]);
@@ -179,7 +179,7 @@
       expectedMetadata = [NSMutableDictionary dictionaryWithContentsOfFile:[expectedMetadataFile path]];
     }
 
-    for (int x = 0; x < testCount; x++) {
+    for (NSInteger x = 0; x < testCount; x++) {
       float rotation = [(TestResult *)self.testResults[x] rotation];
       ZXImage *rotatedImage = [self rotateImage:image degrees:rotation];
       ZXLuminanceSource *source = [[ZXCGImageLuminanceSource alloc] initWithCGImage:rotatedImage.cgimage];
@@ -204,48 +204,48 @@
   }
 
   // Print the results of all tests first
-  int totalFound = 0;
-  int totalMustPass = 0;
-  int totalMisread = 0;
-  int totalMaxMisread = 0;
+  NSInteger totalFound = 0;
+  NSInteger totalMustPass = 0;
+  NSInteger totalMisread = 0;
+  NSInteger totalMaxMisread = 0;
 
-  for (int x = 0; x < testCount; x++) {
+  for (NSInteger x = 0; x < testCount; x++) {
     TestResult *testResult = self.testResults[x];
-    NSLog(@"Rotation %d degrees:", (int) testResult.rotation);
-    NSLog(@"  %d of %d images passed (%d required)",
-          passedCounts[x], (int)imageFiles.count, testResult.mustPassCount);
-    int failed = (int)imageFiles.count - passedCounts[x];
-    NSLog(@"    %d failed due to misreads, %d not detected",
-          misreadCounts[x], failed - misreadCounts[x]);
-    NSLog(@"  %d of %d images passed with try harder (%d required)",
-          tryHarderCounts[x], (int)imageFiles.count, testResult.tryHarderCount);
-    failed = (int)imageFiles.count - tryHarderCounts[x];
-    NSLog(@"    %d failed due to misreads, %d not detected",
-          tryHarderMisreadCounts[x], failed - tryHarderMisreadCounts[x]);
+    NSLog(@"Rotation %ld degrees:", (long) testResult.rotation);
+    NSLog(@"  %ld of %ld images passed (%ld required)",
+          (long)passedCounts[x], (long)imageFiles.count, (long)testResult.mustPassCount);
+    NSInteger failed = (NSInteger)imageFiles.count - passedCounts[x];
+    NSLog(@"    %ld failed due to misreads, %ld not detected",
+          (long)misreadCounts[x], failed - misreadCounts[x]);
+    NSLog(@"  %ld of %ld images passed with try harder (%ld required)",
+          (long)tryHarderCounts[x], (long)imageFiles.count, (long)testResult.tryHarderCount);
+    failed = (NSInteger)imageFiles.count - tryHarderCounts[x];
+    NSLog(@"    %ld failed due to misreads, %ld not detected",
+          (long)tryHarderMisreadCounts[x], failed - tryHarderMisreadCounts[x]);
     totalFound += passedCounts[x] + tryHarderCounts[x];
     totalMustPass += testResult.mustPassCount + testResult.tryHarderCount;
     totalMisread += misreadCounts[x] + tryHarderMisreadCounts[x];
     totalMaxMisread += testResult.maxMisreads + testResult.maxTryHarderMisreads;
   }
 
-  int totalTests = (int)imageFiles.count * testCount * 2;
-  NSLog(@"TOTALS:\nDecoded %d images out of %d (%d%%, %d required)",
-        totalFound, totalTests, totalFound * 100 / totalTests, totalMustPass);
+  NSInteger totalTests = (NSInteger)imageFiles.count * testCount * 2;
+  NSLog(@"TOTALS:\nDecoded %ld images out of %ld (%ld%%, %ld required)",
+        (long)totalFound, (long)totalTests, totalFound * 100 / totalTests, (long)totalMustPass);
   if (totalFound > totalMustPass) {
-    NSLog(@"  +++ Test too lax by %d images", totalFound - totalMustPass);
+    NSLog(@"  +++ Test too lax by %ld images", totalFound - totalMustPass);
   } else if (totalFound < totalMustPass) {
-    NSLog(@"  --- Test failed by %d images", totalMustPass - totalFound);
+    NSLog(@"  --- Test failed by %ld images", totalMustPass - totalFound);
   }
 
   if (totalMisread < totalMaxMisread) {
-    NSLog(@"  +++ Test expects too many misreads by %d images", totalMaxMisread - totalMisread);
+    NSLog(@"  +++ Test expects too many misreads by %ld images", totalMaxMisread - totalMisread);
   } else if (totalMisread > totalMaxMisread) {
-    NSLog(@"  --- Test had too many misreads by %d images", totalMisread - totalMaxMisread);
+    NSLog(@"  --- Test had too many misreads by %ld images", totalMisread - totalMaxMisread);
   }
 
   // Then run through again and assert if any failed
   if (assertOnFailure) {
-    for (int x = 0; x < testCount; x++) {
+    for (NSInteger x = 0; x < testCount; x++) {
       TestResult *testResult = self.testResults[x];
       NSString *label = [NSString stringWithFormat:@"Rotation %f degrees: Too many images failed", testResult.rotation];
       STAssertTrue(passedCounts[x] >= testResult.mustPassCount, label);
@@ -258,7 +258,7 @@
 }
 
 - (BOOL)decode:(ZXBinaryBitmap *)source rotation:(float)rotation expectedText:(NSString *)expectedText expectedMetadata:(NSMutableDictionary *)expectedMetadata tryHarder:(BOOL)tryHarder misread:(BOOL *)misread {
-  NSString *suffix = [NSString stringWithFormat:@" (%@rotation: %d)", tryHarder ? @"try harder, " : @"", (int) rotation];
+  NSString *suffix = [NSString stringWithFormat:@" (%@rotation: %ld)", tryHarder ? @"try harder, " : @"", (long) rotation];
   *misread = NO;
 
   ZXDecodeHints *hints = [ZXDecodeHints hints];

@@ -25,9 +25,9 @@
 @interface ZXQRCodeDataBlock : NSObject
 
 @property (nonatomic, strong, readonly) NSMutableArray *codewords;
-@property (nonatomic, assign, readonly) int numDataCodewords;
+@property (nonatomic, assign, readonly) NSInteger numDataCodewords;
 
-- (id)initWithNumDataCodewords:(int)numDataCodewords codewords:(NSMutableArray *)codewords;
+- (id)initWithNumDataCodewords:(NSInteger)numDataCodewords codewords:(NSMutableArray *)codewords;
 + (NSArray *)dataBlocks:(NSArray *)rawCodewords version:(ZXQRCodeVersion *)version ecLevel:(ZXErrorCorrectionLevel *)ecLevel;
 
 @end

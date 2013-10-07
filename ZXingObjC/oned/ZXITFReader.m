@@ -21,13 +21,13 @@
 #import "ZXResult.h"
 #import "ZXResultPoint.h"
 
-static int MAX_AVG_VARIANCE;
-static int MAX_INDIVIDUAL_VARIANCE;
+static NSInteger MAX_AVG_VARIANCE;
+static NSInteger MAX_INDIVIDUAL_VARIANCE;
 
-static const int W = 3; // Pixel width of a wide line
-static const int N = 1; // Pixel width of a narrow line
+static const NSInteger W = 3; // Pixel width of a wide line
+static const NSInteger N = 1; // Pixel width of a narrow line
 
-int const DEFAULT_ALLOWED_LENGTHS[11] = { 48, 44, 24, 20, 18, 16, 14, 12, 10, 8, 6 };
+NSInteger const DEFAULT_ALLOWED_LENGTHS[11] = { 48, 44, 24, 20, 18, 16, 14, 12, 10, 8, 6 };
 
 /**
  * Start/end guard pattern.
@@ -35,14 +35,14 @@ int const DEFAULT_ALLOWED_LENGTHS[11] = { 48, 44, 24, 20, 18, 16, 14, 12, 10, 8,
  * Note: The end pattern is reversed because the row is reversed before
  * searching for the END_PATTERN
  */
-int const ITF_START_PATTERN[4] = {N, N, N, N};
-int const END_PATTERN_REVERSED[3] = {N, N, W};
+NSInteger const ITF_START_PATTERN[4] = {N, N, N, N};
+NSInteger const END_PATTERN_REVERSED[3] = {N, N, W};
 
 /**
  * Patterns of Wide / Narrow lines to indicate each digit
  */
-const int PATTERNS_LEN = 10;
-const int PATTERNS[PATTERNS_LEN][5] = {
+const NSInteger PATTERNS_LEN = 10;
+const NSInteger PATTERNS[PATTERNS_LEN][5] = {
   {N, N, W, W, N}, // 0
   {W, N, N, N, W}, // 1
   {N, W, N, N, W}, // 2
@@ -57,15 +57,15 @@ const int PATTERNS[PATTERNS_LEN][5] = {
 
 @interface ZXITFReader ()
 
-@property (nonatomic, assign) int narrowLineWidth;
+@property (nonatomic, assign) NSInteger narrowLineWidth;
 
 @end
 
 @implementation ZXITFReader
 
 + (void)initialize {
-  MAX_AVG_VARIANCE = (int)(PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.42f);
-  MAX_INDIVIDUAL_VARIANCE = (int)(PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.8f);
+  MAX_AVG_VARIANCE = (NSInteger)(PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.42f);
+  MAX_INDIVIDUAL_VARIANCE = (NSInteger)(PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.8f);
 }
 
 - (id)init {
@@ -76,7 +76,7 @@ const int PATTERNS[PATTERNS_LEN][5] = {
   return self;
 }
 
-- (ZXResult *)decodeRow:(int)rowNumber row:(ZXBitArray *)row hints:(ZXDecodeHints *)hints error:(NSError **)error {
+- (ZXResult *)decodeRow:(NSInteger)rowNumber row:(ZXBitArray *)row hints:(ZXDecodeHints *)hints error:(NSError **)error {
   NSArray *startRange = [self decodeStart:row];
   NSArray *endRange = [self decodeEnd:row];
   if (!startRange || !endRange) {
@@ -96,13 +96,13 @@ const int PATTERNS[PATTERNS_LEN][5] = {
   }
   if (allowedLengths == nil) {
     NSMutableArray *temp = [NSMutableArray array];
-    for (int i = 0; i < sizeof(DEFAULT_ALLOWED_LENGTHS) / sizeof(int); i++) {
+    for (NSInteger i = 0; i < sizeof(DEFAULT_ALLOWED_LENGTHS) / sizeof(NSInteger); i++) {
       [temp addObject:@(DEFAULT_ALLOWED_LENGTHS[i])];
     }
     allowedLengths = [NSArray arrayWithArray:temp];
   }
 
-  int length = [resultString length];
+  NSInteger length = [resultString length];
   BOOL lengthOK = NO;
   for (NSNumber *i in allowedLengths) {
     if (length == [i intValue]) {
@@ -124,31 +124,31 @@ const int PATTERNS[PATTERNS_LEN][5] = {
 }
 
 
-- (BOOL)decodeMiddle:(ZXBitArray *)row payloadStart:(int)payloadStart payloadEnd:(int)payloadEnd resultString:(NSMutableString *)resultString {
-  const int counterDigitPairLen = 10;
-  int counterDigitPair[counterDigitPairLen];
-  memset(counterDigitPair, 0, counterDigitPairLen * sizeof(int));
+- (BOOL)decodeMiddle:(ZXBitArray *)row payloadStart:(NSInteger)payloadStart payloadEnd:(NSInteger)payloadEnd resultString:(NSMutableString *)resultString {
+  const NSInteger counterDigitPairLen = 10;
+  NSInteger counterDigitPair[counterDigitPairLen];
+  memset(counterDigitPair, 0, counterDigitPairLen * sizeof(NSInteger));
 
-  const int counterBlackLen = 5;
-  int counterBlack[counterBlackLen];
-  memset(counterBlack, 0, counterBlackLen * sizeof(int));
+  const NSInteger counterBlackLen = 5;
+  NSInteger counterBlack[counterBlackLen];
+  memset(counterBlack, 0, counterBlackLen * sizeof(NSInteger));
 
-  const int counterWhiteLen = 5;
-  int counterWhite[counterWhiteLen];
-  memset(counterWhite, 0, counterWhiteLen * sizeof(int));
+  const NSInteger counterWhiteLen = 5;
+  NSInteger counterWhite[counterWhiteLen];
+  memset(counterWhite, 0, counterWhiteLen * sizeof(NSInteger));
 
   while (payloadStart < payloadEnd) {
     if (![ZXOneDReader recordPattern:row start:payloadStart counters:counterDigitPair countersSize:counterDigitPairLen]) {
       return NO;
     }
 
-    for (int k = 0; k < 5; k++) {
-      int twoK = k << 1;
+    for (NSInteger k = 0; k < 5; k++) {
+      NSInteger twoK = k << 1;
       counterBlack[k] = counterDigitPair[twoK];
       counterWhite[k] = counterDigitPair[twoK + 1];
     }
 
-    int bestMatch = [self decodeDigit:counterBlack countersSize:counterBlackLen];
+    NSInteger bestMatch = [self decodeDigit:counterBlack countersSize:counterBlackLen];
     if (bestMatch == -1) {
       return NO;
     }
@@ -159,7 +159,7 @@ const int PATTERNS[PATTERNS_LEN][5] = {
     }
     [resultString appendFormat:@"%C", (unichar)('0' + bestMatch)];
 
-    for (int i = 0; i < counterDigitPairLen; i++) {
+    for (NSInteger i = 0; i < counterDigitPairLen; i++) {
       payloadStart += counterDigitPair[i];
     }
   }
@@ -171,11 +171,11 @@ const int PATTERNS[PATTERNS_LEN][5] = {
  * Identify where the start of the middle / payload section starts.
  */
 - (NSArray *)decodeStart:(ZXBitArray *)row {
-  int endStart = [self skipWhiteSpace:row];
+  NSInteger endStart = [self skipWhiteSpace:row];
   if (endStart == -1) {
     return nil;
   }
-  NSArray *startPattern = [self findGuardPattern:row rowOffset:endStart pattern:(int *)ITF_START_PATTERN patternLen:sizeof(ITF_START_PATTERN)/sizeof(int)];
+  NSArray *startPattern = [self findGuardPattern:row rowOffset:endStart pattern:(NSInteger *)ITF_START_PATTERN patternLen:sizeof(ITF_START_PATTERN)/sizeof(NSInteger)];
   if (!startPattern) {
     return nil;
   }
@@ -201,10 +201,10 @@ const int PATTERNS[PATTERNS_LEN][5] = {
  * 
  * ref: http://www.barcode-1.net/i25code.html
  */
-- (BOOL)validateQuietZone:(ZXBitArray *)row startPattern:(int)startPattern {
-  int quietCount = self.narrowLineWidth * 10;
+- (BOOL)validateQuietZone:(ZXBitArray *)row startPattern:(NSInteger)startPattern {
+  NSInteger quietCount = self.narrowLineWidth * 10;
 
-  for (int i = startPattern - 1; quietCount > 0 && i >= 0; i--) {
+  for (NSInteger i = startPattern - 1; quietCount > 0 && i >= 0; i--) {
     if ([row get:i]) {
       break;
     }
@@ -220,9 +220,9 @@ const int PATTERNS[PATTERNS_LEN][5] = {
 /**
  * Skip all whitespace until we get to the first black line.
  */
-- (int)skipWhiteSpace:(ZXBitArray *)row {
-  int width = [row size];
-  int endStart = [row nextSet:0];
+- (NSInteger)skipWhiteSpace:(ZXBitArray *)row {
+  NSInteger width = [row size];
+  NSInteger endStart = [row nextSet:0];
   if (endStart == width) {
     return -1;
   }
@@ -236,34 +236,34 @@ const int PATTERNS[PATTERNS_LEN][5] = {
 - (NSArray *)decodeEnd:(ZXBitArray *)row {
   [row reverse];
 
-  int endStart = [self skipWhiteSpace:row];
+  NSInteger endStart = [self skipWhiteSpace:row];
   if (endStart == -1) {
     [row reverse];
     return nil;
   }
-  NSMutableArray *endPattern = [[self findGuardPattern:row rowOffset:endStart pattern:(int *)END_PATTERN_REVERSED patternLen:sizeof(END_PATTERN_REVERSED)/sizeof(int)] mutableCopy];
+  NSMutableArray *endPattern = [[self findGuardPattern:row rowOffset:endStart pattern:(NSInteger *)END_PATTERN_REVERSED patternLen:sizeof(END_PATTERN_REVERSED)/sizeof(NSInteger)] mutableCopy];
   if (!endPattern) {
     [row reverse];
     return nil;
   }
   [self validateQuietZone:row startPattern:[endPattern[0] intValue]];
-  int temp = [endPattern[0] intValue];
+  NSInteger temp = [endPattern[0] intValue];
   endPattern[0] = @([row size] - [endPattern[1] intValue]);
   endPattern[1] = @([row size] - temp);
   [row reverse];
   return endPattern;
 }
 
-- (NSArray *)findGuardPattern:(ZXBitArray *)row rowOffset:(int)rowOffset pattern:(int[])pattern patternLen:(int)patternLen {
-  int patternLength = patternLen;
-  int counters[patternLength];
-  memset(counters, 0, patternLength * sizeof(int));
-  int width = row.size;
+- (NSArray *)findGuardPattern:(ZXBitArray *)row rowOffset:(NSInteger)rowOffset pattern:(NSInteger[])pattern patternLen:(NSInteger)patternLen {
+  NSInteger patternLength = patternLen;
+  NSInteger counters[patternLength];
+  memset(counters, 0, patternLength * sizeof(NSInteger));
+  NSInteger width = row.size;
   BOOL isWhite = NO;
 
-  int counterPosition = 0;
-  int patternStart = rowOffset;
-  for (int x = rowOffset; x < width; x++) {
+  NSInteger counterPosition = 0;
+  NSInteger patternStart = rowOffset;
+  for (NSInteger x = rowOffset; x < width; x++) {
     if ([row get:x] ^ isWhite) {
       counters[counterPosition]++;
     } else {
@@ -272,7 +272,7 @@ const int PATTERNS[PATTERNS_LEN][5] = {
           return @[@(patternStart), @(x)];
         }
         patternStart += counters[0] + counters[1];
-        for (int y = 2; y < patternLength; y++) {
+        for (NSInteger y = 2; y < patternLength; y++) {
           counters[y - 2] = counters[y];
         }
         counters[patternLength - 2] = 0;
@@ -293,16 +293,16 @@ const int PATTERNS[PATTERNS_LEN][5] = {
  * Attempts to decode a sequence of ITF black/white lines into single
  * digit.
  */
-- (int)decodeDigit:(int[])counters countersSize:(int)countersSize {
-  int bestVariance = MAX_AVG_VARIANCE;
-  int bestMatch = -1;
-  int max = PATTERNS_LEN;
-  for (int i = 0; i < max; i++) {
-    int pattern[countersSize];
-    for(int ind = 0; ind<countersSize; ind++){
+- (NSInteger)decodeDigit:(NSInteger[])counters countersSize:(NSInteger)countersSize {
+  NSInteger bestVariance = MAX_AVG_VARIANCE;
+  NSInteger bestMatch = -1;
+  NSInteger max = PATTERNS_LEN;
+  for (NSInteger i = 0; i < max; i++) {
+    NSInteger pattern[countersSize];
+    for(NSInteger ind = 0; ind<countersSize; ind++){
       pattern[ind] = PATTERNS[i][ind];
     }
-    int variance = [ZXOneDReader patternMatchVariance:counters countersSize:countersSize pattern:pattern maxIndividualVariance:MAX_INDIVIDUAL_VARIANCE];
+    NSInteger variance = [ZXOneDReader patternMatchVariance:counters countersSize:countersSize pattern:pattern maxIndividualVariance:MAX_INDIVIDUAL_VARIANCE];
     if (variance < bestVariance) {
       bestVariance = variance;
       bestMatch = i;

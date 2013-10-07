@@ -90,7 +90,7 @@
   return self;
 }
 
-- (ZXResult *)decodeRow:(int)rowNumber row:(ZXBitArray *)row hints:(ZXDecodeHints *)hints error:(NSError **)error {
+- (ZXResult *)decodeRow:(NSInteger)rowNumber row:(ZXBitArray *)row hints:(ZXDecodeHints *)hints error:(NSError **)error {
   for (ZXOneDReader *reader in self.readers) {
     ZXResult *result = [reader decodeRow:rowNumber row:row hints:hints error:error];
     if (result) {

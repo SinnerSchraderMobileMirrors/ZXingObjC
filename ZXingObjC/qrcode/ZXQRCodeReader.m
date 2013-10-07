@@ -111,10 +111,10 @@
     return nil;
   }
 
-  int top = [leftTopBlack[1] intValue];
-  int bottom = [rightBottomBlack[1] intValue];
-  int left = [leftTopBlack[0] intValue];
-  int right = [rightBottomBlack[0] intValue];
+  NSInteger top = [leftTopBlack[1] intValue];
+  NSInteger bottom = [rightBottomBlack[1] intValue];
+  NSInteger left = [leftTopBlack[0] intValue];
+  NSInteger right = [rightBottomBlack[0] intValue];
 
   // Sanity check!
   if (left >= right || top >= bottom) {
@@ -127,8 +127,8 @@
     right = left + (bottom - top);
   }
 
-  int matrixWidth = round((right - left + 1) / moduleSize);
-  int matrixHeight = round((bottom - top + 1) / moduleSize);
+  NSInteger matrixWidth = round((right - left + 1) / moduleSize);
+  NSInteger matrixHeight = round((bottom - top + 1) / moduleSize);
   if (matrixWidth <= 0 || matrixHeight <= 0) {
     return nil;
   }
@@ -136,26 +136,26 @@
     return nil;
   }
 
-  int nudge = (int) (moduleSize / 2.0f);
+  NSInteger nudge = (NSInteger) (moduleSize / 2.0f);
   top += nudge;
   left += nudge;
 
   // But careful that this does not sample off the edge
-  int nudgedTooFarRight = left + (int) ((matrixWidth - 1) * moduleSize) - (right - 1);
+  NSInteger nudgedTooFarRight = left + (NSInteger) ((matrixWidth - 1) * moduleSize) - (right - 1);
   if (nudgedTooFarRight > 0) {
     left -= nudgedTooFarRight;
   }
-  int nudgedTooFarDown = top + (int) ((matrixHeight - 1) * moduleSize) - (bottom - 1);
+  NSInteger nudgedTooFarDown = top + (NSInteger) ((matrixHeight - 1) * moduleSize) - (bottom - 1);
   if (nudgedTooFarDown > 0) {
     top -= nudgedTooFarDown;
   }
 
   // Now just read off the bits
   ZXBitMatrix *bits = [[ZXBitMatrix alloc] initWithWidth:matrixWidth height:matrixHeight];
-  for (int y = 0; y < matrixHeight; y++) {
-    int iOffset = top + (int) (y * moduleSize);
-    for (int x = 0; x < matrixWidth; x++) {
-      if ([image getX:left + (int) (x * moduleSize) y:iOffset]) {
+  for (NSInteger y = 0; y < matrixHeight; y++) {
+    NSInteger iOffset = top + (NSInteger) (y * moduleSize);
+    for (NSInteger x = 0; x < matrixWidth; x++) {
+      if ([image getX:left + (NSInteger) (x * moduleSize) y:iOffset]) {
         [bits setX:x y:y];
       }
     }
@@ -164,12 +164,12 @@
 }
 
 - (float)moduleSize:(NSArray *)leftTopBlack image:(ZXBitMatrix *)image {
-  int height = image.height;
-  int width = image.width;
-  int x = [leftTopBlack[0] intValue];
-  int y = [leftTopBlack[1] intValue];
+  NSInteger height = image.height;
+  NSInteger width = image.width;
+  NSInteger x = [leftTopBlack[0] intValue];
+  NSInteger y = [leftTopBlack[1] intValue];
   BOOL inBlack = YES;
-  int transitions = 0;
+  NSInteger transitions = 0;
   while (x < width && y < height) {
     if (inBlack != [image getX:x y:y]) {
       if (++transitions == 5) {

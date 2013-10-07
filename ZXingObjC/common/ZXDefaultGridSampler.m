@@ -22,8 +22,8 @@
 @implementation ZXDefaultGridSampler
 
 - (ZXBitMatrix *)sampleGrid:(ZXBitMatrix *)image
-                 dimensionX:(int)dimensionX
-                 dimensionY:(int)dimensionY
+                 dimensionX:(NSInteger)dimensionX
+                 dimensionY:(NSInteger)dimensionY
                       p1ToX:(float)p1ToX p1ToY:(float)p1ToY
                       p2ToX:(float)p2ToX p2ToY:(float)p2ToY
                       p3ToX:(float)p3ToX p3ToY:(float)p3ToY
@@ -46,8 +46,8 @@
 }
 
 - (ZXBitMatrix *)sampleGrid:(ZXBitMatrix *)image
-                 dimensionX:(int)dimensionX
-                 dimensionY:(int)dimensionY
+                 dimensionX:(NSInteger)dimensionX
+                 dimensionY:(NSInteger)dimensionY
                   transform:(ZXPerspectiveTransform *)transform
                       error:(NSError **)error {
   if (dimensionX <= 0 || dimensionY <= 0) {
@@ -55,14 +55,14 @@
     return nil;
   }
   ZXBitMatrix *bits = [[ZXBitMatrix alloc] initWithWidth:dimensionX height:dimensionY];
-  int pointsLen = dimensionX << 1;
+  NSInteger pointsLen = dimensionX << 1;
   float pointsf[pointsLen];
   memset(pointsf, 0, pointsLen * sizeof(float));
 
-  for (int y = 0; y < dimensionY; y++) {
-    int max = dimensionX << 1;
+  for (NSInteger y = 0; y < dimensionY; y++) {
+    NSInteger max = dimensionX << 1;
     float iValue = (float)y + 0.5f;
-    for (int x = 0; x < max; x += 2) {
+    for (NSInteger x = 0; x < max; x += 2) {
       pointsf[x] = (float) (x >> 1) + 0.5f;
       pointsf[x + 1] = iValue;
     }
@@ -71,9 +71,9 @@
     if (![ZXGridSampler checkAndNudgePoints:image points:pointsf pointsLen:pointsLen error:error]) {
       return nil;
     }
-    for (int x = 0; x < max; x += 2) {
-      int xx = (int)pointsf[x];
-      int yy = (int)pointsf[x + 1];
+    for (NSInteger x = 0; x < max; x += 2) {
+      NSInteger xx = (NSInteger)pointsf[x];
+      NSInteger yy = (NSInteger)pointsf[x + 1];
       if (xx < 0 || yy < 0 || xx >= image.width || yy >= image.height) {
         if (error) *error = NotFoundErrorInstance();
         return nil;

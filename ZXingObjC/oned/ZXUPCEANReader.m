@@ -24,23 +24,23 @@
 #import "ZXUPCEANReader.h"
 #import "ZXUPCEANExtensionSupport.h"
 
-#define MAX_AVG_VARIANCE (int)(PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.48f)
-#define MAX_INDIVIDUAL_VARIANCE (int)(PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.7f)
+#define MAX_AVG_VARIANCE (NSInteger)(PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.48f)
+#define MAX_INDIVIDUAL_VARIANCE (NSInteger)(PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.7f)
 
 /**
  * Start/end guard pattern.
  */
-const int START_END_PATTERN[START_END_PATTERN_LEN] = {1, 1, 1};
+const NSInteger START_END_PATTERN[START_END_PATTERN_LEN] = {1, 1, 1};
 
 /**
  * Pattern marking the middle of a UPC/EAN pattern, separating the two halves.
  */
-const int MIDDLE_PATTERN[MIDDLE_PATTERN_LEN] = {1, 1, 1, 1, 1};
+const NSInteger MIDDLE_PATTERN[MIDDLE_PATTERN_LEN] = {1, 1, 1, 1, 1};
 
 /**
  * "Odd", or "L" patterns used to encode UPC/EAN digits.
  */
-const int L_PATTERNS[L_PATTERNS_LEN][L_PATTERNS_SUB_LEN] = {
+const NSInteger L_PATTERNS[L_PATTERNS_LEN][L_PATTERNS_SUB_LEN] = {
   {3, 2, 1, 1}, // 0
   {2, 2, 2, 1}, // 1
   {2, 1, 2, 2}, // 2
@@ -58,7 +58,7 @@ const int L_PATTERNS[L_PATTERNS_LEN][L_PATTERNS_SUB_LEN] = {
  */
 #define L_AND_G_PATTERNS_LEN 20
 #define L_AND_G_PATTERNS_SUB_LEN 4
-const int L_AND_G_PATTERNS[L_AND_G_PATTERNS_LEN][L_AND_G_PATTERNS_SUB_LEN] = {
+const NSInteger L_AND_G_PATTERNS[L_AND_G_PATTERNS_LEN][L_AND_G_PATTERNS_SUB_LEN] = {
   {3, 2, 1, 1}, // 0
   {2, 2, 2, 1}, // 1
   {2, 1, 2, 2}, // 2
@@ -104,11 +104,11 @@ const int L_AND_G_PATTERNS[L_AND_G_PATTERNS_LEN][L_AND_G_PATTERNS_SUB_LEN] = {
 + (NSRange)findStartGuardPattern:(ZXBitArray *)row error:(NSError **)error {
   BOOL foundStart = NO;
   NSRange startRange = NSMakeRange(NSNotFound, 0);
-  int nextStart = 0;
-  int counters[START_END_PATTERN_LEN];
+  NSInteger nextStart = 0;
+  NSInteger counters[START_END_PATTERN_LEN];
 
   while (!foundStart) {
-    startRange = [self findGuardPattern:row rowOffset:nextStart whiteFirst:NO pattern:(int *)START_END_PATTERN patternLen:START_END_PATTERN_LEN counters:counters error:error];
+    startRange = [self findGuardPattern:row rowOffset:nextStart whiteFirst:NO pattern:(NSInteger *)START_END_PATTERN patternLen:START_END_PATTERN_LEN counters:counters error:error];
     if (startRange.location == NSNotFound) {
       return startRange;
     }
@@ -117,7 +117,7 @@ const int L_AND_G_PATTERNS[L_AND_G_PATTERNS_LEN][L_AND_G_PATTERNS_SUB_LEN] = {
     // Make sure there is a quiet zone at least as big as the start pattern before the barcode.
     // If this check would run off the left edge of the image, do not accept this barcode,
     // as it is very likely to be a false positive.
-    int quietStart = start - (nextStart - start);
+    NSInteger quietStart = start - (nextStart - start);
     if (quietStart >= 0) {
       foundStart = [row isRange:quietStart end:start value:NO];
     }
@@ -125,7 +125,7 @@ const int L_AND_G_PATTERNS[L_AND_G_PATTERNS_LEN][L_AND_G_PATTERNS_SUB_LEN] = {
   return startRange;
 }
 
-- (ZXResult *)decodeRow:(int)rowNumber row:(ZXBitArray *)row hints:(ZXDecodeHints *)hints error:(NSError **)error {
+- (ZXResult *)decodeRow:(NSInteger)rowNumber row:(ZXBitArray *)row hints:(ZXDecodeHints *)hints error:(NSError **)error {
   return [self decodeRow:rowNumber row:row startGuardRange:[[self class] findStartGuardPattern:row error:error] hints:hints error:error];
 }
 
@@ -133,7 +133,7 @@ const int L_AND_G_PATTERNS[L_AND_G_PATTERNS_LEN][L_AND_G_PATTERNS_SUB_LEN] = {
  * Like decodeRow:row:hints:, but allows caller to inform method about where the UPC/EAN start pattern is
  * found. This allows this to be computed once and reused across many implementations.
  */
-- (ZXResult *)decodeRow:(int)rowNumber row:(ZXBitArray *)row startGuardRange:(NSRange)startGuardRange hints:(ZXDecodeHints *)hints error:(NSError **)error {
+- (ZXResult *)decodeRow:(NSInteger)rowNumber row:(ZXBitArray *)row startGuardRange:(NSRange)startGuardRange hints:(ZXDecodeHints *)hints error:(NSError **)error {
   id<ZXResultPointCallback> resultPointCallback = hints == nil ? nil : hints.resultPointCallback;
 
   if (resultPointCallback != nil) {
@@ -141,7 +141,7 @@ const int L_AND_G_PATTERNS[L_AND_G_PATTERNS_LEN][L_AND_G_PATTERNS_SUB_LEN] = {
   }
 
   NSMutableString *result = [NSMutableString string];
-  int endStart = [self decodeMiddle:row startRange:startGuardRange result:result error:error];
+  NSInteger endStart = [self decodeMiddle:row startRange:startGuardRange result:result error:error];
   if (endStart == -1) {
     return nil;
   }
@@ -161,8 +161,8 @@ const int L_AND_G_PATTERNS[L_AND_G_PATTERNS_LEN][L_AND_G_PATTERNS_SUB_LEN] = {
 
   // Make sure there is a quiet zone at least as big as the end pattern after the barcode. The
   // spec might want more whitespace, but in practice this is the maximum we can count on.
-  int end = NSMaxRange(endRange);
-  int quietEnd = end + (end - endRange.location);
+  NSInteger end = NSMaxRange(endRange);
+  NSInteger quietEnd = end + (end - endRange.location);
   if (quietEnd >= [row size] || ![row isRange:end end:quietEnd value:NO]) {
     if (error) *error = NotFoundErrorInstance();
     return nil;
@@ -215,14 +215,14 @@ const int L_AND_G_PATTERNS[L_AND_G_PATTERNS_LEN][L_AND_G_PATTERNS_SUB_LEN] = {
  * whether the checksum is correct or not.
  */
 + (BOOL)checkStandardUPCEANChecksum:(NSString *)s {
-  int length = [s length];
+  NSInteger length = [s length];
   if (length == 0) {
     return NO;
   }
-  int sum = 0;
+  NSInteger sum = 0;
 
-  for (int i = length - 2; i >= 0; i -= 2) {
-    int digit = (int)[s characterAtIndex:i] - (int)'0';
+  for (NSInteger i = length - 2; i >= 0; i -= 2) {
+    NSInteger digit = (NSInteger)[s characterAtIndex:i] - (NSInteger)'0';
     if (digit < 0 || digit > 9) {
       return NO;
     }
@@ -231,8 +231,8 @@ const int L_AND_G_PATTERNS[L_AND_G_PATTERNS_LEN][L_AND_G_PATTERNS_SUB_LEN] = {
 
   sum *= 3;
 
-  for (int i = length - 1; i >= 0; i -= 2) {
-    int digit = (int)[s characterAtIndex:i] - (int)'0';
+  for (NSInteger i = length - 1; i >= 0; i -= 2) {
+    NSInteger digit = (NSInteger)[s characterAtIndex:i] - (NSInteger)'0';
     if (digit < 0 || digit > 9) {
       return NO;
     }
@@ -242,26 +242,26 @@ const int L_AND_G_PATTERNS[L_AND_G_PATTERNS_LEN][L_AND_G_PATTERNS_SUB_LEN] = {
   return sum % 10 == 0;
 }
 
-- (NSRange)decodeEnd:(ZXBitArray *)row endStart:(int)endStart error:(NSError **)error {
-  return [[self class] findGuardPattern:row rowOffset:endStart whiteFirst:NO pattern:(int *)START_END_PATTERN patternLen:START_END_PATTERN_LEN error:error];
+- (NSRange)decodeEnd:(ZXBitArray *)row endStart:(NSInteger)endStart error:(NSError **)error {
+  return [[self class] findGuardPattern:row rowOffset:endStart whiteFirst:NO pattern:(NSInteger *)START_END_PATTERN patternLen:START_END_PATTERN_LEN error:error];
 }
 
-+ (NSRange)findGuardPattern:(ZXBitArray *)row rowOffset:(int)rowOffset whiteFirst:(BOOL)whiteFirst pattern:(int *)pattern patternLen:(int)patternLen error:(NSError **)error {
-  int counters[patternLen];
++ (NSRange)findGuardPattern:(ZXBitArray *)row rowOffset:(NSInteger)rowOffset whiteFirst:(BOOL)whiteFirst pattern:(NSInteger *)pattern patternLen:(NSInteger)patternLen error:(NSError **)error {
+  NSInteger counters[patternLen];
   return [self findGuardPattern:row rowOffset:rowOffset whiteFirst:whiteFirst pattern:pattern patternLen:patternLen counters:counters error:error];
 }
 
-+ (NSRange)findGuardPattern:(ZXBitArray *)row rowOffset:(int)rowOffset whiteFirst:(BOOL)whiteFirst pattern:(int *)pattern patternLen:(int)patternLen counters:(int *)counters error:(NSError **)error {
-  int patternLength = patternLen;
-  memset(counters, 0, patternLength * sizeof(int));
-  int width = row.size;
++ (NSRange)findGuardPattern:(ZXBitArray *)row rowOffset:(NSInteger)rowOffset whiteFirst:(BOOL)whiteFirst pattern:(NSInteger *)pattern patternLen:(NSInteger)patternLen counters:(NSInteger *)counters error:(NSError **)error {
+  NSInteger patternLength = patternLen;
+  memset(counters, 0, patternLength * sizeof(NSInteger));
+  NSInteger width = row.size;
 
   BOOL isWhite = whiteFirst;
   rowOffset = whiteFirst ? [row nextUnset:rowOffset] : [row nextSet:rowOffset];
-  int counterPosition = 0;
-  int patternStart = rowOffset;
+  NSInteger counterPosition = 0;
+  NSInteger patternStart = rowOffset;
 
-  for (int x = rowOffset; x < width; x++) {
+  for (NSInteger x = rowOffset; x < width; x++) {
     if ([row get:x] ^ isWhite) {
       counters[counterPosition]++;
     } else {
@@ -271,7 +271,7 @@ const int L_AND_G_PATTERNS[L_AND_G_PATTERNS_LEN][L_AND_G_PATTERNS_SUB_LEN] = {
         }
         patternStart += counters[0] + counters[1];
 
-        for (int y = 2; y < patternLength; y++) {
+        for (NSInteger y = 2; y < patternLength; y++) {
           counters[y - 2] = counters[y];
         }
 
@@ -294,24 +294,24 @@ const int L_AND_G_PATTERNS[L_AND_G_PATTERNS_LEN][L_AND_G_PATTERNS_SUB_LEN] = {
 /**
  * Attempts to decode a single UPC/EAN-encoded digit.
  */
-+ (int)decodeDigit:(ZXBitArray *)row counters:(int[])counters countersLen:(int)countersLen rowOffset:(int)rowOffset patternType:(UPC_EAN_PATTERNS)patternType error:(NSError **)error {
++ (NSInteger)decodeDigit:(ZXBitArray *)row counters:(NSInteger[])counters countersLen:(NSInteger)countersLen rowOffset:(NSInteger)rowOffset patternType:(UPC_EAN_PATTERNS)patternType error:(NSError **)error {
   if (![self recordPattern:row start:rowOffset counters:counters countersSize:countersLen]) {
     if (error) *error = NotFoundErrorInstance();
     return -1;
   }
-  int bestVariance = MAX_AVG_VARIANCE;
-  int bestMatch = -1;
-  int max = 0;
+  NSInteger bestVariance = MAX_AVG_VARIANCE;
+  NSInteger bestMatch = -1;
+  NSInteger max = 0;
   switch (patternType) {
     case UPC_EAN_PATTERNS_L_PATTERNS:
       max = L_PATTERNS_LEN;
-      for (int i = 0; i < max; i++) {
-        int pattern[countersLen];
-        for(int j = 0; j < countersLen; j++){
+      for (NSInteger i = 0; i < max; i++) {
+        NSInteger pattern[countersLen];
+        for(NSInteger j = 0; j < countersLen; j++){
           pattern[j] = L_PATTERNS[i][j];
         }
 
-        int variance = [self patternMatchVariance:counters countersSize:countersLen pattern:pattern maxIndividualVariance:MAX_INDIVIDUAL_VARIANCE];
+        NSInteger variance = [self patternMatchVariance:counters countersSize:countersLen pattern:pattern maxIndividualVariance:MAX_INDIVIDUAL_VARIANCE];
         if (variance < bestVariance) {
           bestVariance = variance;
           bestMatch = i;
@@ -320,13 +320,13 @@ const int L_AND_G_PATTERNS[L_AND_G_PATTERNS_LEN][L_AND_G_PATTERNS_SUB_LEN] = {
       break;
     case UPC_EAN_PATTERNS_L_AND_G_PATTERNS:
       max = L_AND_G_PATTERNS_LEN;
-      for (int i = 0; i < max; i++) {
-        int pattern[countersLen];
-        for(int j = 0; j< countersLen; j++){
+      for (NSInteger i = 0; i < max; i++) {
+        NSInteger pattern[countersLen];
+        for(NSInteger j = 0; j< countersLen; j++){
           pattern[j] = L_AND_G_PATTERNS[i][j];
         }
         
-        int variance = [self patternMatchVariance:counters countersSize:countersLen pattern:pattern maxIndividualVariance:MAX_INDIVIDUAL_VARIANCE];
+        NSInteger variance = [self patternMatchVariance:counters countersSize:countersLen pattern:pattern maxIndividualVariance:MAX_INDIVIDUAL_VARIANCE];
         if (variance < bestVariance) {
           bestVariance = variance;
           bestMatch = i;
@@ -359,7 +359,7 @@ const int L_AND_G_PATTERNS[L_AND_G_PATTERNS_LEN][L_AND_G_PATTERNS_SUB_LEN] = {
  * Subclasses override this to decode the portion of a barcode between the start
  * and end guard patterns.
  */
-- (int)decodeMiddle:(ZXBitArray *)row startRange:(NSRange)startRange result:(NSMutableString *)result error:(NSError **)error {
+- (NSInteger)decodeMiddle:(ZXBitArray *)row startRange:(NSRange)startRange result:(NSMutableString *)result error:(NSError **)error {
   @throw [NSException exceptionWithName:NSInternalInconsistencyException
                                  reason:[NSString stringWithFormat:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)]
                                userInfo:nil];

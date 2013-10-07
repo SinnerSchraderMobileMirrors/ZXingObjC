@@ -20,67 +20,67 @@
 /**
  * code for Text compaction
  */
-const int TEXT_COMPACTION = 0;
+const NSInteger TEXT_COMPACTION = 0;
 
 /**
  * code for Byte compaction
  */
-const int BYTE_COMPACTION = 1;
+const NSInteger BYTE_COMPACTION = 1;
 
 /**
  * code for Numeric compaction
  */
-const int NUMERIC_COMPACTION = 2;
+const NSInteger NUMERIC_COMPACTION = 2;
 
 /**
  * Text compaction submode Alpha
  */
-const int SUBMODE_ALPHA = 0;
+const NSInteger SUBMODE_ALPHA = 0;
 
 /**
  * Text compaction submode Lower
  */
-const int SUBMODE_LOWER = 1;
+const NSInteger SUBMODE_LOWER = 1;
 
 /**
  * Text compaction submode Mixed
  */
-const int SUBMODE_MIXED = 2;
+const NSInteger SUBMODE_MIXED = 2;
 
 /**
  * Text compaction submode Punctuation
  */
-const int SUBMODE_PUNCTUATION = 3;
+const NSInteger SUBMODE_PUNCTUATION = 3;
 
 /**
  * mode latch to Text Compaction mode
  */
-const int LATCH_TO_TEXT = 900;
+const NSInteger LATCH_TO_TEXT = 900;
 
 /**
  * mode latch to Byte Compaction mode (number of characters NOT a multiple of 6)
  */
-const int LATCH_TO_BYTE_PADDED = 901;
+const NSInteger LATCH_TO_BYTE_PADDED = 901;
 
 /**
  * mode latch to Numeric Compaction mode
  */
-const int LATCH_TO_NUMERIC = 902;
+const NSInteger LATCH_TO_NUMERIC = 902;
 
 /**
  * mode shift to Byte Compaction mode
  */
-const int SHIFT_TO_BYTE = 913;
+const NSInteger SHIFT_TO_BYTE = 913;
 
 /**
  * mode latch to Byte Compaction mode (number of characters a multiple of 6)
  */
-const int LATCH_TO_BYTE = 924;
+const NSInteger LATCH_TO_BYTE = 924;
 
 /**
  * Raw code table for text compaction Mixed sub-mode
  */
-const int TEXT_MIXED_RAW_LEN = 30;
+const NSInteger TEXT_MIXED_RAW_LEN = 30;
 const int8_t TEXT_MIXED_RAW[TEXT_MIXED_RAW_LEN] = {
   48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 38, 13, 9, 44, 58,
   35, 45, 46, 36, 47, 43, 37, 42, 61, 94, 0, 32, 0, 0, 0};
@@ -88,22 +88,22 @@ const int8_t TEXT_MIXED_RAW[TEXT_MIXED_RAW_LEN] = {
 /**
  * Raw code table for text compaction: Punctuation sub-mode
  */
-const int TEXT_PUNCTUATION_RAW_LEN = 30;
+const NSInteger TEXT_PUNCTUATION_RAW_LEN = 30;
 const int8_t TEXT_PUNCTUATION_RAW[TEXT_PUNCTUATION_RAW_LEN] = {
   59, 60, 62, 64, 91, 92, 93, 95, 96, 126, 33, 13, 9, 44, 58,
   10, 45, 46, 36, 47, 34, 124, 42, 40, 41, 63, 123, 125, 39, 0};
 
-const int MIXED_TABLE_LEN = 128;
+const NSInteger MIXED_TABLE_LEN = 128;
 unichar MIXED_TABLE[MIXED_TABLE_LEN];
 
-const int PUNCTUATION_LEN = 128;
+const NSInteger PUNCTUATION_LEN = 128;
 unichar PUNCTUATION[PUNCTUATION_LEN];
 
 @implementation ZXPDF417HighLevelEncoder
 
 + (void)initialize {
   //Construct inverse lookups
-  for (int i = 0; i < MIXED_TABLE_LEN; i++) {
+  for (NSInteger i = 0; i < MIXED_TABLE_LEN; i++) {
     MIXED_TABLE[i] = 0xFF;
   }
   for (int8_t i = 0; i < TEXT_MIXED_RAW_LEN; i++) {
@@ -112,7 +112,7 @@ unichar PUNCTUATION[PUNCTUATION_LEN];
       MIXED_TABLE[b] = i;
     }
   }
-  for (int i = 0; i < PUNCTUATION_LEN; i++) {
+  for (NSInteger i = 0; i < PUNCTUATION_LEN; i++) {
     PUNCTUATION[i] = 0xFF;
   }
   for (int8_t i = 0; i < TEXT_PUNCTUATION_RAW_LEN; i++) {
@@ -142,9 +142,9 @@ unichar PUNCTUATION[PUNCTUATION_LEN];
   //the codewords 0..928 are encoded as Unicode characters
   NSMutableString *sb = [NSMutableString stringWithCapacity:msg.length];
 
-  int len = msg.length;
-  int p = 0;
-  int textSubMode = SUBMODE_ALPHA;
+  NSInteger len = msg.length;
+  NSInteger p = 0;
+  NSInteger textSubMode = SUBMODE_ALPHA;
 
   // User selected encoding mode
   if (compaction == ZX_COMPACTION_TEXT) {
@@ -156,9 +156,9 @@ unichar PUNCTUATION[PUNCTUATION_LEN];
     [sb appendFormat:@"%C", (unichar) LATCH_TO_NUMERIC];
     [self encodeNumeric:msg startpos:p count:len buffer:sb];
   } else {
-    int encodingMode = TEXT_COMPACTION; //Default mode, see 4.4.2.1
+    NSInteger encodingMode = TEXT_COMPACTION; //Default mode, see 4.4.2.1
     while (p < len) {
-      int n = [self determineConsecutiveDigitCount:msg startpos:p];
+      NSInteger n = [self determineConsecutiveDigitCount:msg startpos:p];
       if (n >= 13) {
         [sb appendFormat:@"%C", (unichar) LATCH_TO_NUMERIC];
         encodingMode = NUMERIC_COMPACTION;
@@ -166,7 +166,7 @@ unichar PUNCTUATION[PUNCTUATION_LEN];
         [self encodeNumeric:msg startpos:p count:n buffer:sb];
         p += n;
       } else {
-        int t = [self determineConsecutiveTextCount:msg startpos:p];
+        NSInteger t = [self determineConsecutiveTextCount:msg startpos:p];
         if (t >= 5 || n == len) {
           if (encodingMode != TEXT_COMPACTION) {
             [sb appendFormat:@"%C", (unichar) LATCH_TO_TEXT];
@@ -179,7 +179,7 @@ unichar PUNCTUATION[PUNCTUATION_LEN];
           if (bytes == NULL) {
             bytes = [self bytesForMessage:msg];
           }
-          int b = [self determineConsecutiveBinaryCount:msg bytes:bytes startpos:p error:error];
+          NSInteger b = [self determineConsecutiveBinaryCount:msg bytes:bytes startpos:p error:error];
           if (b == -1) {
             return nil;
           } else if (b == 0) {
@@ -207,10 +207,10 @@ unichar PUNCTUATION[PUNCTUATION_LEN];
  * Encode parts of the message using Text Compaction as described in ISO/IEC 15438:2001(E),
  * chapter 4.4.2.
  */
-+ (int)encodeText:(NSString *)msg startpos:(int)startpos count:(int)count buffer:(NSMutableString *)sb initialSubmode:(int)initialSubmode {
++ (NSInteger)encodeText:(NSString *)msg startpos:(NSInteger)startpos count:(NSInteger)count buffer:(NSMutableString *)sb initialSubmode:(NSInteger)initialSubmode {
   NSMutableString *tmp = [NSMutableString stringWithCapacity:count];
-  int submode = initialSubmode;
-  int idx = 0;
+  NSInteger submode = initialSubmode;
+  NSInteger idx = 0;
   while (true) {
     unichar ch = [msg characterAtIndex:startpos + idx];
     switch (submode) {
@@ -302,8 +302,8 @@ unichar PUNCTUATION[PUNCTUATION_LEN];
     }
   }
   unichar h = 0;
-  int len = tmp.length;
-  for (int i = 0; i < len; i++) {
+  NSInteger len = tmp.length;
+  for (NSInteger i = 0; i < len; i++) {
     BOOL odd = (i % 2) != 0;
     if (odd) {
       h = (unichar) ((h * 30) + [tmp characterAtIndex:i]);
@@ -323,29 +323,29 @@ unichar PUNCTUATION[PUNCTUATION_LEN];
  * chapter 4.4.3. The Unicode characters will be converted to binary using the cp437
  * codepage.
  */
-+ (void)encodeBinary:(int8_t *)bytes startpos:(int)startpos count:(int)count startmode:(int)startmode buffer:(NSMutableString *)sb {
++ (void)encodeBinary:(int8_t *)bytes startpos:(NSInteger)startpos count:(NSInteger)count startmode:(NSInteger)startmode buffer:(NSMutableString *)sb {
   if (count == 1 && startmode == TEXT_COMPACTION) {
     [sb appendFormat:@"%C", (unichar) SHIFT_TO_BYTE];
   }
 
-  int idx = startpos;
+  NSInteger idx = startpos;
   // Encode sixpacks
   if (count >= 6) {
     [sb appendFormat:@"%C", (unichar) LATCH_TO_BYTE];
-    const int charsLen = 5;
+    const NSInteger charsLen = 5;
     unichar chars[charsLen];
     memset(chars, 0, charsLen * sizeof(unichar));
     while ((startpos + count - idx) >= 6) {
       long t = 0;
-      for (int i = 0; i < 6; i++) {
+      for (NSInteger i = 0; i < 6; i++) {
         t <<= 8;
         t += bytes[idx + i] & 0xff;
       }
-      for (int i = 0; i < 5; i++) {
+      for (NSInteger i = 0; i < 5; i++) {
         chars[i] = (unichar) (t % 900);
         t /= 900;
       }
-      for (int i = charsLen - 1; i >= 0; i--) {
+      for (NSInteger i = charsLen - 1; i >= 0; i--) {
         [sb appendFormat:@"%C", chars[i]];
       }
       idx += 6;
@@ -355,18 +355,18 @@ unichar PUNCTUATION[PUNCTUATION_LEN];
   if (idx < startpos + count) {
     [sb appendFormat:@"%C", (unichar) LATCH_TO_BYTE_PADDED];
   }
-  for (int i = idx; i < startpos + count; i++) {
-    int ch = bytes[i] & 0xff;
+  for (NSInteger i = idx; i < startpos + count; i++) {
+    NSInteger ch = bytes[i] & 0xff;
     [sb appendFormat:@"%C", (unichar)ch];
   }
 }
 
-+ (void)encodeNumeric:(NSString *)msg startpos:(int)startpos count:(int)count buffer:(NSMutableString *)sb {
-  int idx = 0;
++ (void)encodeNumeric:(NSString *)msg startpos:(NSInteger)startpos count:(NSInteger)count buffer:(NSMutableString *)sb {
+  NSInteger idx = 0;
   NSMutableString *tmp = [NSMutableString stringWithCapacity:count / 3 + 1];
   while (idx < count - 1) {
     [tmp setString:@""];
-    int len = MIN(44, count - idx);
+    NSInteger len = MIN(44, count - idx);
     NSString *part = [@"1" stringByAppendingString:[msg substringWithRange:NSMakeRange(startpos + idx, len)]];
     long long bigint = [part longLongValue];
     do {
@@ -376,7 +376,7 @@ unichar PUNCTUATION[PUNCTUATION_LEN];
     } while (bigint != 0);
 
     //Reverse temporary string
-    for (int i = tmp.length - 1; i >= 0; i--) {
+    for (NSInteger i = tmp.length - 1; i >= 0; i--) {
       [tmp appendFormat:@"%C", [tmp characterAtIndex:i]];
     }
     idx += len;
@@ -410,10 +410,10 @@ unichar PUNCTUATION[PUNCTUATION_LEN];
 /**
  * Determines the number of consecutive characters that are encodable using numeric compaction.
  */
-+ (int)determineConsecutiveDigitCount:(NSString *)msg startpos:(int)startpos {
-  int count = 0;
-  int len = msg.length;
-  int idx = startpos;
++ (NSInteger)determineConsecutiveDigitCount:(NSString *)msg startpos:(NSInteger)startpos {
+  NSInteger count = 0;
+  NSInteger len = msg.length;
+  NSInteger idx = startpos;
   if (idx < len) {
     char ch = [msg characterAtIndex:idx];
     while ([self isDigit:ch] && idx < len) {
@@ -434,12 +434,12 @@ unichar PUNCTUATION[PUNCTUATION_LEN];
  * @param startpos the start position within the message
  * @return the requested character count
  */
-+ (int)determineConsecutiveTextCount:(NSString *)msg startpos:(int)startpos {
-  int len = msg.length;
-  int idx = startpos;
++ (NSInteger)determineConsecutiveTextCount:(NSString *)msg startpos:(NSInteger)startpos {
+  NSInteger len = msg.length;
+  NSInteger idx = startpos;
   while (idx < len) {
     char ch = [msg characterAtIndex:idx];
-    int numericCount = 0;
+    NSInteger numericCount = 0;
     while (numericCount < 13 && [self isDigit:ch] && idx < len) {
       numericCount++;
       idx++;
@@ -468,17 +468,17 @@ unichar PUNCTUATION[PUNCTUATION_LEN];
 /**
  * Determines the number of consecutive characters that are encodable using binary compaction.
  */
-+ (int)determineConsecutiveBinaryCount:(NSString *)msg bytes:(int8_t *)bytes startpos:(int)startpos error:(NSError **)error {
-  int len = msg.length;
-  int idx = startpos;
++ (NSInteger)determineConsecutiveBinaryCount:(NSString *)msg bytes:(int8_t *)bytes startpos:(NSInteger)startpos error:(NSError **)error {
+  NSInteger len = msg.length;
+  NSInteger idx = startpos;
   while (idx < len) {
     char ch = [msg characterAtIndex:idx];
-    int numericCount = 0;
+    NSInteger numericCount = 0;
 
     while (numericCount < 13 && [self isDigit:ch]) {
       numericCount++;
       //textCount++;
-      int i = idx + numericCount;
+      NSInteger i = idx + numericCount;
       if (i >= len) {
         break;
       }
@@ -487,10 +487,10 @@ unichar PUNCTUATION[PUNCTUATION_LEN];
     if (numericCount >= 13) {
       return idx - startpos;
     }
-    int textCount = 0;
+    NSInteger textCount = 0;
     while (textCount < 5 && [self isText:ch]) {
       textCount++;
-      int i = idx + textCount;
+      NSInteger i = idx + textCount;
       if (i >= len) {
         break;
       }

@@ -25,9 +25,9 @@
 
 @implementation ZXUPCEANExtension2Support
 
-- (ZXResult *)decodeRow:(int)rowNumber row:(ZXBitArray *)row extensionStartRange:(NSRange)extensionStartRange error:(NSError **)error {
+- (ZXResult *)decodeRow:(NSInteger)rowNumber row:(ZXBitArray *)row extensionStartRange:(NSRange)extensionStartRange error:(NSError **)error {
   NSMutableString *resultString = [NSMutableString string];
-  int end = [self decodeMiddle:row startRange:extensionStartRange result:resultString error:error];
+  NSInteger end = [self decodeMiddle:row startRange:extensionStartRange result:resultString error:error];
   if (end == -1) {
     return nil;
   }
@@ -46,23 +46,23 @@
   return extensionResult;
 }
 
-- (int)decodeMiddle:(ZXBitArray *)row startRange:(NSRange)startRange result:(NSMutableString *)result error:(NSError **)error {
-  const int countersLen = 4;
-  int counters[countersLen];
-  memset(counters, 0, countersLen * sizeof(int));
+- (NSInteger)decodeMiddle:(ZXBitArray *)row startRange:(NSRange)startRange result:(NSMutableString *)result error:(NSError **)error {
+  const NSInteger countersLen = 4;
+  NSInteger counters[countersLen];
+  memset(counters, 0, countersLen * sizeof(NSInteger));
 
-  int end = [row size];
-  int rowOffset = NSMaxRange(startRange);
+  NSInteger end = [row size];
+  NSInteger rowOffset = NSMaxRange(startRange);
 
-  int checkParity = 0;
+  NSInteger checkParity = 0;
 
-  for (int x = 0; x < 2 && rowOffset < end; x++) {
-    int bestMatch = [ZXUPCEANReader decodeDigit:row counters:counters countersLen:countersLen rowOffset:rowOffset patternType:UPC_EAN_PATTERNS_L_AND_G_PATTERNS error:error];
+  for (NSInteger x = 0; x < 2 && rowOffset < end; x++) {
+    NSInteger bestMatch = [ZXUPCEANReader decodeDigit:row counters:counters countersLen:countersLen rowOffset:rowOffset patternType:UPC_EAN_PATTERNS_L_AND_G_PATTERNS error:error];
     if (bestMatch == -1) {
       return -1;
     }
     [result appendFormat:@"%C", (unichar)('0' + bestMatch % 10)];
-    for (int i = 0; i < countersLen; i++) {
+    for (NSInteger i = 0; i < countersLen; i++) {
       rowOffset += counters[i];
     }
     if (bestMatch >= 10) {

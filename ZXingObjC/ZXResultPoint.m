@@ -45,7 +45,7 @@
 }
 
 - (NSUInteger)hash {
-  return 31 * *((int *)(&_x)) + *((int *)(&_y));
+  return 31 * *((NSInteger *)(&_x)) + *((NSInteger *)(&_y));
 }
 
 - (NSString *)description {

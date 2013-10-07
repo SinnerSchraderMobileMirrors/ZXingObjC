@@ -21,17 +21,17 @@
 @interface ZXWhiteRectangleDetector ()
 
 @property (nonatomic, strong) ZXBitMatrix *image;
-@property (nonatomic, assign) int height;
-@property (nonatomic, assign) int width;
-@property (nonatomic, assign) int leftInit;
-@property (nonatomic, assign) int rightInit;
-@property (nonatomic, assign) int downInit;
-@property (nonatomic, assign) int upInit;
+@property (nonatomic, assign) NSInteger height;
+@property (nonatomic, assign) NSInteger width;
+@property (nonatomic, assign) NSInteger leftInit;
+@property (nonatomic, assign) NSInteger rightInit;
+@property (nonatomic, assign) NSInteger downInit;
+@property (nonatomic, assign) NSInteger upInit;
 
 @end
 
-int const INIT_SIZE = 30;
-int const CORR = 1;
+NSInteger const INIT_SIZE = 30;
+NSInteger const CORR = 1;
 
 @implementation ZXWhiteRectangleDetector
 
@@ -53,12 +53,12 @@ int const CORR = 1;
   return self;
 }
 
-- (id)initWithImage:(ZXBitMatrix *)image initSize:(int)initSize x:(int)x y:(int)y error:(NSError **)error {
+- (id)initWithImage:(ZXBitMatrix *)image initSize:(NSInteger)initSize x:(NSInteger)x y:(NSInteger)y error:(NSError **)error {
   if (self = [super init]) {
     _image = image;
     _height = image.height;
     _width = image.width;
-    int halfsize = initSize >> 1;
+    NSInteger halfsize = initSize >> 1;
     _leftInit = x - halfsize;
     _rightInit = x + halfsize;
     _upInit = y - halfsize;
@@ -84,10 +84,10 @@ int const CORR = 1;
  * leftmost and the third, the rightmost
  */
 - (NSArray *)detectWithError:(NSError **)error {
-  int left = self.leftInit;
-  int right = self.rightInit;
-  int up = self.upInit;
-  int down = self.downInit;
+  NSInteger left = self.leftInit;
+  NSInteger right = self.rightInit;
+  NSInteger up = self.upInit;
+  NSInteger down = self.downInit;
   BOOL sizeExceeded = NO;
   BOOL aBlackPointFoundOnBorder = YES;
   BOOL atLeastOneBlackPointFoundOnBorder = NO;
@@ -169,10 +169,10 @@ int const CORR = 1;
   }
 
   if (!sizeExceeded && atLeastOneBlackPointFoundOnBorder) {
-    int maxSize = right - left;
+    NSInteger maxSize = right - left;
 
     ZXResultPoint *z = nil;
-    for (int i = 1; i < maxSize; i++) {
+    for (NSInteger i = 1; i < maxSize; i++) {
       z = [self blackPointOnSegment:left aY:down - i bX:left + i bY:down];
       if (z != nil) {
         break;
@@ -185,7 +185,7 @@ int const CORR = 1;
     }
 
     ZXResultPoint *t = nil;
-    for (int i = 1; i < maxSize; i++) {
+    for (NSInteger i = 1; i < maxSize; i++) {
       t = [self blackPointOnSegment:left aY:up + i bX:left + i bY:up];
       if (t != nil) {
         break;
@@ -198,7 +198,7 @@ int const CORR = 1;
     }
 
     ZXResultPoint *x = nil;
-    for (int i = 1; i < maxSize; i++) {
+    for (NSInteger i = 1; i < maxSize; i++) {
       x = [self blackPointOnSegment:right aY:up + i bX:right - i bY:up];
       if (x != nil) {
         break;
@@ -211,7 +211,7 @@ int const CORR = 1;
     }
 
     ZXResultPoint *y = nil;
-    for (int i = 1; i < maxSize; i++) {
+    for (NSInteger i = 1; i < maxSize; i++) {
       y = [self blackPointOnSegment:right aY:down - i bX:right - i bY:down];
       if (y != nil) {
         break;
@@ -231,13 +231,13 @@ int const CORR = 1;
 
 
 - (ZXResultPoint *)blackPointOnSegment:(float)aX aY:(float)aY bX:(float)bX bY:(float)bY {
-  int dist = [ZXMathUtils round:[ZXMathUtils distance:aX aY:aY bX:bX bY:bY]];
+  NSInteger dist = [ZXMathUtils round:[ZXMathUtils distance:aX aY:aY bX:bX bY:bY]];
   float xStep = (bX - aX) / dist;
   float yStep = (bY - aY) / dist;
 
-  for (int i = 0; i < dist; i++) {
-    int x = [ZXMathUtils round:aX + i * xStep];
-    int y = [ZXMathUtils round:aY + i * yStep];
+  for (NSInteger i = 0; i < dist; i++) {
+    NSInteger x = [ZXMathUtils round:aX + i * xStep];
+    NSInteger y = [ZXMathUtils round:aY + i * yStep];
     if ([self.image getX:x y:y]) {
       return [[ZXResultPoint alloc] initWithX:x y:y];
     }
@@ -289,15 +289,15 @@ int const CORR = 1;
 /**
  * Determines whether a segment contains a black point
  */
-- (BOOL)containsBlackPoint:(int)a b:(int)b fixed:(int)fixed horizontal:(BOOL)horizontal {
+- (BOOL)containsBlackPoint:(NSInteger)a b:(NSInteger)b fixed:(NSInteger)fixed horizontal:(BOOL)horizontal {
   if (horizontal) {
-    for (int x = a; x <= b; x++) {
+    for (NSInteger x = a; x <= b; x++) {
       if ([self.image getX:x y:fixed]) {
         return YES;
       }
     }
   } else {
-    for (int y = a; y <= b; y++) {
+    for (NSInteger y = a; y <= b; y++) {
       if ([self.image getX:fixed y:y]) {
         return YES;
       }

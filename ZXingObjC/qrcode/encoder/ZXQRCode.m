@@ -19,7 +19,7 @@
 #import "ZXMode.h"
 #import "ZXQRCode.h"
 
-int const NUM_MASK_PATTERNS = 8;
+NSInteger const NUM_MASK_PATTERNS = 8;
 
 @implementation ZXQRCode
 
@@ -40,7 +40,7 @@ int const NUM_MASK_PATTERNS = 8;
   [result appendFormat:@"<<\n mode: %@", self.mode];
   [result appendFormat:@"\n ecLevel: %@", self.ecLevel];
   [result appendFormat:@"\n version: %@", self.version];
-  [result appendFormat:@"\n maskPattern: %d", self.maskPattern];
+  [result appendFormat:@"\n maskPattern: %ld", (long)self.maskPattern];
   if (self.matrix == nil) {
     [result appendString:@"\n matrix: (null)\n"];
   } else {
@@ -51,7 +51,7 @@ int const NUM_MASK_PATTERNS = 8;
 }
 
 // Check if "mask_pattern" is valid.
-+ (BOOL)isValidMaskPattern:(int)maskPattern {
++ (BOOL)isValidMaskPattern:(NSInteger)maskPattern {
   return maskPattern >= 0 && maskPattern < NUM_MASK_PATTERNS;
 }
 

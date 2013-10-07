@@ -21,7 +21,7 @@
 
 @implementation ZXEdifactEncoder
 
-- (int)encodingMode {
+- (NSInteger)encodingMode {
   return [ZXHighLevelEncoder edifactEncodation];
 }
 
@@ -33,12 +33,12 @@
     [self encodeChar:c buffer:buffer];
     context.pos++;
 
-    int count = buffer.length;
+    NSInteger count = buffer.length;
     if (count >= 4) {
       [context writeCodewords:[self encodeToCodewords:buffer startpos:0]];
       [buffer deleteCharactersInRange:NSMakeRange(0, 4)];
 
-      int newMode = [ZXHighLevelEncoder lookAheadTest:context.message startpos:context.pos currentMode:[self encodingMode]];
+      NSInteger newMode = [ZXHighLevelEncoder lookAheadTest:context.message startpos:context.pos currentMode:[self encodingMode]];
       if (newMode != [self encodingMode]) {
         [context signalEncoderChange:[ZXHighLevelEncoder asciiEncodation]];
         break;
@@ -54,15 +54,15 @@
  */
 - (void)handleEOD:(ZXEncoderContext *)context buffer:(NSMutableString *)buffer {
   @try {
-    int count = buffer.length;
+    NSInteger count = buffer.length;
     if (count == 0) {
       return; //Already finished
     }
     if (count == 1) {
       //Only an unlatch at the end
       [context updateSymbolInfo];
-      int available = context.symbolInfo.dataCapacity - context.codewordCount;
-      int remaining = [context remainingCharacters];
+      NSInteger available = context.symbolInfo.dataCapacity - context.codewordCount;
+      NSInteger remaining = [context remainingCharacters];
       if (remaining == 0 && available <= 2) {
         return; //No unlatch
       }
@@ -73,14 +73,14 @@
                                      reason:@"Count must not exceed 4"
                                    userInfo:nil];
     }
-    int restChars = count - 1;
+    NSInteger restChars = count - 1;
     NSString *encoded = [self encodeToCodewords:buffer startpos:0];
     BOOL endOfSymbolReached = ![context hasMoreCharacters];
     BOOL restInAscii = endOfSymbolReached && restChars <= 2;
 
     if (restChars <= 2) {
       [context updateSymbolInfoWithLength:context.codewordCount + restChars];
-      int available = context.symbolInfo.dataCapacity - context.codewordCount;
+      NSInteger available = context.symbolInfo.dataCapacity - context.codewordCount;
       if (available >= 3) {
         restInAscii = NO;
         [context updateSymbolInfoWithLength:context.codewordCount + encoded.length];
@@ -109,8 +109,8 @@
   }
 }
 
-- (NSString *)encodeToCodewords:(NSMutableString *)sb startpos:(int)startPos {
-  int len = sb.length - startPos;
+- (NSString *)encodeToCodewords:(NSMutableString *)sb startpos:(NSInteger)startPos {
+  NSInteger len = sb.length - startPos;
   if (len == 0) {
     @throw [NSException exceptionWithName:@"IllegalStateException"
                                    reason:@"Buffer must not be empty"
@@ -121,7 +121,7 @@
   unichar c3 = len >= 3 ? [sb characterAtIndex:startPos + 2] : 0;
   unichar c4 = len >= 4 ? [sb characterAtIndex:startPos + 3] : 0;
 
-  int v = (c1 << 18) + (c2 << 12) + (c3 << 6) + c4;
+  NSInteger v = (c1 << 18) + (c2 << 12) + (c3 << 6) + c4;
   unichar cw1 = (unichar) ((v >> 16) & 255);
   unichar cw2 = (unichar) ((v >> 8) & 255);
   unichar cw3 = (unichar) (v & 255);

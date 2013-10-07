@@ -19,11 +19,11 @@
 
 @implementation ZXAI013103decoder
 
-- (void)addWeightCode:(NSMutableString *)buf weight:(int)weight {
+- (void)addWeightCode:(NSMutableString *)buf weight:(NSInteger)weight {
   [buf appendString:@"(3103)"];
 }
 
-- (int)checkWeight:(int)weight {
+- (NSInteger)checkWeight:(NSInteger)weight {
   return weight;
 }
 

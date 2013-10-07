@@ -21,15 +21,15 @@
 - (void)testGetSet {
   ZXBitMatrix *matrix = [[ZXBitMatrix alloc] initWithDimension:33];
   STAssertEquals(matrix.height, 33, @"Expected matrix height to be 33");
-  for (int y = 0; y < 33; y++) {
-    for (int x = 0; x < 33; x++) {
+  for (NSInteger y = 0; y < 33; y++) {
+    for (NSInteger x = 0; x < 33; x++) {
       if ((y * x % 3) == 0) {
         [matrix setX:x y:y];
       }
     }
   }
-  for (int y = 0; y < 33; y++) {
-    for (int x = 0; x < 33; x++) {
+  for (NSInteger y = 0; y < 33; y++) {
+    for (NSInteger x = 0; x < 33; x++) {
       STAssertEquals([matrix getX:x y:y], (BOOL)(y * x % 3 == 0), @"Expected matrix (%d,%d) to equal %d", x, y, y * x % 3 == 0);
     }
   }
@@ -38,8 +38,8 @@
 - (void)testSetRegion {
   ZXBitMatrix *matrix = [[ZXBitMatrix alloc] initWithDimension:5];
   [matrix setRegionAtLeft:1 top:1 width:3 height:3];
-  for (int y = 0; y < 5; y++) {
-    for (int x = 0; x < 5; x++) {
+  for (NSInteger y = 0; y < 5; y++) {
+    for (NSInteger x = 0; x < 5; x++) {
       BOOL expected = y >= 1 && y <= 3 && x >= 1 && x <= 3;
       STAssertEquals([matrix getX:x y:y], expected, @"Expected (%d,%d) to be %d", x, y, expected);
     }
@@ -79,8 +79,8 @@
   [matrix setRegionAtLeft:105 top:22 width:80 height:12];
 
   // Only bits in the region should be on
-  for (int y = 0; y < 240; y++) {
-    for (int x = 0; x < 320; x++) {
+  for (NSInteger y = 0; y < 240; y++) {
+    for (NSInteger x = 0; x < 320; x++) {
       BOOL expected = y >= 22 && y < 34 && x >= 105 && x < 185;
       STAssertEquals([matrix getX:x y:y], expected, @"Expected matrix (%d,%d) to equal %d", x, y, expected);
     }
@@ -89,7 +89,7 @@
 
 - (void)testGetRow {
   ZXBitMatrix *matrix = [[ZXBitMatrix alloc] initWithWidth:102 height:5];
-  for (int x = 0; x < 102; x++) {
+  for (NSInteger x = 0; x < 102; x++) {
     if ((x & 0x03) == 0) {
       [matrix setX:x y:2];
     }
@@ -109,7 +109,7 @@
   array3 = [matrix rowAtY:2 row:array3];
   STAssertEquals(array3.size, 200, @"Expected array3.size to equal 200");
 
-  for (int x = 0; x < 102; x++) {
+  for (NSInteger x = 0; x < 102; x++) {
     BOOL on = (x & 0x03) == 0;
     STAssertEquals([array get:x], on, @"Expected [array get:%d] to be %d", x, on);
     STAssertEquals([array2 get:x], on, @"Expected [array2 get:%d] to be %d", x, on);

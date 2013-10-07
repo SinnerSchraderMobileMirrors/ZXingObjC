@@ -24,11 +24,11 @@
 
 @interface ZXQRCodeFinderPattern : ZXResultPoint
 
-@property (nonatomic, assign, readonly) int count;
+@property (nonatomic, assign, readonly) NSInteger count;
 @property (nonatomic, assign, readonly) float estimatedModuleSize;
 
 - (id)initWithPosX:(float)posX posY:(float)posY estimatedModuleSize:(float)estimatedModuleSize;
-- (id)initWithPosX:(float)posX posY:(float)posY estimatedModuleSize:(float)estimatedModuleSize count:(int)count;
+- (id)initWithPosX:(float)posX posY:(float)posY estimatedModuleSize:(float)estimatedModuleSize count:(NSInteger)count;
 - (void)incrementCount;
 - (BOOL)aboutEquals:(float)moduleSize i:(float)i j:(float)j;
 - (ZXQRCodeFinderPattern *)combineEstimateI:(float)i j:(float)j newModuleSize:(float)newModuleSize;

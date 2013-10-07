@@ -26,7 +26,7 @@
 @property (nonatomic, strong, readonly) ZXErrorCorrectionLevel *errorCorrectionLevel;
 @property (nonatomic, assign, readonly) char dataMask;
 
-+ (int)numBitsDiffering:(int)a b:(int)b;
-+ (ZXFormatInformation *)decodeFormatInformation:(int)maskedFormatInfo1 maskedFormatInfo2:(int)maskedFormatInfo2;
++ (NSInteger)numBitsDiffering:(NSInteger)a b:(NSInteger)b;
++ (ZXFormatInformation *)decodeFormatInformation:(NSInteger)maskedFormatInfo1 maskedFormatInfo2:(NSInteger)maskedFormatInfo2;
 
 @end

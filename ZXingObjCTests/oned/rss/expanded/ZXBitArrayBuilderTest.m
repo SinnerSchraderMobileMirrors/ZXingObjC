@@ -19,11 +19,11 @@
 @implementation ZXBitArrayBuilderTest
 
 - (void)testBuildBitArray1 {
-  int lengths[2] = {1, 2};
-  int pairValue1[1] = { 19 };
-  int pairValue2[2] = { 673, 16 };
+  NSInteger lengths[2] = {1, 2};
+  NSInteger pairValue1[1] = { 19 };
+  NSInteger pairValue2[2] = { 673, 16 };
   
-  int *pairValues[2];
+  NSInteger *pairValues[2];
   pairValues[0] = pairValue1;
   pairValues[1] = pairValue2;
 
@@ -32,15 +32,15 @@
   [self checkBinaryValues:pairValues pairValuesLen:2 lengths:lengths expected:expected];
 }
 
-- (void)checkBinaryValues:(int **)pairValues pairValuesLen:(int)pairValuesLen lengths:(int *)lengths expected:(NSString *)expected {
+- (void)checkBinaryValues:(NSInteger **)pairValues pairValuesLen:(NSInteger)pairValuesLen lengths:(NSInteger *)lengths expected:(NSString *)expected {
   ZXBitArray *binary = [self buildBitArrayPairValues:pairValues pairValuesLen:pairValuesLen lengths:lengths];
   STAssertEqualObjects([binary description], expected, @"Expected %@ to equal %@", [binary description], expected);
 }
 
-- (ZXBitArray *)buildBitArrayPairValues:(int **)pairValues pairValuesLen:(int)pairValuesLen lengths:(int *)lengths {
+- (ZXBitArray *)buildBitArrayPairValues:(NSInteger **)pairValues pairValuesLen:(NSInteger)pairValuesLen lengths:(NSInteger *)lengths {
   NSMutableArray *pairs = [NSMutableArray arrayWithCapacity:2];
-  for (int i = 0; i < pairValuesLen; ++i) {
-    int *pair = pairValues[i];
+  for (NSInteger i = 0; i < pairValuesLen; ++i) {
+    NSInteger *pair = pairValues[i];
 
     ZXDataCharacter *leftChar;
     if (i == 0) {

@@ -34,10 +34,10 @@
 - (void)maybeAppend:(NSString *)value result:(NSMutableString *)result;
 - (void)maybeAppendArray:(NSArray *)value result:(NSMutableString *)result;
 - (NSArray *)maybeWrap:(NSString *)value;
-+ (BOOL)isStringOfDigits:(NSString *)value length:(unsigned int)length;
-+ (BOOL)isSubstringOfDigits:(NSString *)value offset:(int)offset length:(unsigned int)length;
-+ (BOOL)isSubstringOfAlphaNumeric:(NSString *)value offset:(int)offset length:(unsigned int)length;
-+ (int)parseHexDigit:(unichar)c;
++ (BOOL)isStringOfDigits:(NSString *)value length:(NSUInteger)length;
++ (BOOL)isSubstringOfDigits:(NSString *)value offset:(NSInteger)offset length:(NSUInteger)length;
++ (BOOL)isSubstringOfAlphaNumeric:(NSString *)value offset:(NSInteger)offset length:(NSUInteger)length;
++ (NSInteger)parseHexDigit:(unichar)c;
 - (NSMutableDictionary *)parseNameValuePairs:(NSString *)uri;
 + (NSString *)urlDecode:(NSString *)encoded;
 + (NSArray *)matchPrefixedField:(NSString *)prefix rawText:(NSString *)rawText endChar:(unichar)endChar trim:(BOOL)trim;

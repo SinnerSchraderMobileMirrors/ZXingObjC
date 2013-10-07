@@ -21,14 +21,14 @@
 #import "ZXPDF417DetectionResultColumn.h"
 #import "ZXPDF417DetectionResultRowIndicatorColumn.h"
 
-int const ADJUST_ROW_NUMBER_SKIP = 2;
+NSInteger const ADJUST_ROW_NUMBER_SKIP = 2;
 
 @interface ZXPDF417DetectionResult ()
 
 @property (nonatomic, strong) ZXPDF417BarcodeMetadata *barcodeMetadata;
 @property (nonatomic, strong) NSMutableArray *detectionResultColumnsInternal;
 @property (nonatomic, strong) ZXPDF417BoundingBox *boundingBox;
-@property (nonatomic, assign) int barcodeColumnCount;
+@property (nonatomic, assign) NSInteger barcodeColumnCount;
 
 @end
 
@@ -41,7 +41,7 @@ int const ADJUST_ROW_NUMBER_SKIP = 2;
     _barcodeColumnCount = barcodeMetadata.columnCount;
     _boundingBox = boundingBox;
     _detectionResultColumnsInternal = [NSMutableArray arrayWithCapacity:_barcodeColumnCount + 2];
-    for (int i = 0; i < _barcodeColumnCount + 2; i++) {
+    for (NSInteger i = 0; i < _barcodeColumnCount + 2; i++) {
       [_detectionResultColumnsInternal addObject:[NSNull null]];
     }
   }
@@ -49,14 +49,14 @@ int const ADJUST_ROW_NUMBER_SKIP = 2;
   return self;
 }
 
-- (int)imageStartRow:(int)barcodeColumn {
+- (NSInteger)imageStartRow:(NSInteger)barcodeColumn {
   while (barcodeColumn > 0) {
     ZXPDF417DetectionResultColumn *detectionResultColumn = self.detectionResultColumnsInternal[--barcodeColumn];
     // TODO compare start row with previous result columns
     // Could try detecting codewords from right to left
     // if all else fails, could calculate estimate
     NSArray *codewords = detectionResultColumn.codewords;
-    for (int rowNumber = 0; rowNumber < [codewords count]; rowNumber++) {
+    for (NSInteger rowNumber = 0; rowNumber < [codewords count]; rowNumber++) {
       if (codewords[rowNumber]) {
         // next column might start earlier if barcode is not aligned with image
         if (rowNumber > 0) {
@@ -69,7 +69,7 @@ int const ADJUST_ROW_NUMBER_SKIP = 2;
   return -1;
 }
 
-- (void)setDetectionResultColumn:(int)barcodeColumn detectionResultColumn:(ZXPDF417DetectionResultColumn *)detectionResultColumn {
+- (void)setDetectionResultColumn:(NSInteger)barcodeColumn detectionResultColumn:(ZXPDF417DetectionResultColumn *)detectionResultColumn {
   if (!detectionResultColumn) {
     self.detectionResultColumnsInternal[barcodeColumn] = [NSNull null];
   } else {
@@ -77,7 +77,7 @@ int const ADJUST_ROW_NUMBER_SKIP = 2;
   }
 }
 
-- (ZXPDF417DetectionResultColumn *)detectionResultColumn:(int)barcodeColumn {
+- (ZXPDF417DetectionResultColumn *)detectionResultColumn:(NSInteger)barcodeColumn {
   ZXPDF417DetectionResultColumn *result = self.detectionResultColumnsInternal[barcodeColumn];
   return (id)result == [NSNull null] ? nil : result;
 }
@@ -91,8 +91,8 @@ int const ADJUST_ROW_NUMBER_SKIP = 2;
 - (NSArray *)detectionResultColumns {
   [self adjustIndicatorColumnRowNumbers:self.detectionResultColumnsInternal[0]];
   [self adjustIndicatorColumnRowNumbers:self.detectionResultColumnsInternal[self.barcodeColumnCount + 1]];
-  int unadjustedCodewordCount = 900;
-  int previousUnadjustedCount;
+  NSInteger unadjustedCodewordCount = 900;
+  NSInteger previousUnadjustedCount;
   do {
     previousUnadjustedCount = unadjustedCodewordCount;
     unadjustedCodewordCount = [self adjustRowNumbers];
@@ -107,14 +107,14 @@ int const ADJUST_ROW_NUMBER_SKIP = 2;
  * Returns the number of codewords which don't have a valid row number. Note that the count is not accurate as codewords
  * will be counted several times. It just serves as an indicator to see when we can stop adjusting row numbers
  */
-- (int)adjustRowNumbers {
-  int unadjustedCount = [self adjustRowNumbersByRow];
+- (NSInteger)adjustRowNumbers {
+  NSInteger unadjustedCount = [self adjustRowNumbersByRow];
   if (unadjustedCount == 0) {
     return 0;
   }
-  for (int barcodeColumn = 1; barcodeColumn < self.barcodeColumnCount + 1; barcodeColumn++) {
+  for (NSInteger barcodeColumn = 1; barcodeColumn < self.barcodeColumnCount + 1; barcodeColumn++) {
     NSArray *codewords = [self.detectionResultColumnsInternal[barcodeColumn] codewords];
-    for (int codewordsRow = 0; codewordsRow < [codewords count]; codewordsRow++) {
+    for (NSInteger codewordsRow = 0; codewordsRow < [codewords count]; codewordsRow++) {
       if ((id)codewords[codewordsRow] == [NSNull null]) {
         continue;
       }
@@ -126,28 +126,28 @@ int const ADJUST_ROW_NUMBER_SKIP = 2;
   return unadjustedCount;
 }
 
-- (int)adjustRowNumbersByRow {
+- (NSInteger)adjustRowNumbersByRow {
   // TODO we should only do full row adjustments if row numbers of left and right row indicator column match.
   // Maybe it's even better to calculated the height (in codeword rows) and divide it by the number of barcode
   // rows. This, together with the LRI and RRI row numbers should allow us to get a good estimate where a row
   // number starts and ends.
-  int unadjustedCount = [self adjustRowNumbersFromLRI];
+  NSInteger unadjustedCount = [self adjustRowNumbersFromLRI];
   return unadjustedCount + [self adjustRowNumbersFromRRI];
 }
 
-- (int)adjustRowNumbersFromRRI {
+- (NSInteger)adjustRowNumbersFromRRI {
   if (self.detectionResultColumnsInternal[self.barcodeColumnCount + 1] == [NSNull null]) {
     return 0;
   }
-  int unadjustedCount = 0;
+  NSInteger unadjustedCount = 0;
   NSArray *codewords = [self.detectionResultColumnsInternal[self.barcodeColumnCount + 1] codewords];
-  for (int codewordsRow = 0; codewordsRow < [codewords count]; codewordsRow++) {
+  for (NSInteger codewordsRow = 0; codewordsRow < [codewords count]; codewordsRow++) {
     if ((id)codewords[codewordsRow] == [NSNull null]) {
       continue;
     }
-    int rowIndicatorRowNumber = [codewords[codewordsRow] rowNumber];
-    int invalidRowCounts = 0;
-    for (int barcodeColumn = self.barcodeColumnCount + 1;
+    NSInteger rowIndicatorRowNumber = [codewords[codewordsRow] rowNumber];
+    NSInteger invalidRowCounts = 0;
+    for (NSInteger barcodeColumn = self.barcodeColumnCount + 1;
          barcodeColumn > 0 && invalidRowCounts < ADJUST_ROW_NUMBER_SKIP;
          barcodeColumn--) {
       if (self.detectionResultColumnsInternal[barcodeColumn] != [NSNull null]) {
@@ -164,19 +164,19 @@ int const ADJUST_ROW_NUMBER_SKIP = 2;
   return unadjustedCount;
 }
 
-- (int)adjustRowNumbersFromLRI {
+- (NSInteger)adjustRowNumbersFromLRI {
   if (self.detectionResultColumnsInternal[0] == [NSNull null]) {
     return 0;
   }
-  int unadjustedCount = 0;
+  NSInteger unadjustedCount = 0;
   NSArray *codewords = [self.detectionResultColumnsInternal[0] codewords];
-  for (int codewordsRow = 0; codewordsRow < [codewords count]; codewordsRow++) {
+  for (NSInteger codewordsRow = 0; codewordsRow < [codewords count]; codewordsRow++) {
     if ((id)codewords[codewordsRow] == [NSNull null]) {
       continue;
     }
-    int rowIndicatorRowNumber = [codewords[codewordsRow] rowNumber];
-    int invalidRowCounts = 0;
-    for (int barcodeColumn = 1;
+    NSInteger rowIndicatorRowNumber = [codewords[codewordsRow] rowNumber];
+    NSInteger invalidRowCounts = 0;
+    for (NSInteger barcodeColumn = 1;
          barcodeColumn < self.barcodeColumnCount + 1 && invalidRowCounts < ADJUST_ROW_NUMBER_SKIP;
          barcodeColumn++) {
       if (self.detectionResultColumnsInternal[barcodeColumn] != [NSNull null]) {
@@ -193,7 +193,7 @@ int const ADJUST_ROW_NUMBER_SKIP = 2;
   return unadjustedCount;
 }
 
-- (int)adjustRowNumberIfValid:(int)rowIndicatorRowNumber invalidRowCounts:(int)invalidRowCounts codeword:(ZXPDF417Codeword *)codeword {
+- (NSInteger)adjustRowNumberIfValid:(NSInteger)rowIndicatorRowNumber invalidRowCounts:(NSInteger)invalidRowCounts codeword:(ZXPDF417Codeword *)codeword {
   if (!codeword) {
     return invalidRowCounts;
   }
@@ -208,7 +208,7 @@ int const ADJUST_ROW_NUMBER_SKIP = 2;
   return invalidRowCounts;
 }
 
-- (void)adjustRowNumbers:(int)barcodeColumn codewordsRow:(int)codewordsRow codewords:(NSArray *)codewords {
+- (void)adjustRowNumbers:(NSInteger)barcodeColumn codewordsRow:(NSInteger)codewordsRow codewords:(NSArray *)codewords {
   ZXPDF417Codeword *codeword = codewords[codewordsRow];
   NSArray *previousColumnCodewords = [self.detectionResultColumnsInternal[barcodeColumn - 1] codewords];
   NSArray *nextColumnCodewords = previousColumnCodewords;
@@ -217,7 +217,7 @@ int const ADJUST_ROW_NUMBER_SKIP = 2;
   }
 
   NSMutableArray *otherCodewords = [NSMutableArray arrayWithCapacity:14];
-  for (int i = 0; i < 14; i++) {
+  for (NSInteger i = 0; i < 14; i++) {
     [otherCodewords addObject:[NSNull null]];
   }
 
@@ -265,15 +265,15 @@ int const ADJUST_ROW_NUMBER_SKIP = 2;
   return NO;
 }
 
-- (int)barcodeColumnCount {
+- (NSInteger)barcodeColumnCount {
   return _barcodeColumnCount;
 }
 
-- (int)barcodeRowCount {
+- (NSInteger)barcodeRowCount {
   return self.barcodeMetadata.rowCount;
 }
 
-- (int)barcodeECLevel {
+- (NSInteger)barcodeECLevel {
   return self.barcodeMetadata.errorCorrectionLevel;
 }
 

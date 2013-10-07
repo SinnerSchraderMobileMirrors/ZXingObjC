@@ -72,14 +72,14 @@
 }
 
 + (ZXImage *)imageWithMatrix:(ZXBitMatrix *)matrix {
-  int width = matrix.width;
-  int height = matrix.height;
+  NSInteger width = matrix.width;
+  NSInteger height = matrix.height;
   int8_t *bytes = (int8_t *)malloc(width * height * 4);
-  for(int y = 0; y < height; y++) {
-    for(int x = 0; x < width; x++) {
+  for(NSInteger y = 0; y < height; y++) {
+    for(NSInteger x = 0; x < width; x++) {
       BOOL bit = [matrix getX:x y:y];
       int8_t intensity = bit ? 0 : 255;
-      for(int i = 0; i < 3; i++) {
+      for(NSInteger i = 0; i < 3; i++) {
         bytes[y * width * 4 + x * 4 + i] = intensity;
       }
       bytes[y * width * 4 + x * 4 + 3] = 255;

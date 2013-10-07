@@ -30,13 +30,13 @@
 
 @property (nonatomic, strong) ZXResultPoint *from;
 @property (nonatomic, strong) ZXResultPoint *to;
-@property (nonatomic, assign) int transitions;
+@property (nonatomic, assign) NSInteger transitions;
 
 @end
 
 @implementation ResultPointsAndTransitions
 
-- (id)initWithFrom:(ZXResultPoint *)from to:(ZXResultPoint *)to transitions:(int)transitions {
+- (id)initWithFrom:(ZXResultPoint *)from to:(ZXResultPoint *)to transitions:(NSInteger)transitions {
   if (self = [super init]) {
     _from = from;
     _to = to;
@@ -47,7 +47,7 @@
 }
 
 - (NSString *)description {
-  return [NSString stringWithFormat:@"%@/%@/%d", self.from, self.to, self.transitions];
+  return [NSString stringWithFormat:@"%@/%@/%ld", self.from, self.to, (long)self.transitions];
 }
 
 - (NSComparisonResult)compare:(ResultPointsAndTransitions *)otherObject {
@@ -146,8 +146,8 @@
     topRight = pointD;
   }
 
-  int dimensionTop = [[self transitionsBetween:topLeft to:topRight] transitions];
-  int dimensionRight = [[self transitionsBetween:bottomRight to:topRight] transitions];
+  NSInteger dimensionTop = [[self transitionsBetween:topLeft to:topRight] transitions];
+  NSInteger dimensionRight = [[self transitionsBetween:bottomRight to:topRight] transitions];
 
   if ((dimensionTop & 0x01) == 1) {
     dimensionTop++;
@@ -184,13 +184,13 @@
       return nil;
     }
   } else {
-    int dimension = MIN(dimensionRight, dimensionTop);
+    NSInteger dimension = MIN(dimensionRight, dimensionTop);
     correctedTopRight = [self correctTopRight:bottomLeft bottomRight:bottomRight topLeft:topLeft topRight:topRight dimension:dimension];
     if (correctedTopRight == nil) {
       correctedTopRight = topRight;
     }
 
-    int dimensionCorrected = MAX([[self transitionsBetween:topLeft to:correctedTopRight] transitions], [[self transitionsBetween:bottomRight to:correctedTopRight] transitions]);
+    NSInteger dimensionCorrected = MAX([[self transitionsBetween:topLeft to:correctedTopRight] transitions], [[self transitionsBetween:bottomRight to:correctedTopRight] transitions]);
     dimensionCorrected++;
     if ((dimensionCorrected & 0x01) == 1) {
       dimensionCorrected++;
@@ -211,9 +211,9 @@
  */
 - (ZXResultPoint *)correctTopRightRectangular:(ZXResultPoint *)bottomLeft bottomRight:(ZXResultPoint *)bottomRight
                                       topLeft:(ZXResultPoint *)topLeft topRight:(ZXResultPoint *)topRight
-                                 dimensionTop:(int)dimensionTop dimensionRight:(int)dimensionRight {
+                                 dimensionTop:(NSInteger)dimensionTop dimensionRight:(NSInteger)dimensionRight {
   float corr = [self distance:bottomLeft b:bottomRight] / (float)dimensionTop;
-  int norm = [self distance:topLeft b:topRight];
+  NSInteger norm = [self distance:topLeft b:topRight];
   float cos = ([topRight x] - [topLeft x]) / norm;
   float sin = ([topRight y] - [topLeft y]) / norm;
 
@@ -235,8 +235,8 @@
     return c1;
   }
 
-  int l1 = abs(dimensionTop - [[self transitionsBetween:topLeft to:c1] transitions]) + abs(dimensionRight - [[self transitionsBetween:bottomRight to:c1] transitions]);
-  int l2 = abs(dimensionTop - [[self transitionsBetween:topLeft to:c2] transitions]) + abs(dimensionRight - [[self transitionsBetween:bottomRight to:c2] transitions]);
+  NSInteger l1 = ABS(dimensionTop - [[self transitionsBetween:topLeft to:c1] transitions]) + ABS(dimensionRight - [[self transitionsBetween:bottomRight to:c1] transitions]);
+  NSInteger l2 = ABS(dimensionTop - [[self transitionsBetween:topLeft to:c2] transitions]) + ABS(dimensionRight - [[self transitionsBetween:bottomRight to:c2] transitions]);
 
   if (l1 <= l2) {
     return c1;
@@ -251,9 +251,9 @@
  * for a square matrix
  */
 - (ZXResultPoint *)correctTopRight:(ZXResultPoint *)bottomLeft bottomRight:(ZXResultPoint *)bottomRight
-                           topLeft:(ZXResultPoint *)topLeft topRight:(ZXResultPoint *)topRight dimension:(int)dimension {
+                           topLeft:(ZXResultPoint *)topLeft topRight:(ZXResultPoint *)topRight dimension:(NSInteger)dimension {
   float corr = [self distance:bottomLeft b:bottomRight] / (float)dimension;
-  int norm = [self distance:topLeft b:topRight];
+  NSInteger norm = [self distance:topLeft b:topRight];
   float cos = ([topRight x] - [topLeft x]) / norm;
   float sin = ([topRight y] - [topLeft y]) / norm;
 
@@ -275,8 +275,8 @@
     return c1;
   }
 
-  int l1 = abs([[self transitionsBetween:topLeft to:c1] transitions] - [[self transitionsBetween:bottomRight to:c1] transitions]);
-  int l2 = abs([[self transitionsBetween:topLeft to:c2] transitions] - [[self transitionsBetween:bottomRight to:c2] transitions]);
+  NSInteger l1 = ABS([[self transitionsBetween:topLeft to:c1] transitions] - [[self transitionsBetween:bottomRight to:c1] transitions]);
+  NSInteger l2 = ABS([[self transitionsBetween:topLeft to:c2] transitions] - [[self transitionsBetween:bottomRight to:c2] transitions]);
 
   return l1 <= l2 ? c1 : c2;
 }
@@ -285,7 +285,7 @@
   return [p x] >= 0 && [p x] < self.image.width && [p y] > 0 && [p y] < self.image.height;
 }
 
-- (int)distance:(ZXResultPoint *)a b:(ZXResultPoint *)b {
+- (NSInteger)distance:(ZXResultPoint *)a b:(ZXResultPoint *)b {
   return [ZXMathUtils round:[ZXResultPoint distance:a pattern2:b]];
 }
 
@@ -303,8 +303,8 @@
                  bottomLeft:(ZXResultPoint *)bottomLeft
                 bottomRight:(ZXResultPoint *)bottomRight
                    topRight:(ZXResultPoint *)topRight
-                 dimensionX:(int)dimensionX
-                 dimensionY:(int)dimensionY
+                 dimensionX:(NSInteger)dimensionX
+                 dimensionY:(NSInteger)dimensionY
                       error:(NSError **)error {
   ZXGridSampler *sampler = [ZXGridSampler instance];
   return [sampler sampleGrid:image
@@ -325,13 +325,13 @@
  * Counts the number of black/white transitions between two points, using something like Bresenham's algorithm.
  */
 - (ResultPointsAndTransitions *)transitionsBetween:(ZXResultPoint *)from to:(ZXResultPoint *)to {
-  int fromX = (int)[from x];
-  int fromY = (int)[from y];
-  int toX = (int)[to x];
-  int toY = (int)[to y];
-  BOOL steep = abs(toY - fromY) > abs(toX - fromX);
+  NSInteger fromX = (NSInteger)[from x];
+  NSInteger fromY = (NSInteger)[from y];
+  NSInteger toX = (NSInteger)[to x];
+  NSInteger toY = (NSInteger)[to y];
+  BOOL steep = ABS(toY - fromY) > ABS(toX - fromX);
   if (steep) {
-    int temp = fromX;
+    NSInteger temp = fromX;
     fromX = fromY;
     fromY = temp;
     temp = toX;
@@ -339,14 +339,14 @@
     toY = temp;
   }
 
-  int dx = abs(toX - fromX);
-  int dy = abs(toY - fromY);
-  int error = -dx >> 1;
-  int ystep = fromY < toY ? 1 : -1;
-  int xstep = fromX < toX ? 1 : -1;
-  int transitions = 0;
+  NSInteger dx = ABS(toX - fromX);
+  NSInteger dy = ABS(toY - fromY);
+  NSInteger error = -dx >> 1;
+  NSInteger ystep = fromY < toY ? 1 : -1;
+  NSInteger xstep = fromX < toX ? 1 : -1;
+  NSInteger transitions = 0;
   BOOL inBlack = [self.image getX:steep ? fromY : fromX y:steep ? fromX : fromY];
-  for (int x = fromX, y = fromY; x != toX; x += xstep) {
+  for (NSInteger x = fromX, y = fromY; x != toX; x += xstep) {
     BOOL isBlack = [self.image getX:steep ? y : x y:steep ? x : y];
     if (isBlack != inBlack) {
       transitions++;

@@ -20,12 +20,12 @@
 
 - (void)testGetAlphanumericCode {
   // The first ten code points are numbers.
-  for (int i = 0; i < 10; ++i) {
+  for (NSInteger i = 0; i < 10; ++i) {
     STAssertEquals([ZXEncoder alphanumericCode:'0' + i], i, @"Expected %d", i);
   }
 
   // The next 26 code points are capital alphabet letters.
-  for (int i = 10; i < 36; ++i) {
+  for (NSInteger i = 10; i < 36; ++i) {
     STAssertEquals([ZXEncoder alphanumericCode:'A' + i - 10], i, @"Expected %d", i);
   }
 
@@ -262,8 +262,8 @@
 }
 
 - (void)testGetNumDataBytesAndNumECBytesForBlockID {
-  int numDataBytes[1] = {0};
-  int numEcBytes[1] = {0};
+  NSInteger numDataBytes[1] = {0};
+  NSInteger numEcBytes[1] = {0};
   // Version 1-H.
   [ZXEncoder numDataBytesAndNumECBytesForBlockID:26 numDataBytes:9 numRSBlocks:1 blockID:0
                              numDataBytesInBlock:numDataBytes numECBytesInBlock:numEcBytes error:nil];
@@ -306,14 +306,14 @@
 }
 
 - (void)testInterleaveWithECBytes {
-  const int dataBytesLen = 9;
+  const NSInteger dataBytesLen = 9;
   int8_t dataBytes[dataBytesLen] = {32, 65, 205, 69, 41, 220, 46, 128, 236};
   ZXBitArray *in = [[ZXBitArray alloc] init];
-  for (int i = 0; i < dataBytesLen; i++) {
+  for (NSInteger i = 0; i < dataBytesLen; i++) {
     [in appendBits:dataBytes[i] numBits:8];
   }
   ZXBitArray *out = [ZXEncoder interleaveWithECBytes:in numTotalBytes:26 numDataBytes:9 numRSBlocks:1 error:nil];
-  const int expectedLen = 26;
+  const NSInteger expectedLen = 26;
   int8_t expected[expectedLen] = {
     // Data bytes.
     32, 65, 205, 69, 41, 220, 46, 128, 236,
@@ -325,10 +325,10 @@
   int8_t outArray[expectedLen];
   memset(outArray, 0, expectedLen * sizeof(int8_t));
   [out toBytes:0 array:outArray offset:0 numBytes:expectedLen];
-  for (int x = 0; x < expectedLen; x++) {
+  for (NSInteger x = 0; x < expectedLen; x++) {
     STAssertEquals(outArray[x], expected[x], @"Expected outArray[%d] to equal %d", x, expected[x]);
   }
-  const int dataBytesLen2 = 62;
+  const NSInteger dataBytesLen2 = 62;
   int8_t dataBytes2[dataBytesLen2] = {
     67, 70, 22, 38, 54, 70, 86, 102, 118, 134, 150, 166, 182,
     198, 214, 230, 247, 7, 23, 39, 55, 71, 87, 103, 119, 135,
@@ -338,11 +338,11 @@
     17
   };
   in = [[ZXBitArray alloc] init];
-  for (int i = 0; i < dataBytesLen2; i++) {
+  for (NSInteger i = 0; i < dataBytesLen2; i++) {
     [in appendBits:dataBytes2[i] numBits:8];
   }
   out = [ZXEncoder interleaveWithECBytes:in numTotalBytes:134 numDataBytes:62 numRSBlocks:4 error:nil];
-  const int expectedLen2 = 134;
+  const NSInteger expectedLen2 = 134;
   int8_t expected2[expectedLen2] = {
     // Data bytes.
     67, 230, 54, 55, 70, 247, 70, 71, 22, 7, 86, 87, 38, 23, 102, 103, 54, 39,
@@ -364,7 +364,7 @@
   int8_t outArray2[expectedLen2];
   memset(outArray2, 0, expectedLen2 * sizeof(int8_t));
   [out toBytes:0 array:outArray2 offset:0 numBytes:expectedLen2];
-  for (int x = 0; x < expectedLen2; x++) {
+  for (NSInteger x = 0; x < expectedLen2; x++) {
     STAssertEquals(outArray2[x], expected2[x], @"Expected outArray[%d] to equal %d", x, expected2[x]);
   }
 }
@@ -451,38 +451,38 @@
 // Numbers are from http://www.swetake.com/qr/qr3.html and
 // http://www.swetake.com/qr/qr9.html
 - (void)testGenerateECBytes {
-  const int dataBytesLen = 9;
+  const NSInteger dataBytesLen = 9;
   int8_t dataBytes[dataBytesLen] = {32, 65, 205, 69, 41, 220, 46, 128, 236};
   int8_t *ecBytes = [ZXEncoder generateECBytes:dataBytes numDataBytes:dataBytesLen numEcBytesInBlock:17];
-  const int expectedLen = 17;
-  int expected[expectedLen] = {
+  const NSInteger expectedLen = 17;
+  NSInteger expected[expectedLen] = {
     42, 159, 74, 221, 244, 169, 239, 150, 138, 70, 237, 85, 224, 96, 74, 219, 61
   };
-  for (int x = 0; x < expectedLen; x++) {
+  for (NSInteger x = 0; x < expectedLen; x++) {
     STAssertEquals(ecBytes[x] & 0xFF, expected[x], @"Expected exBytes[%d] to equal %d", x, expected[x]);
   }
   free(ecBytes);
-  const int dataBytesLen2 = 15;
+  const NSInteger dataBytesLen2 = 15;
   int8_t dataBytes2[dataBytesLen2] = {67, 70, 22, 38, 54, 70, 86, 102, 118,
     134, 150, 166, 182, 198, 214};
   int8_t *ecBytes2 = [ZXEncoder generateECBytes:dataBytes2 numDataBytes:dataBytesLen2 numEcBytesInBlock:18];
-  const int expectedLen2 = 18;
-  int expected2[expectedLen2] = {
+  const NSInteger expectedLen2 = 18;
+  NSInteger expected2[expectedLen2] = {
     175, 80, 155, 64, 178, 45, 214, 233, 65, 209, 12, 155, 117, 31, 140, 214, 27, 187
   };
-  for (int x = 0; x < expectedLen2; x++) {
+  for (NSInteger x = 0; x < expectedLen2; x++) {
     STAssertEquals(ecBytes2[x] & 0xFF, expected2[x], @"Expected exBytes[%d] to equal %d", x, expected2[x]);
   }
   free(ecBytes2);
   // High-order zero coefficient case.
-  const int dataBytesLen3 = 9;
+  const NSInteger dataBytesLen3 = 9;
   int8_t dataBytes3[dataBytesLen3] = {32, 49, 205, 69, 42, 20, 0, 236, 17};
   int8_t *ecBytes3 = [ZXEncoder generateECBytes:dataBytes3 numDataBytes:dataBytesLen3 numEcBytesInBlock:17];
-  const int expectedLen3 = 17;
-  int expected3[expectedLen3] = {
+  const NSInteger expectedLen3 = 17;
+  NSInteger expected3[expectedLen3] = {
     0, 3, 130, 179, 194, 0, 55, 211, 110, 79, 98, 72, 170, 96, 211, 137, 213
   };
-  for (int x = 0; x < expectedLen3; x++) {
+  for (NSInteger x = 0; x < expectedLen3; x++) {
     STAssertEquals(ecBytes3[x] & 0xFF, expected3[x], @"Expected exBytes[%d] to equal %d", x, expected3[x]);
   }
   free(ecBytes3);
@@ -518,14 +518,14 @@
   //     11745 bits = 1468.125 bytes are needed (i.e. cannot fit in 1468
   //     bytes).
   NSMutableString *builder = [NSMutableString stringWithCapacity:3518];
-  for (int x = 0; x < 3518; x++) {
+  for (NSInteger x = 0; x < 3518; x++) {
     [builder appendString:@"0"];
   }
   ZXQRCode *qrCode = [ZXEncoder encode:builder ecLevel:[ZXErrorCorrectionLevel errorCorrectionLevelL] error:nil];
   STAssertNotNil(qrCode, @"Excepted QR code");
 }
 
-- (NSString *)shiftJISString:(int8_t *)bytes bytesLen:(int)bytesLen {
+- (NSString *)shiftJISString:(int8_t *)bytes bytesLen:(NSInteger)bytesLen {
   return [[NSString alloc] initWithBytes:bytes length:bytesLen encoding:NSShiftJISStringEncoding];
 }
 

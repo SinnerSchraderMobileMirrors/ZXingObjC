@@ -18,7 +18,7 @@
  * This class contains utility methods for performing mathematical operations over
  * the Galois Fields. Operations use a given primitive polynomial in calculations.
  * 
- * Throughout this package, elements of the GF are represented as an int
+ * Throughout this package, elements of the GF are represented as an NSInteger
  * for convenience and speed (but at the cost of memory).
  */
 
@@ -28,8 +28,8 @@
 
 @property (nonatomic, strong, readonly) ZXGenericGFPoly *zero;
 @property (nonatomic, strong, readonly) ZXGenericGFPoly *one;
-@property (nonatomic, assign, readonly) int size;
-@property (nonatomic, assign, readonly) int generatorBase;
+@property (nonatomic, assign, readonly) NSInteger size;
+@property (nonatomic, assign, readonly) NSInteger generatorBase;
 
 + (ZXGenericGF *)AztecData12;
 + (ZXGenericGF *)AztecData10;
@@ -40,12 +40,12 @@
 + (ZXGenericGF *)AztecData8;
 + (ZXGenericGF *)MaxiCodeField64;
 
-- (id)initWithPrimitive:(int)primitive size:(int)size b:(int)b;
-- (ZXGenericGFPoly *)buildMonomial:(int)degree coefficient:(int)coefficient;
-+ (int)addOrSubtract:(int)a b:(int)b;
-- (int)exp:(int)a;
-- (int)log:(int)a;
-- (int)inverse:(int)a;
-- (int)multiply:(int)a b:(int)b;
+- (id)initWithPrimitive:(NSInteger)primitive size:(NSInteger)size b:(NSInteger)b;
+- (ZXGenericGFPoly *)buildMonomial:(NSInteger)degree coefficient:(NSInteger)coefficient;
++ (NSInteger)addOrSubtract:(NSInteger)a b:(NSInteger)b;
+- (NSInteger)exp:(NSInteger)a;
+- (NSInteger)log:(NSInteger)a;
+- (NSInteger)inverse:(NSInteger)a;
+- (NSInteger)multiply:(NSInteger)a b:(NSInteger)b;
 
 @end

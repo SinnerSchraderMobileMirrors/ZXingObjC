@@ -20,11 +20,11 @@
 
 @implementation ZXOneDimensionalCodeWriter
 
-- (ZXBitMatrix *)encode:(NSString *)contents format:(ZXBarcodeFormat)format width:(int)width height:(int)height error:(NSError **)error {
+- (ZXBitMatrix *)encode:(NSString *)contents format:(ZXBarcodeFormat)format width:(NSInteger)width height:(NSInteger)height error:(NSError **)error {
   return [self encode:contents format:format width:width height:height hints:nil error:error];
 }
 
-- (ZXBitMatrix *)encode:(NSString *)contents format:(ZXBarcodeFormat)format width:(int)width height:(int)height
+- (ZXBitMatrix *)encode:(NSString *)contents format:(ZXBarcodeFormat)format width:(NSInteger)width height:(NSInteger)height
                  hints:(ZXEncodeHints *)hints error:(NSError **)error {
   if (contents.length == 0) {
     @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Found empty contents" userInfo:nil];
@@ -32,34 +32,34 @@
 
   if (width < 0 || height < 0) {
     @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                   reason:[NSString stringWithFormat:@"Negative size is not allowed. Input: %dx%d", width, height]
+                                   reason:[NSString stringWithFormat:@"Negative size is not allowed. Input: %ldx%ld", (long)width, (long)height]
                                  userInfo:nil];
   }
 
-  int sidesMargin = [self defaultMargin];
+  NSInteger sidesMargin = [self defaultMargin];
   if (hints && hints.margin) {
     sidesMargin = hints.margin.intValue;
   }
 
-  int length;
+  NSInteger length;
   BOOL *code = [self encode:contents length:&length];
   ZXBitMatrix *result = [self renderResult:code length:length width:width height:height sidesMargin:sidesMargin];
   free(code);
   return result;
 }
 
-- (ZXBitMatrix *)renderResult:(BOOL *)code length:(int)length width:(int)width height:(int)height sidesMargin:(int)sidesMargin {
-  int inputWidth = length;
+- (ZXBitMatrix *)renderResult:(BOOL *)code length:(NSInteger)length width:(NSInteger)width height:(NSInteger)height sidesMargin:(NSInteger)sidesMargin {
+  NSInteger inputWidth = length;
   // Add quiet zone on both sides.
-  int fullWidth = inputWidth + sidesMargin;
-  int outputWidth = MAX(width, fullWidth);
-  int outputHeight = MAX(1, height);
+  NSInteger fullWidth = inputWidth + sidesMargin;
+  NSInteger outputWidth = MAX(width, fullWidth);
+  NSInteger outputHeight = MAX(1, height);
 
-  int multiple = outputWidth / fullWidth;
-  int leftPadding = (outputWidth - (inputWidth * multiple)) / 2;
+  NSInteger multiple = outputWidth / fullWidth;
+  NSInteger leftPadding = (outputWidth - (inputWidth * multiple)) / 2;
 
   ZXBitMatrix *output = [ZXBitMatrix bitMatrixWithWidth:outputWidth height:outputHeight];
-  for (int inputX = 0, outputX = leftPadding; inputX < inputWidth; inputX++, outputX += multiple) {
+  for (NSInteger inputX = 0, outputX = leftPadding; inputX < inputWidth; inputX++, outputX += multiple) {
     if (code[inputX]) {
       [output setRegionAtLeft:outputX top:0 width:multiple height:outputHeight];
     }
@@ -70,11 +70,11 @@
 /**
  * Appends the given pattern to the target array starting at pos.
  */
-- (int)appendPattern:(BOOL *)target pos:(int)pos pattern:(int *)pattern patternLen:(int)patternLen startColor:(BOOL)startColor {
+- (NSInteger)appendPattern:(BOOL *)target pos:(NSInteger)pos pattern:(NSInteger *)pattern patternLen:(NSInteger)patternLen startColor:(BOOL)startColor {
   BOOL color = startColor;
-  int numAdded = 0;
-  for (int i = 0; i < patternLen; i++) {
-    for (int j = 0; j < pattern[i]; j++) {
+  NSInteger numAdded = 0;
+  for (NSInteger i = 0; i < patternLen; i++) {
+    for (NSInteger j = 0; j < pattern[i]; j++) {
       target[pos++] = color;
     }
     numAdded += pattern[i];
@@ -83,7 +83,7 @@
   return numAdded;
 }
 
-- (int)defaultMargin {
+- (NSInteger)defaultMargin {
   // CodaBar spec requires a side margin to be more than ten times wider than narrow space.
   // This seems like a decent idea for a default for all formats.
   return 10;
@@ -93,7 +93,7 @@
  * Encode the contents to boolean array expression of one-dimensional barcode.
  * Start code and end code should be included in result, and side margins should not be included.
  */
-- (BOOL *)encode:(NSString *)contents length:(int *)pLength {
+- (BOOL *)encode:(NSString *)contents length:(NSInteger *)pLength {
   @throw [NSException exceptionWithName:NSInternalInconsistencyException
                                  reason:[NSString stringWithFormat:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)]
                                userInfo:nil];

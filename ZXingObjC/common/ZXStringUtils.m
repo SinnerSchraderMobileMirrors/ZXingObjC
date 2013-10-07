@@ -19,7 +19,7 @@
 
 @implementation ZXStringUtils
 
-+ (NSStringEncoding)guessEncoding:(int8_t *)bytes length:(unsigned int)length hints:(ZXDecodeHints *)hints {
++ (NSStringEncoding)guessEncoding:(int8_t *)bytes length:(NSUInteger)length hints:(ZXDecodeHints *)hints {
   BOOL assumeShiftJIS = CFStringGetSystemEncoding() == NSShiftJISStringEncoding || CFStringGetSystemEncoding() == NSJapaneseEUCStringEncoding;
   
   if (hints != nil) {
@@ -33,33 +33,33 @@
   BOOL canBeISO88591 = YES;
   BOOL canBeShiftJIS = YES;
   BOOL canBeUTF8 = YES;
-  int utf8BytesLeft = 0;
-  //int utf8LowChars = 0;
-  int utf2BytesChars = 0;
-  int utf3BytesChars = 0;
-  int utf4BytesChars = 0;
-  int sjisBytesLeft = 0;
-  //int sjisLowChars = 0;
-  int sjisKatakanaChars = 0;
-  //int sjisDoubleBytesChars = 0;
-  int sjisCurKatakanaWordLength = 0;
-  int sjisCurDoubleBytesWordLength = 0;
-  int sjisMaxKatakanaWordLength = 0;
-  int sjisMaxDoubleBytesWordLength = 0;
-  //int isoLowChars = 0;
-  //int isoHighChars = 0;
-  int isoHighOther = 0;
+  NSInteger utf8BytesLeft = 0;
+  //NSInteger utf8LowChars = 0;
+  NSInteger utf2BytesChars = 0;
+  NSInteger utf3BytesChars = 0;
+  NSInteger utf4BytesChars = 0;
+  NSInteger sjisBytesLeft = 0;
+  //NSInteger sjisLowChars = 0;
+  NSInteger sjisKatakanaChars = 0;
+  //NSInteger sjisDoubleBytesChars = 0;
+  NSInteger sjisCurKatakanaWordLength = 0;
+  NSInteger sjisCurDoubleBytesWordLength = 0;
+  NSInteger sjisMaxKatakanaWordLength = 0;
+  NSInteger sjisMaxDoubleBytesWordLength = 0;
+  //NSInteger isoLowChars = 0;
+  //NSInteger isoHighChars = 0;
+  NSInteger isoHighOther = 0;
 
   BOOL utf8bom = length > 3 &&
     bytes[0] == (int8_t) 0xEF &&
     bytes[1] == (int8_t) 0xBB &&
     bytes[2] == (int8_t) 0xBF;
 
-  for (int i = 0;
+  for (NSInteger i = 0;
        i < length && (canBeISO88591 || canBeShiftJIS || canBeUTF8);
        i++) {
 
-    int value = bytes[i] & 0xFF;
+    NSInteger value = bytes[i] & 0xFF;
 
     // UTF-8 stuff
     if (canBeUTF8) {

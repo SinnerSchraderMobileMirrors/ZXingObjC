@@ -54,9 +54,9 @@
   return [sToQ times:qToS];
 }
 
-- (void)transformPoints:(float *)points pointsLen:(int)pointsLen {
-  int max = pointsLen;
-  for (int i = 0; i < max; i += 2) {
+- (void)transformPoints:(float *)points pointsLen:(NSInteger)pointsLen {
+  NSInteger max = pointsLen;
+  for (NSInteger i = 0; i < max; i += 2) {
     float x = points[i];
     float y = points[i + 1];
     float denominator = self.a13 * x + self.a23 * y + self.a33;
@@ -68,9 +68,9 @@
 /**
  * Convenience method, not optimized for performance.
  */
-- (void)transformPoints:(float *)xValues yValues:(float *)yValues pointsLen:(int)pointsLen {
-  int n = pointsLen;
-  for (int i = 0; i < n; i ++) {
+- (void)transformPoints:(float *)xValues yValues:(float *)yValues pointsLen:(NSInteger)pointsLen {
+  NSInteger n = pointsLen;
+  for (NSInteger i = 0; i < n; i ++) {
     float x = xValues[i];
     float y = yValues[i];
     float denominator = self.a13 * x + self.a23 * y + self.a33;

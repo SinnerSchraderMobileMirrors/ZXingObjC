@@ -26,31 +26,31 @@
 #import "ZXPerspectiveTransform.h"
 #import "ZXResultPoint.h"
 
-const int INDEXES_PATTERN_LEN = 4;
-const int INDEXES_START_PATTERN[INDEXES_PATTERN_LEN] = { 0, 4, 1, 5 };
-const int INDEXES_STOP_PATTERN[INDEXES_PATTERN_LEN] = { 6, 2, 7, 3 };
-int const PDF417_INTEGER_MATH_SHIFT = 8;
-int const PDF417_PATTERN_MATCH_RESULT_SCALE_FACTOR = 1 << PDF417_INTEGER_MATH_SHIFT;
-int const MAX_AVG_VARIANCE = (int) (PDF417_PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.42f);
-int const MAX_INDIVIDUAL_VARIANCE = (int) (PDF417_PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.8f);
+const NSInteger INDEXES_PATTERN_LEN = 4;
+const NSInteger INDEXES_START_PATTERN[INDEXES_PATTERN_LEN] = { 0, 4, 1, 5 };
+const NSInteger INDEXES_STOP_PATTERN[INDEXES_PATTERN_LEN] = { 6, 2, 7, 3 };
+NSInteger const PDF417_INTEGER_MATH_SHIFT = 8;
+NSInteger const PDF417_PATTERN_MATCH_RESULT_SCALE_FACTOR = 1 << PDF417_INTEGER_MATH_SHIFT;
+NSInteger const MAX_AVG_VARIANCE = (NSInteger) (PDF417_PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.42f);
+NSInteger const MAX_INDIVIDUAL_VARIANCE = (NSInteger) (PDF417_PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.8f);
 
 // B S B S B S B S Bar/Space pattern
 // 11111111 0 1 0 1 0 1 000
-int const PDF417_START_PATTERN_LEN = 8;
-int const PDF417_START_PATTERN[PDF417_START_PATTERN_LEN] = { 8, 1, 1, 1, 1, 1, 1, 3 };
+NSInteger const PDF417_START_PATTERN_LEN = 8;
+NSInteger const PDF417_START_PATTERN[PDF417_START_PATTERN_LEN] = { 8, 1, 1, 1, 1, 1, 1, 3 };
 
 // 1111111 0 1 000 1 0 1 00 1
-int const PDF417_STOP_PATTERN_LEN = 9;
-int const PDF417_STOP_PATTERN[PDF417_STOP_PATTERN_LEN] = { 7, 1, 1, 3, 1, 1, 1, 2, 1 };
-int const MAX_PIXEL_DRIFT = 3;
-int const MAX_PATTERN_DRIFT = 5;
+NSInteger const PDF417_STOP_PATTERN_LEN = 9;
+NSInteger const PDF417_STOP_PATTERN[PDF417_STOP_PATTERN_LEN] = { 7, 1, 1, 3, 1, 1, 1, 2, 1 };
+NSInteger const MAX_PIXEL_DRIFT = 3;
+NSInteger const MAX_PATTERN_DRIFT = 5;
 // if we set the value too low, then we don't detect the correct height of the bar if the start patterns are damaged.
 // if we set the value too high, then we might detect the start pattern from a neighbor barcode.
-int const SKIPPED_ROW_COUNT_MAX = 25;
+NSInteger const SKIPPED_ROW_COUNT_MAX = 25;
 // A PDF471 barcode should have at least 3 rows, with each row being >= 3 times the module width. Therefore it should be at least
 // 9 pixels tall. To be conservative, we use about half the size to ensure we don't miss it.
-int const ROW_STEP = 5;
-int const BARCODE_MIN_HEIGHT = 10;
+NSInteger const ROW_STEP = 5;
+NSInteger const BARCODE_MIN_HEIGHT = 10;
 
 @interface ZXPDF417Detector ()
 
@@ -104,8 +104,8 @@ int const BARCODE_MIN_HEIGHT = 10;
  */
 - (NSArray *)detect:(BOOL)multiple bitMatrix:(ZXBitMatrix *)bitMatrix error:(NSError **)error {
   NSMutableArray *barcodeCoordinates = [NSMutableArray array];
-  int row = 0;
-  int column = 0;
+  NSInteger row = 0;
+  NSInteger column = 0;
   BOOL foundBarcodeInRow = NO;
   while (row < self.image.height) {
     NSArray *vertices = [self findVertices:bitMatrix startRow:row startColumn:column];
@@ -121,10 +121,10 @@ int const BARCODE_MIN_HEIGHT = 10;
       column = 0;
       for (NSArray *barcodeCoordinate in barcodeCoordinates) {
         if (barcodeCoordinate[1] != [NSNull null]) {
-          row = MAX(row, (int) [(ZXResultPoint *)barcodeCoordinate[1] y]);
+          row = MAX(row, (NSInteger) [(ZXResultPoint *)barcodeCoordinate[1] y]);
         }
         if (barcodeCoordinate[3] != [NSNull null]) {
-          row = MAX(row, (int) [(ZXResultPoint *)barcodeCoordinate[3] y]);
+          row = MAX(row, (NSInteger) [(ZXResultPoint *)barcodeCoordinate[3] y]);
         }
       }
       row += ROW_STEP;
@@ -138,11 +138,11 @@ int const BARCODE_MIN_HEIGHT = 10;
     // if we didn't find a right row indicator column, then continue the search for the next barcode after the
     // start pattern of the barcode just found.
     if (vertices[2] != [NSNull null]) {
-      column = (int) [(ZXResultPoint *)vertices[2] x];
-      row = (int) [(ZXResultPoint *)vertices[2] y];
+      column = (NSInteger) [(ZXResultPoint *)vertices[2] x];
+      row = (NSInteger) [(ZXResultPoint *)vertices[2] y];
     } else {
-      column = (int) [(ZXResultPoint *)vertices[4] x];
-      row = (int) [(ZXResultPoint *)vertices[4] y];
+      column = (NSInteger) [(ZXResultPoint *)vertices[4] x];
+      row = (NSInteger) [(ZXResultPoint *)vertices[4] y];
     }
   }
   return barcodeCoordinates;
@@ -154,12 +154,12 @@ int const BARCODE_MIN_HEIGHT = 10;
  * Rotates a bit matrix by 180 degrees.
  */
 + (void)rotate180:(ZXBitMatrix *)bitMatrix {
-  int width = bitMatrix.width;
-  int height = bitMatrix.height;
+  NSInteger width = bitMatrix.width;
+  NSInteger height = bitMatrix.height;
   ZXBitArray *firstRowBitArray = [[ZXBitArray alloc] initWithSize:width];
   ZXBitArray *secondRowBitArray = [[ZXBitArray alloc] initWithSize:width];
   ZXBitArray *tmpBitArray = [[ZXBitArray alloc] initWithSize:width];
-  for (int y = 0; y < (height + 1) >> 1; y++) {
+  for (NSInteger y = 0; y < (height + 1) >> 1; y++) {
     firstRowBitArray = [bitMatrix rowAtY:y row:firstRowBitArray];
     [bitMatrix setRowAtY:y row:[self mirror:[bitMatrix rowAtY:height - 1 - y row:secondRowBitArray] result:tmpBitArray]];
     [bitMatrix setRowAtY:height - 1 - y row:[self mirror:firstRowBitArray result:tmpBitArray]];
@@ -171,8 +171,8 @@ int const BARCODE_MIN_HEIGHT = 10;
  */
 + (ZXBitArray *)mirror:(ZXBitArray *)input result:(ZXBitArray *)result {
   [result clear];
-  int size = input.size;
-  for (int i = 0; i < size; i++) {
+  NSInteger size = input.size;
+  for (NSInteger i = 0; i < size; i++) {
     if ([input get:i]) {
       [result set:size - 1 - i];
     }
@@ -194,39 +194,39 @@ int const BARCODE_MIN_HEIGHT = 10;
  * vertices[6] x, y top right codeword area
  * vertices[7] x, y bottom right codeword area
  */
-- (NSMutableArray *)findVertices:(ZXBitMatrix *)matrix startRow:(int)startRow startColumn:(int)startColumn {
-  int height = matrix.height;
-  int width = matrix.width;
+- (NSMutableArray *)findVertices:(ZXBitMatrix *)matrix startRow:(NSInteger)startRow startColumn:(NSInteger)startColumn {
+  NSInteger height = matrix.height;
+  NSInteger width = matrix.width;
 
   NSMutableArray *result = [NSMutableArray arrayWithCapacity:8];
-  for (int i = 0; i < 8; i++) {
+  for (NSInteger i = 0; i < 8; i++) {
     [result addObject:[NSNull null]];
   }
-  [self copyToResult:result tmpResult:[self findRowsWithPattern:matrix height:height width:width startRow:startRow startColumn:startColumn pattern:(int *)PDF417_START_PATTERN patternLen:PDF417_START_PATTERN_LEN] destinationIndexes:(int *)INDEXES_START_PATTERN];
+  [self copyToResult:result tmpResult:[self findRowsWithPattern:matrix height:height width:width startRow:startRow startColumn:startColumn pattern:(NSInteger *)PDF417_START_PATTERN patternLen:PDF417_START_PATTERN_LEN] destinationIndexes:(NSInteger *)INDEXES_START_PATTERN];
 
   if (result[4] != [NSNull null]) {
-    startColumn = (int) [(ZXResultPoint *)result[4] x];
-    startRow = (int) [(ZXResultPoint *)result[4] y];
+    startColumn = (NSInteger) [(ZXResultPoint *)result[4] x];
+    startRow = (NSInteger) [(ZXResultPoint *)result[4] y];
   }
-  [self copyToResult:result tmpResult:[self findRowsWithPattern:matrix height:height width:width startRow:startRow startColumn:startColumn pattern:(int *)PDF417_STOP_PATTERN patternLen:PDF417_STOP_PATTERN_LEN] destinationIndexes:(int *)INDEXES_STOP_PATTERN];
+  [self copyToResult:result tmpResult:[self findRowsWithPattern:matrix height:height width:width startRow:startRow startColumn:startColumn pattern:(NSInteger *)PDF417_STOP_PATTERN patternLen:PDF417_STOP_PATTERN_LEN] destinationIndexes:(NSInteger *)INDEXES_STOP_PATTERN];
   return result;
 }
 
-- (void)copyToResult:(NSMutableArray *)result tmpResult:(NSMutableArray *)tmpResult destinationIndexes:(int *)destinationIndexes {
-  for (int i = 0; i < INDEXES_PATTERN_LEN; i++) {
+- (void)copyToResult:(NSMutableArray *)result tmpResult:(NSMutableArray *)tmpResult destinationIndexes:(NSInteger *)destinationIndexes {
+  for (NSInteger i = 0; i < INDEXES_PATTERN_LEN; i++) {
     result[destinationIndexes[i]] = tmpResult[i];
   }
 }
 
-- (NSMutableArray *)findRowsWithPattern:(ZXBitMatrix *)matrix height:(int)height width:(int)width startRow:(int)startRow
-                            startColumn:(int)startColumn pattern:(int *)pattern patternLen:(int)patternLen {
+- (NSMutableArray *)findRowsWithPattern:(ZXBitMatrix *)matrix height:(NSInteger)height width:(NSInteger)width startRow:(NSInteger)startRow
+                            startColumn:(NSInteger)startColumn pattern:(NSInteger *)pattern patternLen:(NSInteger)patternLen {
   NSMutableArray *result = [NSMutableArray array];
-  for (int i = 0; i < 4; i++) {
+  for (NSInteger i = 0; i < 4; i++) {
     [result addObject:[NSNull null]];
   }
   BOOL found = NO;
-  int counters[patternLen];
-  memset(counters, 0, patternLen * sizeof(int));
+  NSInteger counters[patternLen];
+  memset(counters, 0, patternLen * sizeof(NSInteger));
   for (; startRow < height; startRow += ROW_STEP) {
     NSRange loc = [self findGuardPattern:matrix column:startColumn row:startRow width:width whiteFirst:false pattern:pattern patternLen:patternLen counters:counters];
     if (loc.location != NSNotFound) {
@@ -245,10 +245,10 @@ int const BARCODE_MIN_HEIGHT = 10;
       break;
     }
   }
-  int stopRow = startRow + 1;
+  NSInteger stopRow = startRow + 1;
   // Last row of the current symbol that contains pattern
   if (found) {
-    int skippedRowCount = 0;
+    NSInteger skippedRowCount = 0;
     NSRange previousRowLoc = NSMakeRange((NSUInteger) [(ZXResultPoint *)result[0] x], ((NSUInteger)[(ZXResultPoint *)result[1] x]) - ((NSUInteger)[(ZXResultPoint *)result[0] x]));
     for (; stopRow < height; stopRow++) {
       NSRange loc = [self findGuardPattern:matrix column:previousRowLoc.location row:stopRow width:width whiteFirst:NO pattern:pattern patternLen:patternLen counters:counters];
@@ -256,8 +256,8 @@ int const BARCODE_MIN_HEIGHT = 10;
       // don't differ too much. Pattern drift should be not bigger than two for consecutive rows. With
       // a higher number of skipped rows drift could be larger. To keep it simple for now, we allow a slightly
       // larger drift and don't check for skipped rows.
-      if (loc.location != NSNotFound && ABS((int)previousRowLoc.location - (int)loc.location) < MAX_PATTERN_DRIFT &&
-          ABS((int)NSMaxRange(previousRowLoc) - (int)NSMaxRange(loc)) < MAX_PATTERN_DRIFT) {
+      if (loc.location != NSNotFound && ABS((NSInteger)previousRowLoc.location - (NSInteger)loc.location) < MAX_PATTERN_DRIFT &&
+          ABS((NSInteger)NSMaxRange(previousRowLoc) - (NSInteger)NSMaxRange(loc)) < MAX_PATTERN_DRIFT) {
         previousRowLoc = loc;
         skippedRowCount = 0;
       } else {
@@ -273,26 +273,26 @@ int const BARCODE_MIN_HEIGHT = 10;
     result[3] = [[ZXResultPoint alloc] initWithX:NSMaxRange(previousRowLoc) y:stopRow];
   }
   if (stopRow - startRow < BARCODE_MIN_HEIGHT) {
-    for (int i = 0; i < 4; i++) {
+    for (NSInteger i = 0; i < 4; i++) {
       result[i] = [NSNull null];
     }
   }
   return result;
 }
 
-- (NSRange)findGuardPattern:(ZXBitMatrix *)matrix column:(int)column row:(int)row width:(int)width whiteFirst:(BOOL)whiteFirst pattern:(int *)pattern patternLen:(int)patternLen counters:(int *)counters {
-  int patternLength = patternLen;
-  memset(counters, 0, patternLength * sizeof(int));
+- (NSRange)findGuardPattern:(ZXBitMatrix *)matrix column:(NSInteger)column row:(NSInteger)row width:(NSInteger)width whiteFirst:(BOOL)whiteFirst pattern:(NSInteger *)pattern patternLen:(NSInteger)patternLen counters:(NSInteger *)counters {
+  NSInteger patternLength = patternLen;
+  memset(counters, 0, patternLength * sizeof(NSInteger));
   BOOL isWhite = whiteFirst;
-  int patternStart = column;
-  int pixelDrift = 0;
+  NSInteger patternStart = column;
+  NSInteger pixelDrift = 0;
 
   // if there are black pixels left of the current pixel shift to the left, but only for MAX_PIXEL_DRIFT pixels
   while ([matrix getX:patternStart y:row] && patternStart > 0 && pixelDrift++ < MAX_PIXEL_DRIFT) {
     patternStart--;
   }
-  int x = patternStart;
-  int counterPosition = 0;
+  NSInteger x = patternStart;
+  NSInteger counterPosition = 0;
   for (;x < width; x++) {
     BOOL pixel = [matrix getX:x y:row];
     if (pixel ^ isWhite) {
@@ -303,7 +303,7 @@ int const BARCODE_MIN_HEIGHT = 10;
           return NSMakeRange(patternStart, x - patternStart);
         }
         patternStart += counters[0] + counters[1];
-        for (int y = 2; y < patternLength; y++) {
+        for (NSInteger y = 2; y < patternLength; y++) {
           counters[y - 2] = counters[y];
         }
         counters[patternLength - 2] = 0;
@@ -330,11 +330,11 @@ int const BARCODE_MIN_HEIGHT = 10;
  * the total variance from the expected pattern proportions across all
  * pattern elements, to the length of the pattern.
  */
-- (int)patternMatchVariance:(int *)counters countersSize:(int)countersSize pattern:(int *)pattern maxIndividualVariance:(int)maxIndividualVariance {
-  int numCounters = countersSize;
-  int total = 0;
-  int patternLength = 0;
-  for (int i = 0; i < numCounters; i++) {
+- (NSInteger)patternMatchVariance:(NSInteger *)counters countersSize:(NSInteger)countersSize pattern:(NSInteger *)pattern maxIndividualVariance:(NSInteger)maxIndividualVariance {
+  NSInteger numCounters = countersSize;
+  NSInteger total = 0;
+  NSInteger patternLength = 0;
+  for (NSInteger i = 0; i < numCounters; i++) {
     total += counters[i];
     patternLength += pattern[i];
   }
@@ -342,14 +342,14 @@ int const BARCODE_MIN_HEIGHT = 10;
   if (total < patternLength) {
     return INT_MAX;
   }
-  int unitBarWidth = (total << PDF417_INTEGER_MATH_SHIFT) / patternLength;
+  NSInteger unitBarWidth = (total << PDF417_INTEGER_MATH_SHIFT) / patternLength;
   maxIndividualVariance = (maxIndividualVariance * unitBarWidth) >> PDF417_INTEGER_MATH_SHIFT;
 
-  int totalVariance = 0;
-  for (int x = 0; x < numCounters; x++) {
-    int counter = counters[x] << PDF417_INTEGER_MATH_SHIFT;
-    int scaledPattern = pattern[x] * unitBarWidth;
-    int variance = counter > scaledPattern ? counter - scaledPattern : scaledPattern - counter;
+  NSInteger totalVariance = 0;
+  for (NSInteger x = 0; x < numCounters; x++) {
+    NSInteger counter = counters[x] << PDF417_INTEGER_MATH_SHIFT;
+    NSInteger scaledPattern = pattern[x] * unitBarWidth;
+    NSInteger variance = counter > scaledPattern ? counter - scaledPattern : scaledPattern - counter;
     if (variance > maxIndividualVariance) {
       return INT_MAX;
     }

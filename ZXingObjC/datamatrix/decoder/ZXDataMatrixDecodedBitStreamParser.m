@@ -61,12 +61,12 @@ enum {
 
 @implementation ZXDataMatrixDecodedBitStreamParser
 
-+ (ZXDecoderResult *)decode:(int8_t *)bytes length:(unsigned int)length error:(NSError **)error {
++ (ZXDecoderResult *)decode:(int8_t *)bytes length:(NSUInteger)length error:(NSError **)error {
   ZXBitSource *bits = [[ZXBitSource alloc] initWithBytes:bytes length:length];
   NSMutableString *result = [NSMutableString stringWithCapacity:100];
   NSMutableString *resultTrailer = [NSMutableString string];
   NSMutableArray *byteSegments = [NSMutableArray arrayWithCapacity:1];
-  int mode = ASCII_ENCODE;
+  NSInteger mode = ASCII_ENCODE;
   do {
     if (mode == ASCII_ENCODE) {
       mode = [self decodeAsciiSegment:bits result:result resultTrailer:resultTrailer];
@@ -123,10 +123,10 @@ enum {
 /**
  * See ISO 16022:2006, 5.2.3 and Annex C, Table C.2
  */
-+ (int)decodeAsciiSegment:(ZXBitSource *)bits result:(NSMutableString *)result resultTrailer:(NSMutableString *)resultTrailer {
++ (NSInteger)decodeAsciiSegment:(ZXBitSource *)bits result:(NSMutableString *)result resultTrailer:(NSMutableString *)resultTrailer {
   BOOL upperShift = NO;
   do {
-    int oneByte = [bits readBits:8];
+    NSInteger oneByte = [bits readBits:8];
     if (oneByte == 0) {
       return -1;
     } else if (oneByte <= 128) {  // ASCII data (ASCII value + 1)
@@ -139,11 +139,11 @@ enum {
     } else if (oneByte == 129) {  // Pad
       return PAD_ENCODE;
     } else if (oneByte <= 229) {  // 2-digit data 00-99 (Numeric Value + 130)
-      int value = oneByte - 130;
+      NSInteger value = oneByte - 130;
       if (value < 10) { // padd with '0' for single digit values
         [result appendString:@"0"];
       }
-      [result appendFormat:@"%d", value];
+      [result appendFormat:@"%ld", (long)value];
     } else if (oneByte == 230) {  // Latch to C40 encodation
       return C40_ENCODE;
     } else if (oneByte == 231) {  // Latch to Base 256 encodation
@@ -192,23 +192,23 @@ enum {
   // TODO(bbrown): The Upper Shift with C40 doesn't work in the 4 value scenario all the time
   BOOL upperShift = NO;
 
-  int cValues[3] = {0};
-  int shift = 0;
+  NSInteger cValues[3] = {0};
+  NSInteger shift = 0;
 
   do {
     // If there is only one byte left then it will be encoded as ASCII
     if ([bits available] == 8) {
       return YES;
     }
-    int firstByte = [bits readBits:8];
+    NSInteger firstByte = [bits readBits:8];
     if (firstByte == 254) {  // Unlatch codeword
       return YES;
     }
 
     [self parseTwoBytes:firstByte secondByte:[bits readBits:8] result:cValues];
 
-    for (int i = 0; i < 3; i++) {
-      int cValue = cValues[i];
+    for (NSInteger i = 0; i < 3; i++) {
+      NSInteger cValue = cValues[i];
       switch (shift) {
       case 0:
         if (cValue < 3) {
@@ -280,23 +280,23 @@ enum {
   // TODO(bbrown): The Upper Shift with Text doesn't work in the 4 value scenario all the time
   BOOL upperShift = NO;
 
-  int cValues[3] = {0};
+  NSInteger cValues[3] = {0};
 
-  int shift = 0;
+  NSInteger shift = 0;
   do {
     // If there is only one byte left then it will be encoded as ASCII
     if (bits.available == 8) {
       return YES;
     }
-    int firstByte = [bits readBits:8];
+    NSInteger firstByte = [bits readBits:8];
     if (firstByte == 254) {  // Unlatch codeword
       return YES;
     }
 
     [self parseTwoBytes:firstByte secondByte:[bits readBits:8] result:cValues];
 
-    for (int i = 0; i < 3; i++) {
-      int cValue = cValues[i];
+    for (NSInteger i = 0; i < 3; i++) {
+      NSInteger cValue = cValues[i];
       switch (shift) {
       case 0:
         if (cValue < 3) {
@@ -371,21 +371,21 @@ enum {
   // Three ANSI X12 values are encoded in a 16-bit value as
   // (1600 * C1) + (40 * C2) + C3 + 1
 
-  int cValues[3] = {0};
+  NSInteger cValues[3] = {0};
   do {
     // If there is only one byte left then it will be encoded as ASCII
     if (bits.available == 8) {
       return YES;
     }
-    int firstByte = [bits readBits:8];
+    NSInteger firstByte = [bits readBits:8];
     if (firstByte == 254) {  // Unlatch codeword
       return YES;
     }
 
     [self parseTwoBytes:firstByte secondByte:[bits readBits:8] result:cValues];
 
-    for (int i = 0; i < 3; i++) {
-      int cValue = cValues[i];
+    for (NSInteger i = 0; i < 3; i++) {
+      NSInteger cValue = cValues[i];
       if (cValue == 0) {  // X12 segment terminator <CR>
         [result appendString:@"\r"];
       } else if (cValue == 1) {  // X12 segment separator *
@@ -406,9 +406,9 @@ enum {
   return YES;
 }
 
-+ (void)parseTwoBytes:(int)firstByte secondByte:(int)secondByte result:(int[])result {
-  int fullBitValue = (firstByte << 8) + secondByte - 1;
-  int temp = fullBitValue / 1600;
++ (void)parseTwoBytes:(NSInteger)firstByte secondByte:(NSInteger)secondByte result:(NSInteger[])result {
+  NSInteger fullBitValue = (firstByte << 8) + secondByte - 1;
+  NSInteger temp = fullBitValue / 1600;
   result[0] = temp;
   fullBitValue -= temp * 1600;
   temp = fullBitValue / 40;
@@ -427,13 +427,13 @@ enum {
       return;
     }
 
-    for (int i = 0; i < 4; i++) {
-      int edifactValue = [bits readBits:6];
+    for (NSInteger i = 0; i < 4; i++) {
+      NSInteger edifactValue = [bits readBits:6];
 
       // Check for the unlatch character
       if (edifactValue == 0x1F) {  // 011111
         // Read rest of byte, which should be 0, and stop
-        int bitsLeft = 8 - bits.bitOffset;
+        NSInteger bitsLeft = 8 - bits.bitOffset;
         if (bitsLeft != 8) {
           [bits readBits:bitsLeft];
         }
@@ -453,9 +453,9 @@ enum {
  * See ISO 16022:2006, 5.2.9 and Annex B, B.2
  */
 + (BOOL)decodeBase256Segment:(ZXBitSource *)bits result:(NSMutableString *)result byteSegments:(NSMutableArray *)byteSegments {
-  int codewordPosition = 1 + bits.byteOffset; // position is 1-indexed
-  int d1 = [self unrandomize255State:[bits readBits:8] base256CodewordPosition:codewordPosition++];
-  int count;
+  NSInteger codewordPosition = 1 + bits.byteOffset; // position is 1-indexed
+  NSInteger d1 = [self unrandomize255State:[bits readBits:8] base256CodewordPosition:codewordPosition++];
+  NSInteger count;
   if (d1 == 0) {
     count = [bits available] / 8;
   } else if (d1 < 250) {
@@ -470,7 +470,7 @@ enum {
 
   NSMutableArray *bytesArray = [NSMutableArray arrayWithCapacity:count];
   int8_t bytes[count];
-  for (int i = 0; i < count; i++) {
+  for (NSInteger i = 0; i < count; i++) {
     if ([bits available] < 8) {
       return NO;
     }
@@ -488,9 +488,9 @@ enum {
 /**
  * See ISO 16022:2006, Annex B, B.2
  */
-+ (int)unrandomize255State:(int)randomizedBase256Codeword base256CodewordPosition:(int)base256CodewordPosition {
-  int pseudoRandomNumber = ((149 * base256CodewordPosition) % 255) + 1;
-  int tempVariable = randomizedBase256Codeword - pseudoRandomNumber;
++ (NSInteger)unrandomize255State:(NSInteger)randomizedBase256Codeword base256CodewordPosition:(NSInteger)base256CodewordPosition {
+  NSInteger pseudoRandomNumber = ((149 * base256CodewordPosition) % 255) + 1;
+  NSInteger tempVariable = randomizedBase256Codeword - pseudoRandomNumber;
   return tempVariable >= 0 ? tempVariable : tempVariable + 256;
 }
 

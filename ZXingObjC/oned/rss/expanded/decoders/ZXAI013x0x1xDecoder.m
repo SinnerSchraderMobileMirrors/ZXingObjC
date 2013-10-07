@@ -19,9 +19,9 @@
 #import "ZXErrors.h"
 #import "ZXGeneralAppIdDecoder.h"
 
-int const AI013x0x1x_HEADER_SIZE = 7 + 1;
-int const AI013x0x1x_WEIGHT_SIZE = 20;
-int const AI013x0x1x_DATE_SIZE = 16;
+NSInteger const AI013x0x1x_HEADER_SIZE = 7 + 1;
+NSInteger const AI013x0x1x_WEIGHT_SIZE = 20;
+NSInteger const AI013x0x1x_DATE_SIZE = 16;
 
 @interface ZXAI013x0x1xDecoder ()
 
@@ -53,37 +53,37 @@ int const AI013x0x1x_DATE_SIZE = 16;
   return buf;
 }
 
-- (void)encodeCompressedDate:(NSMutableString *)buf currentPos:(int)currentPos {
-  int numericDate = [self.generalDecoder extractNumericValueFromBitArray:currentPos bits:AI013x0x1x_DATE_SIZE];
+- (void)encodeCompressedDate:(NSMutableString *)buf currentPos:(NSInteger)currentPos {
+  NSInteger numericDate = [self.generalDecoder extractNumericValueFromBitArray:currentPos bits:AI013x0x1x_DATE_SIZE];
   if (numericDate == 38400) {
     return;
   }
   [buf appendFormat:@"(%@)", self.dateCode];
-  int day = numericDate % 32;
+  NSInteger day = numericDate % 32;
   numericDate /= 32;
-  int month = numericDate % 12 + 1;
+  NSInteger month = numericDate % 12 + 1;
   numericDate /= 12;
-  int year = numericDate;
+  NSInteger year = numericDate;
   if (year / 10 == 0) {
     [buf appendString:@"0"];
   }
-  [buf appendFormat:@"%d", year];
+  [buf appendFormat:@"%ld", (long)year];
   if (month / 10 == 0) {
     [buf appendString:@"0"];
   }
-  [buf appendFormat:@"%d", month];
+  [buf appendFormat:@"%ld", (long)month];
   if (day / 10 == 0) {
     [buf appendString:@"0"];
   }
-  [buf appendFormat:@"%d", day];
+  [buf appendFormat:@"%ld", (long)day];
 }
 
-- (void)addWeightCode:(NSMutableString *)buf weight:(int)weight {
-  int lastAI = weight / 100000;
-  [buf appendFormat:@"(%@%d)", self.firstAIdigits, lastAI];
+- (void)addWeightCode:(NSMutableString *)buf weight:(NSInteger)weight {
+  NSInteger lastAI = weight / 100000;
+  [buf appendFormat:@"(%@%ld)", self.firstAIdigits, (long)lastAI];
 }
 
-- (int)checkWeight:(int)weight {
+- (NSInteger)checkWeight:(NSInteger)weight {
   return weight % 100000;
 }
 

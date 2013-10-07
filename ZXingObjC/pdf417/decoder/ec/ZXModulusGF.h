@@ -23,15 +23,15 @@
 
 + (ZXModulusGF *)PDF417_GF;
 
-- (id)initWithModulus:(int)modulus generator:(int)generator;
+- (id)initWithModulus:(NSInteger)modulus generator:(NSInteger)generator;
 
-- (ZXModulusPoly *)buildMonomial:(int)degree coefficient:(int)coefficient;
-- (int)add:(int)a b:(int)b;
-- (int)subtract:(int)a b:(int)b;
-- (int)exp:(int)a;
-- (int)log:(int)a;
-- (int)inverse:(int)a;
-- (int)multiply:(int)a b:(int)b;
-- (int)size;
+- (ZXModulusPoly *)buildMonomial:(NSInteger)degree coefficient:(NSInteger)coefficient;
+- (NSInteger)add:(NSInteger)a b:(NSInteger)b;
+- (NSInteger)subtract:(NSInteger)a b:(NSInteger)b;
+- (NSInteger)exp:(NSInteger)a;
+- (NSInteger)log:(NSInteger)a;
+- (NSInteger)inverse:(NSInteger)a;
+- (NSInteger)multiply:(NSInteger)a b:(NSInteger)b;
+- (NSInteger)size;
 
 @end

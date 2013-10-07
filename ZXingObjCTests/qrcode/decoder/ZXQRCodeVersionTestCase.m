@@ -24,12 +24,12 @@
   if ([ZXQRCodeVersion versionForNumber:0]) {
     STFail(@"Should have failed");
   }
-  for (int i = 1; i <= 40; i++) {
+  for (NSInteger i = 1; i <= 40; i++) {
     [self checkVersion:[ZXQRCodeVersion versionForNumber:i] number:i dimension:4*i + 17];
   }
 }
 
-- (void)checkVersion:(ZXQRCodeVersion *)version number:(int)number dimension:(int)dimension {
+- (void)checkVersion:(ZXQRCodeVersion *)version number:(NSInteger)number dimension:(NSInteger)dimension {
   STAssertNotNil(version, @"Expected version to be non-nil");
   STAssertEquals(version.versionNumber, number, @"Expected version number to be %d", number);
   STAssertNotNil(version.alignmentPatternCenters, @"Expected alignmentPatternCenters to be non-nil");
@@ -49,7 +49,7 @@
 }
 
 - (void)testGetProvisionalVersionForDimension {
-  for (int i = 1; i <= 40; i++) {
+  for (NSInteger i = 1; i <= 40; i++) {
     STAssertEquals([ZXQRCodeVersion provisionalVersionForDimension:4*i + 17].versionNumber, i,
                    @"Expected version number to be %d", i);
   }
@@ -65,7 +65,7 @@
   [self doTestVersion:32 mask:0x209D5];
 }
 
-- (void)doTestVersion:(int)expectedVersion mask:(int)mask {
+- (void)doTestVersion:(NSInteger)expectedVersion mask:(NSInteger)mask {
   ZXQRCodeVersion *version = [ZXQRCodeVersion decodeVersionInformation:mask];
   STAssertNotNil(version, @"Expected version to be non-nil");
   STAssertEquals(version.versionNumber, expectedVersion, @"Expected version number to be %d", expectedVersion);

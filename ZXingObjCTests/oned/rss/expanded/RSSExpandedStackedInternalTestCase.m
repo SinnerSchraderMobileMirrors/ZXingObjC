@@ -24,7 +24,7 @@
 
   ZXBinaryBitmap *binaryMap = [TestCaseUtil binaryBitmap:@"Resources/blackbox/rssexpandedstacked-2/1000.png"];
 
-	int firstRowNumber = [binaryMap height] / 3;
+	NSInteger firstRowNumber = [binaryMap height] / 3;
   NSError *error = nil;
   ZXBitArray *firstRow = [binaryMap blackRow:firstRowNumber row:nil error:&error];
   STAssertNil(error, [error description]);
@@ -41,7 +41,7 @@
 
   [firstExpandedRow.pairs[1] finderPattern].startEnd[1] = @0;
 
-	int secondRowNumber = 2 * [binaryMap height] / 3;
+	NSInteger secondRowNumber = 2 * [binaryMap height] / 3;
   error = nil;
   ZXBitArray *secondRow = [binaryMap blackRow:secondRowNumber row:nil error:&error];
   STAssertNil(error, [error description]);

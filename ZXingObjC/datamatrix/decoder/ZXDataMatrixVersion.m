@@ -18,7 +18,7 @@
 
 @implementation ZXDataMatrixECBlocks
 
-- (id)initWithCodewords:(int)ecCodewords ecBlocks:(ZXDataMatrixECB *)ecBlocks {
+- (id)initWithCodewords:(NSInteger)ecCodewords ecBlocks:(ZXDataMatrixECB *)ecBlocks {
   if (self = [super init]) {
     _ecCodewords = ecCodewords;
     _ecBlocks = @[ecBlocks];
@@ -27,7 +27,7 @@
   return self;
 }
 
-- (id)initWithCodewords:(int)ecCodewords ecBlocks1:(ZXDataMatrixECB *)ecBlocks1 ecBlocks2:(ZXDataMatrixECB *)ecBlocks2 {
+- (id)initWithCodewords:(NSInteger)ecCodewords ecBlocks1:(ZXDataMatrixECB *)ecBlocks1 ecBlocks2:(ZXDataMatrixECB *)ecBlocks2 {
   if (self = [super init]) {
     _ecCodewords = ecCodewords;
     _ecBlocks = @[ecBlocks1, ecBlocks2];
@@ -41,7 +41,7 @@
 
 @implementation ZXDataMatrixECB
 
-- (id)initWithCount:(int)count dataCodewords:(int)dataCodewords {
+- (id)initWithCount:(NSInteger)count dataCodewords:(NSInteger)dataCodewords {
   if (self = [super init]) {
     _count = count;
     _dataCodewords = dataCodewords;
@@ -57,8 +57,8 @@ static NSArray *VERSIONS = nil;
 
 @implementation ZXDataMatrixVersion
 
-- (id)initWithVersionNumber:(int)versionNumber symbolSizeRows:(int)symbolSizeRows symbolSizeColumns:(int)symbolSizeColumns
-         dataRegionSizeRows:(int)dataRegionSizeRows dataRegionSizeColumns:(int)dataRegionSizeColumns ecBlocks:(ZXDataMatrixECBlocks *)ecBlocks {
+- (id)initWithVersionNumber:(NSInteger)versionNumber symbolSizeRows:(NSInteger)symbolSizeRows symbolSizeColumns:(NSInteger)symbolSizeColumns
+         dataRegionSizeRows:(NSInteger)dataRegionSizeRows dataRegionSizeColumns:(NSInteger)dataRegionSizeColumns ecBlocks:(ZXDataMatrixECBlocks *)ecBlocks {
   if (self = [super init]) {
     _versionNumber = versionNumber;
     _symbolSizeRows = symbolSizeRows;
@@ -67,8 +67,8 @@ static NSArray *VERSIONS = nil;
     _dataRegionSizeColumns = dataRegionSizeColumns;
     _ecBlocks = ecBlocks;
 
-    int total = 0;
-    int ecCodewords = ecBlocks.ecCodewords;
+    NSInteger total = 0;
+    NSInteger ecCodewords = ecBlocks.ecCodewords;
     NSArray *ecbArray = ecBlocks.ecBlocks;
     for (ZXDataMatrixECB *ecBlock in ecbArray) {
       total += ecBlock.count * (ecBlock.dataCodewords + ecCodewords);
@@ -82,7 +82,7 @@ static NSArray *VERSIONS = nil;
 /**
  * Deduces version information from Data Matrix dimensions.
  */
-+ (ZXDataMatrixVersion *)versionForDimensions:(int)numRows numColumns:(int)numColumns {
++ (ZXDataMatrixVersion *)versionForDimensions:(NSInteger)numRows numColumns:(NSInteger)numColumns {
   if ((numRows & 0x01) != 0 || (numColumns & 0x01) != 0) {
     return nil;
   }

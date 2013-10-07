@@ -16,8 +16,8 @@
 
 @interface ZXDecodedObject : NSObject
 
-@property (nonatomic, assign, readonly) int theNewPosition;
+@property (nonatomic, assign, readonly) NSInteger theNewPosition;
 
-- (id)initWithNewPosition:(int)newPosition;
+- (id)initWithNewPosition:(NSInteger)newPosition;
 
 @end

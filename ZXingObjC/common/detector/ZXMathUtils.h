@@ -16,8 +16,8 @@
 
 @interface ZXMathUtils : NSObject
 
-+ (int)round:(float)d;
++ (NSInteger)round:(float)d;
 + (float)distance:(float)aX aY:(float)aY bX:(float)bX bY:(float)bY;
-+ (float)distanceInt:(int)aX aY:(int)aY bX:(int)bX bY:(int)bY;
++ (float)distanceInt:(NSInteger)aX aY:(NSInteger)aY bX:(NSInteger)bX bY:(NSInteger)bY;
 
 @end

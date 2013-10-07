@@ -21,10 +21,10 @@
 @interface ZXPDF417BoundingBox ()
 
 @property (nonatomic, strong) ZXBitMatrix *image;
-@property (nonatomic, assign) int minX;
-@property (nonatomic, assign) int maxX;
-@property (nonatomic, assign) int minY;
-@property (nonatomic, assign) int maxY;
+@property (nonatomic, assign) NSInteger minX;
+@property (nonatomic, assign) NSInteger maxX;
+@property (nonatomic, assign) NSInteger minY;
+@property (nonatomic, assign) NSInteger maxY;
 
 @end
 
@@ -66,10 +66,10 @@
                             topRight:rightBox.topRight bottomRight:rightBox.bottomRight];
 }
 
-- (void)addMissingRows:(int)missingStartRows missingEndRows:(int)missingEndRows isLeft:(BOOL)isLeft {
+- (void)addMissingRows:(NSInteger)missingStartRows missingEndRows:(NSInteger)missingEndRows isLeft:(BOOL)isLeft {
   if (missingStartRows > 0) {
     ZXResultPoint *top = isLeft ? self.topLeft : self.topRight;
-    int newMinY = (int) top.y - missingStartRows;
+    NSInteger newMinY = (NSInteger) top.y - missingStartRows;
     if (newMinY < 0) {
       newMinY = 0;
     }
@@ -84,7 +84,7 @@
 
   if (missingEndRows > 0) {
     ZXResultPoint *bottom = isLeft ? self.bottomLeft : self.bottomRight;
-    int newMaxY = (int) bottom.y - missingStartRows;
+    NSInteger newMaxY = (NSInteger) bottom.y - missingStartRows;
     if (newMaxY >= self.image.height) {
       newMaxY = self.image.height - 1;
     }
@@ -108,10 +108,10 @@
     _bottomRight = [[ZXResultPoint alloc] initWithX:self.image.width - 1 y:self.bottomLeft.y];
   }
 
-  self.minX = (int) MIN(self.topLeft.x, self.bottomLeft.x);
-  self.maxX = (int) MAX(self.topRight.x, self.bottomRight.x);
-  self.minY = (int) MIN(self.topLeft.y, self.topRight.y);
-  self.maxY = (int) MAX(self.bottomLeft.y, self.bottomRight.y);
+  self.minX = (NSInteger) MIN(self.topLeft.x, self.bottomLeft.x);
+  self.maxX = (NSInteger) MAX(self.topRight.x, self.bottomRight.x);
+  self.minY = (NSInteger) MIN(self.topLeft.y, self.topRight.y);
+  self.maxY = (NSInteger) MAX(self.bottomLeft.y, self.bottomRight.y);
 }
 
 - (void)setTopRight:(ZXResultPoint *)topRight {

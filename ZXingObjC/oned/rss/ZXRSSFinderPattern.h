@@ -18,10 +18,10 @@
 
 @interface ZXRSSFinderPattern : NSObject
 
-@property (nonatomic, assign, readonly) int value;
+@property (nonatomic, assign, readonly) NSInteger value;
 @property (nonatomic, strong, readonly) NSMutableArray *startEnd;
 @property (nonatomic, strong, readonly) NSMutableArray *resultPoints;
 
-- (id)initWithValue:(int)value startEnd:(NSMutableArray *)startEnd start:(int)start end:(int)end rowNumber:(int)rowNumber;
+- (id)initWithValue:(NSInteger)value startEnd:(NSMutableArray *)startEnd start:(NSInteger)start end:(NSInteger)end rowNumber:(NSInteger)rowNumber;
 
 @end

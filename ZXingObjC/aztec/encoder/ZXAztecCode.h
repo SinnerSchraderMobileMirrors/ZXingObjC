@@ -24,7 +24,7 @@
 /**
  * Number of data codewords
  */
-@property (nonatomic, assign) int codeWords;
+@property (nonatomic, assign) NSInteger codeWords;
 
 /**
  * Compact or full symbol indicator
@@ -34,7 +34,7 @@
 /**
  * Number of levels
  */
-@property (nonatomic, assign) int layers;
+@property (nonatomic, assign) NSInteger layers;
 
 /**
  * The symbol image
@@ -44,6 +44,6 @@
 /**
  * Size in pixels (width and height)
  */
-@property (nonatomic, assign) int size;
+@property (nonatomic, assign) NSInteger size;
 
 @end

@@ -79,7 +79,7 @@
     if (error) *error = NotFoundErrorInstance();
     return nil;
   }
-  int dimension = [ZXQRCodeDetector computeDimension:topLeft topRight:topRight bottomLeft:bottomLeft moduleSize:moduleSize error:error];
+  NSInteger dimension = [ZXQRCodeDetector computeDimension:topLeft topRight:topRight bottomLeft:bottomLeft moduleSize:moduleSize error:error];
   if (dimension == -1) {
     return nil;
   }
@@ -89,7 +89,7 @@
     if (error) *error = FormatErrorInstance();
     return nil;
   }
-  int modulesBetweenFPCenters = [provisionalVersion dimensionForVersion] - 7;
+  NSInteger modulesBetweenFPCenters = [provisionalVersion dimensionForVersion] - 7;
 
   ZXAlignmentPattern *alignmentPattern = nil;
   if ([[provisionalVersion alignmentPatternCenters] count] > 0) {
@@ -97,10 +97,10 @@
     float bottomRightY = [topRight y] - [topLeft y] + [bottomLeft y];
 
     float correctionToTopLeft = 1.0f - 3.0f / (float)modulesBetweenFPCenters;
-    int estAlignmentX = (int)([topLeft x] + correctionToTopLeft * (bottomRightX - [topLeft x]));
-    int estAlignmentY = (int)([topLeft y] + correctionToTopLeft * (bottomRightY - [topLeft y]));
+    NSInteger estAlignmentX = (NSInteger)([topLeft x] + correctionToTopLeft * (bottomRightX - [topLeft x]));
+    NSInteger estAlignmentY = (NSInteger)([topLeft y] + correctionToTopLeft * (bottomRightY - [topLeft y]));
 
-    for (int i = 4; i <= 16; i <<= 1) {
+    for (NSInteger i = 4; i <= 16; i <<= 1) {
       NSError *alignmentError = nil;
       alignmentPattern = [self findAlignmentInRegion:moduleSize estAlignmentX:estAlignmentX estAlignmentY:estAlignmentY allowanceFactor:(float)i error:&alignmentError];
       if (alignmentPattern) {
@@ -126,7 +126,7 @@
   return [[ZXDetectorResult alloc] initWithBits:bits points:points];
 }
 
-+ (ZXPerspectiveTransform *)createTransform:(ZXResultPoint *)topLeft topRight:(ZXResultPoint *)topRight bottomLeft:(ZXResultPoint *)bottomLeft alignmentPattern:(ZXResultPoint *)alignmentPattern dimension:(int)dimension {
++ (ZXPerspectiveTransform *)createTransform:(ZXResultPoint *)topLeft topRight:(ZXResultPoint *)topRight bottomLeft:(ZXResultPoint *)bottomLeft alignmentPattern:(ZXResultPoint *)alignmentPattern dimension:(NSInteger)dimension {
   float dimMinusThree = (float)dimension - 3.5f;
   float bottomRightX;
   float bottomRightY;
@@ -153,7 +153,7 @@
                                                           x3p:bottomLeft.x y3p:bottomLeft.y];
 }
 
-- (ZXBitMatrix *)sampleGrid:(ZXBitMatrix *)anImage transform:(ZXPerspectiveTransform *)transform dimension:(int)dimension error:(NSError **)error {
+- (ZXBitMatrix *)sampleGrid:(ZXBitMatrix *)anImage transform:(ZXPerspectiveTransform *)transform dimension:(NSInteger)dimension error:(NSError **)error {
   ZXGridSampler *sampler = [ZXGridSampler instance];
   return [sampler sampleGrid:anImage dimensionX:dimension dimensionY:dimension transform:transform error:error];
 }
@@ -162,10 +162,10 @@
  * Computes the dimension (number of modules on a size) of the QR Code based on the position
  * of the finder patterns and estimated module size. Returns -1 on an error.
  */
-+ (int)computeDimension:(ZXResultPoint *)topLeft topRight:(ZXResultPoint *)topRight bottomLeft:(ZXResultPoint *)bottomLeft moduleSize:(float)moduleSize error:(NSError **)error {
-  int tltrCentersDimension = [ZXMathUtils round:[ZXResultPoint distance:topLeft pattern2:topRight] / moduleSize];
-  int tlblCentersDimension = [ZXMathUtils round:[ZXResultPoint distance:topLeft pattern2:bottomLeft] / moduleSize];
-  int dimension = ((tltrCentersDimension + tlblCentersDimension) >> 1) + 7;
++ (NSInteger)computeDimension:(ZXResultPoint *)topLeft topRight:(ZXResultPoint *)topRight bottomLeft:(ZXResultPoint *)bottomLeft moduleSize:(float)moduleSize error:(NSError **)error {
+  NSInteger tltrCentersDimension = [ZXMathUtils round:[ZXResultPoint distance:topLeft pattern2:topRight] / moduleSize];
+  NSInteger tlblCentersDimension = [ZXMathUtils round:[ZXResultPoint distance:topLeft pattern2:bottomLeft] / moduleSize];
+  NSInteger dimension = ((tltrCentersDimension + tlblCentersDimension) >> 1) + 7;
 
   switch (dimension & 0x03) {
   case 0:
@@ -190,8 +190,8 @@
 }
 
 - (float)calculateModuleSizeOneWay:(ZXResultPoint *)pattern otherPattern:(ZXResultPoint *)otherPattern {
-  float moduleSizeEst1 = [self sizeOfBlackWhiteBlackRunBothWays:(int)[pattern x] fromY:(int)[pattern y] toX:(int)[otherPattern x] toY:(int)[otherPattern y]];
-  float moduleSizeEst2 = [self sizeOfBlackWhiteBlackRunBothWays:(int)[otherPattern x] fromY:(int)[otherPattern y] toX:(int)[pattern x] toY:(int)[pattern y]];
+  float moduleSizeEst1 = [self sizeOfBlackWhiteBlackRunBothWays:(NSInteger)[pattern x] fromY:(NSInteger)[pattern y] toX:(NSInteger)[otherPattern x] toY:(NSInteger)[otherPattern y]];
+  float moduleSizeEst2 = [self sizeOfBlackWhiteBlackRunBothWays:(NSInteger)[otherPattern x] fromY:(NSInteger)[otherPattern y] toX:(NSInteger)[pattern x] toY:(NSInteger)[pattern y]];
   if (isnan(moduleSizeEst1)) {
     return moduleSizeEst2 / 7.0f;
   }
@@ -201,12 +201,12 @@
   return (moduleSizeEst1 + moduleSizeEst2) / 14.0f;
 }
 
-- (float)sizeOfBlackWhiteBlackRunBothWays:(int)fromX fromY:(int)fromY toX:(int)toX toY:(int)toY {
+- (float)sizeOfBlackWhiteBlackRunBothWays:(NSInteger)fromX fromY:(NSInteger)fromY toX:(NSInteger)toX toY:(NSInteger)toY {
   float result = [self sizeOfBlackWhiteBlackRun:fromX fromY:fromY toX:toX toY:toY];
 
   // Now count other way -- don't run off image though of course
   float scale = 1.0f;
-  int otherToX = fromX - (toX - fromX);
+  NSInteger otherToX = fromX - (toX - fromX);
   if (otherToX < 0) {
     scale = (float)fromX / (float)(fromX - otherToX);
     otherToX = 0;
@@ -214,7 +214,7 @@
     scale = (float)(self.image.width - 1 - fromX) / (float)(otherToX - fromX);
     otherToX = self.image.width - 1;
   }
-  int otherToY = (int)(fromY - (toY - fromY) * scale);
+  NSInteger otherToY = (NSInteger)(fromY - (toY - fromY) * scale);
 
   scale = 1.0f;
   if (otherToY < 0) {
@@ -224,7 +224,7 @@
     scale = (float)(self.image.height - 1 - fromY) / (float)(otherToY - fromY);
     otherToY = self.image.height - 1;
   }
-  otherToX = (int)(fromX + (otherToX - fromX) * scale);
+  otherToX = (NSInteger)(fromX + (otherToX - fromX) * scale);
 
   result += [self sizeOfBlackWhiteBlackRun:fromX fromY:fromY toX:otherToX toY:otherToY];
 
@@ -240,12 +240,12 @@
  * This is used when figuring out how wide a finder pattern is, when the finder pattern
  * may be skewed or rotated.
  */
-- (float)sizeOfBlackWhiteBlackRun:(int)fromX fromY:(int)fromY toX:(int)toX toY:(int)toY {
+- (float)sizeOfBlackWhiteBlackRun:(NSInteger)fromX fromY:(NSInteger)fromY toX:(NSInteger)toX toY:(NSInteger)toY {
   // Mild variant of Bresenham's algorithm;
   // see http://en.wikipedia.org/wiki/Bresenham's_line_algorithm
-  BOOL steep = abs(toY - fromY) > abs(toX - fromX);
+  BOOL steep = ABS(toY - fromY) > ABS(toX - fromX);
   if (steep) {
-    int temp = fromX;
+    NSInteger temp = fromX;
     fromX = fromY;
     fromY = temp;
     temp = toX;
@@ -253,19 +253,19 @@
     toY = temp;
   }
 
-  int dx = abs(toX - fromX);
-  int dy = abs(toY - fromY);
-  int error = -dx >> 1;
-  int xstep = fromX < toX ? 1 : -1;
-  int ystep = fromY < toY ? 1 : -1;
+  NSInteger dx = ABS(toX - fromX);
+  NSInteger dy = ABS(toY - fromY);
+  NSInteger error = -dx >> 1;
+  NSInteger xstep = fromX < toX ? 1 : -1;
+  NSInteger ystep = fromY < toY ? 1 : -1;
 
   // In black pixels, looking for white, first or second time.
-  int state = 0;
+  NSInteger state = 0;
   // Loop up until x == toX, but not beyond
-  int xLimit = toX + xstep;
-  for (int x = fromX, y = fromY; x != xLimit; x += xstep) {
-    int realX = steep ? y : x;
-    int realY = steep ? x : y;
+  NSInteger xLimit = toX + xstep;
+  for (NSInteger x = fromX, y = fromY; x != xLimit; x += xstep) {
+    NSInteger realX = steep ? y : x;
+    NSInteger realY = steep ? x : y;
 
     // Does current pixel mean we have moved white to black or vice versa?
     // Scanning black in state 0,2 and white in state 1, so if we find the wrong
@@ -300,17 +300,17 @@
  * Attempts to locate an alignment pattern in a limited region of the image, which is
  * guessed to contain it. This method uses ZXAlignmentPattern.
  */
-- (ZXAlignmentPattern *)findAlignmentInRegion:(float)overallEstModuleSize estAlignmentX:(int)estAlignmentX estAlignmentY:(int)estAlignmentY allowanceFactor:(float)allowanceFactor error:(NSError **)error {
-  int allowance = (int)(allowanceFactor * overallEstModuleSize);
-  int alignmentAreaLeftX = MAX(0, estAlignmentX - allowance);
-  int alignmentAreaRightX = MIN(self.image.width - 1, estAlignmentX + allowance);
+- (ZXAlignmentPattern *)findAlignmentInRegion:(float)overallEstModuleSize estAlignmentX:(NSInteger)estAlignmentX estAlignmentY:(NSInteger)estAlignmentY allowanceFactor:(float)allowanceFactor error:(NSError **)error {
+  NSInteger allowance = (NSInteger)(allowanceFactor * overallEstModuleSize);
+  NSInteger alignmentAreaLeftX = MAX(0, estAlignmentX - allowance);
+  NSInteger alignmentAreaRightX = MIN(self.image.width - 1, estAlignmentX + allowance);
   if (alignmentAreaRightX - alignmentAreaLeftX < overallEstModuleSize * 3) {
     if (error) *error = NotFoundErrorInstance();
     return nil;
   }
 
-  int alignmentAreaTopY = MAX(0, estAlignmentY - allowance);
-  int alignmentAreaBottomY = MIN(self.image.height - 1, estAlignmentY + allowance);
+  NSInteger alignmentAreaTopY = MAX(0, estAlignmentY - allowance);
+  NSInteger alignmentAreaBottomY = MIN(self.image.height - 1, estAlignmentY + allowance);
   if (alignmentAreaBottomY - alignmentAreaTopY < overallEstModuleSize * 3) {
     if (error) *error = NotFoundErrorInstance();
     return nil;

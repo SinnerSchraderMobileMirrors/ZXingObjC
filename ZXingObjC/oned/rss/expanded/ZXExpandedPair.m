@@ -39,7 +39,7 @@
 - (NSString *)description {
   return [NSString stringWithFormat:@"[ %@, %@ : %@ ]",
           self.leftChar, self.rightChar,
-          self.finderPattern == nil ? @"null" : [NSString stringWithFormat:@"%d", self.finderPattern.value]];
+          self.finderPattern == nil ? @"null" : [NSString stringWithFormat:@"%ld", (long)self.finderPattern.value]];
 }
 
 - (BOOL)isEqual:(id)object {

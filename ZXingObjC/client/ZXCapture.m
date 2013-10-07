@@ -166,7 +166,7 @@ static bool isIPad();
         position = AVCaptureDevicePositionFront;
       }
 
-      for(unsigned int i=0; i < [devices count]; ++i) {
+      for(NSUInteger i=0; i < [devices count]; ++i) {
         ZXCaptureDevice *dev = [devices objectAtIndex:i];
         if (dev.position == position) {
           capture_device_index = i;
@@ -328,7 +328,7 @@ static bool isIPad();
     // NSLog(@"already running");
   } else {
 
-    static int i = 0;
+    static NSInteger i = 0;
     if (++i == -2) {
       abort();
     }
@@ -627,15 +627,15 @@ ZXAV(didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer)
   }
 }
 
-- (int)front {
+- (NSInteger)front {
   return 0;
 }
 
-- (int)back {
+- (NSInteger)back {
   return 1;
 }
 
-- (int)camera {
+- (NSInteger)camera {
   return camera;
 }
 
@@ -643,7 +643,7 @@ ZXAV(didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer)
   return torch;
 }
 
-- (void)setCamera:(int)camera_ {
+- (void)setCamera:(NSInteger)camera_ {
   if (camera  != camera_) {
     camera = camera_;
     capture_device_index = -1;
@@ -685,7 +685,7 @@ ZXAV(didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer)
 #include <sys/sysctl.h>
 // Gross, I know, but ...
 static bool isIPad() {
-  static int is_ipad = -1;
+  static NSInteger is_ipad = -1;
   if (is_ipad < 0) {
     size_t size;
     sysctlbyname("hw.machine", NULL, &size, NULL, 0); // Get size of data to be returned.
@@ -742,15 +742,15 @@ static bool isIPad() {
   return NO;
 }
 
-- (int)front {
+- (NSInteger)front {
   return 0;
 }
 
-- (int)back {
+- (NSInteger)back {
   return 1;
 }
 
-- (int)camera {
+- (NSInteger)camera {
   return self.front;
 }
 
@@ -758,7 +758,7 @@ static bool isIPad() {
   return NO;
 }
 
-- (void)setCamera:(int)camera_ {}
+- (void)setCamera:(NSInteger)camera_ {}
 - (void)setTorch:(BOOL)torch {}
 - (void)order_skip {}
 - (void)start {}

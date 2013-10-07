@@ -20,8 +20,8 @@
 
 @interface ZXRSSUtils : NSObject
 
-+ (NSArray *)rssWidths:(int)val n:(int)n elements:(int)elements maxWidth:(int)maxWidth noNarrow:(BOOL)noNarrow;
-+ (int)rssValue:(int *)widths widthsLen:(unsigned int)widthsLen maxWidth:(int)maxWidth noNarrow:(BOOL)noNarrow;
-+ (NSArray *)elements:(NSArray *)eDist N:(int)N K:(int)K;
++ (NSArray *)rssWidths:(NSInteger)val n:(NSInteger)n elements:(NSInteger)elements maxWidth:(NSInteger)maxWidth noNarrow:(BOOL)noNarrow;
++ (NSInteger)rssValue:(NSInteger *)widths widthsLen:(NSUInteger)widthsLen maxWidth:(NSInteger)maxWidth noNarrow:(BOOL)noNarrow;
++ (NSArray *)elements:(NSArray *)eDist N:(NSInteger)N K:(NSInteger)K;
 
 @end

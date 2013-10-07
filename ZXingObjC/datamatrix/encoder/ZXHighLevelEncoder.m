@@ -93,27 +93,27 @@ static NSString *MACRO_TRAILER = nil;
   return 254;
 }
 
-+ (int)asciiEncodation {
++ (NSInteger)asciiEncodation {
   return 0;
 }
 
-+ (int)c40Encodation {
++ (NSInteger)c40Encodation {
   return 1;
 }
 
-+ (int)textEncodation {
++ (NSInteger)textEncodation {
   return 2;
 }
 
-+ (int)x12Encodation {
++ (NSInteger)x12Encodation {
   return 3;
 }
 
-+ (int)edifactEncodation {
++ (NSInteger)edifactEncodation {
   return 4;
 }
 
-+ (int)base256Encodation {
++ (NSInteger)base256Encodation {
   return 5;
 }
 
@@ -121,9 +121,9 @@ static NSString *MACRO_TRAILER = nil;
   return (int8_t *)[[msg dataUsingEncoding:(NSStringEncoding) 0x80000400] bytes]; //See 4.4.3 and annex B of ISO/IEC 15438:2001(E)
 }
 
-+ (unichar)randomize253State:(unichar)ch codewordPosition:(int)codewordPosition {
-  int pseudoRandom = ((149 * codewordPosition) % 253) + 1;
-  int tempVariable = ch + pseudoRandom;
++ (unichar)randomize253State:(unichar)ch codewordPosition:(NSInteger)codewordPosition {
+  NSInteger pseudoRandom = ((149 * codewordPosition) % 253) + 1;
+  NSInteger tempVariable = ch + pseudoRandom;
   return tempVariable <= 254 ? (unichar) tempVariable : (unichar) (tempVariable - 254);
 }
 
@@ -155,7 +155,7 @@ static NSString *MACRO_TRAILER = nil;
     context.pos += MACRO_06_HEADER.length;
   }
 
-  int encodingMode = [self asciiEncodation]; //Default mode
+  NSInteger encodingMode = [self asciiEncodation]; //Default mode
   while ([context hasMoreCharacters]) {
     [encoders[encodingMode] encode:context];
     if (context.newEncoding >= 0) {
@@ -163,9 +163,9 @@ static NSString *MACRO_TRAILER = nil;
       [context resetEncoderSignal];
     }
   }
-  int len = context.codewords.length;
+  NSInteger len = context.codewords.length;
   [context updateSymbolInfo];
-  int capacity = context.symbolInfo.dataCapacity;
+  NSInteger capacity = context.symbolInfo.dataCapacity;
   if (len < capacity) {
     if (encodingMode != [self asciiEncodation] && encodingMode != [self base256Encodation]) {
       [context writeCodeword:(unichar)0x00fe]; //Unlatch (254)
@@ -183,7 +183,7 @@ static NSString *MACRO_TRAILER = nil;
   return [NSString stringWithString:context.codewords];
 }
 
-+ (int)lookAheadTest:(NSString *)msg startpos:(int)startpos currentMode:(int)currentMode {
++ (NSInteger)lookAheadTest:(NSString *)msg startpos:(NSInteger)startpos currentMode:(NSInteger)currentMode {
   if (startpos >= msg.length) {
     return currentMode;
   }
@@ -206,15 +206,15 @@ static NSString *MACRO_TRAILER = nil;
     charCounts[currentMode] = 0;
   }
 
-  int charsProcessed = 0;
+  NSInteger charsProcessed = 0;
   while (YES) {
     //step K
     if ((startpos + charsProcessed) == msg.length) {
-      int min = INT_MAX;
+      NSInteger min = INT_MAX;
       int8_t mins[6];
-      int intCharCounts[6];
+      NSInteger intCharCounts[6];
       min = [self findMinimums:charCounts intCharCounts:intCharCounts min:min mins:mins];
-      int minCount = [self minimumCount:mins];
+      NSInteger minCount = [self minimumCount:mins];
 
       if (intCharCounts[[self asciiEncodation]] == min) {
         return [self asciiEncodation];
@@ -241,10 +241,10 @@ static NSString *MACRO_TRAILER = nil;
     if ([self isDigit:c]) {
       charCounts[[self asciiEncodation]] += 0.5;
     } else if ([self isExtendedASCII:c]) {
-      charCounts[[self asciiEncodation]] = (int) ceil(charCounts[[self asciiEncodation]]);
+      charCounts[[self asciiEncodation]] = (NSInteger) ceil(charCounts[[self asciiEncodation]]);
       charCounts[[self asciiEncodation]] += 2;
     } else {
-      charCounts[[self asciiEncodation]] = (int) ceil(charCounts[[self asciiEncodation]]);
+      charCounts[[self asciiEncodation]] = (NSInteger) ceil(charCounts[[self asciiEncodation]]);
       charCounts[[self asciiEncodation]]++;
     }
 
@@ -293,10 +293,10 @@ static NSString *MACRO_TRAILER = nil;
 
     //step R
     if (charsProcessed >= 4) {
-      int intCharCounts[6];
+      NSInteger intCharCounts[6];
       int8_t mins[6];
       [self findMinimums:charCounts intCharCounts:intCharCounts min:INT_MAX mins:mins];
-      int minCount = [self minimumCount:mins];
+      NSInteger minCount = [self minimumCount:mins];
 
       if (intCharCounts[[self asciiEncodation]] < intCharCounts[[self base256Encodation]]
           && intCharCounts[[self asciiEncodation]] < intCharCounts[[self c40Encodation]]
@@ -326,7 +326,7 @@ static NSString *MACRO_TRAILER = nil;
           return [self c40Encodation];
         }
         if (intCharCounts[[self c40Encodation]] == intCharCounts[[self x12Encodation]]) {
-          int p = startpos + charsProcessed + 1;
+          NSInteger p = startpos + charsProcessed + 1;
           while (p < msg.length) {
             char tc = [msg characterAtIndex:p];
             if ([self isX12TermSep:tc]) {
@@ -344,11 +344,11 @@ static NSString *MACRO_TRAILER = nil;
   }
 }
 
-+ (int)findMinimums:(float *)charCounts intCharCounts:(int *)intCharCounts min:(int)min mins:(int8_t *)mins {
++ (NSInteger)findMinimums:(float *)charCounts intCharCounts:(NSInteger *)intCharCounts min:(NSInteger)min mins:(int8_t *)mins {
   memset(mins, 0, 6);
-  for (int i = 0; i < 6; i++) {
-    intCharCounts[i] = (int) ceil(charCounts[i]);
-    int current = intCharCounts[i];
+  for (NSInteger i = 0; i < 6; i++) {
+    intCharCounts[i] = (NSInteger) ceil(charCounts[i]);
+    NSInteger current = intCharCounts[i];
     if (min > current) {
       min = current;
       memset(mins, 0, 6);
@@ -360,9 +360,9 @@ static NSString *MACRO_TRAILER = nil;
   return min;
 }
 
-+ (int)minimumCount:(int8_t *)mins {
-  int minCount = 0;
-  for (int i = 0; i < 6; i++) {
++ (NSInteger)minimumCount:(int8_t *)mins {
+  NSInteger minCount = 0;
+  for (NSInteger i = 0; i < 6; i++) {
     minCount += mins[i];
   }
   return minCount;
@@ -402,10 +402,10 @@ static NSString *MACRO_TRAILER = nil;
   return NO; //TODO NOT IMPLEMENTED YET!!!
 }
 
-+ (int)determineConsecutiveDigitCount:(NSString *)msg startpos:(int)startpos {
-  int count = 0;
-  int len = msg.length;
-  int idx = startpos;
++ (NSInteger)determineConsecutiveDigitCount:(NSString *)msg startpos:(NSInteger)startpos {
+  NSInteger count = 0;
+  NSInteger len = msg.length;
+  NSInteger idx = startpos;
   if (idx < len) {
     unichar ch = [msg characterAtIndex:idx];
     while ([self isDigit:ch] && idx < len) {

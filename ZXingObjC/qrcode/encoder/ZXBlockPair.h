@@ -18,9 +18,9 @@
 
 @property (nonatomic, assign, readonly) int8_t *dataBytes;
 @property (nonatomic, assign, readonly) int8_t *errorCorrectionBytes;
-@property (nonatomic, assign, readonly) int errorCorrectionLength;
-@property (nonatomic, assign, readonly) int length;
+@property (nonatomic, assign, readonly) NSInteger errorCorrectionLength;
+@property (nonatomic, assign, readonly) NSInteger length;
 
-- (id)initWithData:(int8_t *)data length:(unsigned int)length errorCorrection:(int8_t *)errorCorrection errorCorrectionLength:(unsigned int)errorCorrectionLength;
+- (id)initWithData:(int8_t *)data length:(NSUInteger)length errorCorrection:(int8_t *)errorCorrection errorCorrectionLength:(NSUInteger)errorCorrectionLength;
 
 @end

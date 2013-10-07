@@ -20,10 +20,10 @@
  * The origin is at the top-left.
  * 
  * Internally the bits are represented in a 1-D array of 32-bit ints. However, each row begins
- * with a new int. This is done intentionally so that we can copy out a row into a BitArray very
+ * with a new NSInteger. This is done intentionally so that we can copy out a row into a BitArray very
  * efficiently.
  * 
- * The ordering of bits is row-major. Within each int, the least significant bits are used first,
+ * The ordering of bits is row-major. Within each NSInteger, the least significant bits are used first,
  * meaning they represent lower x values. This is compatible with BitArray's implementation.
  */
 
@@ -31,23 +31,23 @@
 
 @interface ZXBitMatrix : NSObject
 
-@property (nonatomic, readonly) int width;
-@property (nonatomic, readonly) int height;
-@property (nonatomic, readonly) int *bits;
+@property (nonatomic, readonly) NSInteger width;
+@property (nonatomic, readonly) NSInteger height;
+@property (nonatomic, readonly) NSInteger *bits;
 
-+ (ZXBitMatrix *)bitMatrixWithDimension:(int)dimension;
-+ (ZXBitMatrix *)bitMatrixWithWidth:(int)width height:(int)height;
++ (ZXBitMatrix *)bitMatrixWithDimension:(NSInteger)dimension;
++ (ZXBitMatrix *)bitMatrixWithWidth:(NSInteger)width height:(NSInteger)height;
 
-- (id)initWithDimension:(int)dimension;
-- (id)initWithWidth:(int)width height:(int)height;
+- (id)initWithDimension:(NSInteger)dimension;
+- (id)initWithWidth:(NSInteger)width height:(NSInteger)height;
 
-- (BOOL)getX:(int)x y:(int)y;
-- (void)setX:(int)x y:(int)y;
-- (void)flipX:(int)x y:(int)y;
+- (BOOL)getX:(NSInteger)x y:(NSInteger)y;
+- (void)setX:(NSInteger)x y:(NSInteger)y;
+- (void)flipX:(NSInteger)x y:(NSInteger)y;
 - (void)clear;
-- (void)setRegionAtLeft:(int)left top:(int)top width:(int)width height:(int)height;
-- (ZXBitArray *)rowAtY:(int)y row:(ZXBitArray *)row;
-- (void)setRowAtY:(int)y row:(ZXBitArray *)row;
+- (void)setRegionAtLeft:(NSInteger)left top:(NSInteger)top width:(NSInteger)width height:(NSInteger)height;
+- (ZXBitArray *)rowAtY:(NSInteger)y row:(ZXBitArray *)row;
+- (void)setRowAtY:(NSInteger)y row:(ZXBitArray *)row;
 - (NSArray *)enclosingRectangle;
 - (NSArray *)topLeftOnBit;
 - (NSArray *)bottomRightOnBit;

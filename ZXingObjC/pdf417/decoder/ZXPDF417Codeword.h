@@ -16,16 +16,16 @@
 
 @interface ZXPDF417Codeword : NSObject
 
-@property (nonatomic, assign, readonly) int startX;
-@property (nonatomic, assign, readonly) int endX;
-@property (nonatomic, assign, readonly) int bucket;
-@property (nonatomic, assign, readonly) int value;
-@property (nonatomic, assign) int rowNumber;
+@property (nonatomic, assign, readonly) NSInteger startX;
+@property (nonatomic, assign, readonly) NSInteger endX;
+@property (nonatomic, assign, readonly) NSInteger bucket;
+@property (nonatomic, assign, readonly) NSInteger value;
+@property (nonatomic, assign) NSInteger rowNumber;
 
-- (id)initWithStartX:(int)startX endX:(int)endX bucket:(int)bucket value:(int)value;
+- (id)initWithStartX:(NSInteger)startX endX:(NSInteger)endX bucket:(NSInteger)bucket value:(NSInteger)value;
 - (BOOL)hasValidRowNumber;
-- (BOOL)isValidRowNumber:(int)rowNumber;
+- (BOOL)isValidRowNumber:(NSInteger)rowNumber;
 - (void)setRowNumberAsRowIndicatorColumn;
-- (int)width;
+- (NSInteger)width;
 
 @end

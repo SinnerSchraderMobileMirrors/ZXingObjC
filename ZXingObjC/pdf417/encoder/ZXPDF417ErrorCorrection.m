@@ -21,7 +21,7 @@
  * Tables of coefficients for calculating error correction words
  * (see annex F, ISO/IEC 15438:2001(E))
  */
-const int EC_COEFFICIENTS[9][512] = {
+const NSInteger EC_COEFFICIENTS[9][512] = {
   {27, 917},
   {522, 568, 723, 809},
   {237, 308, 436, 284, 646, 653, 428, 379},
@@ -119,7 +119,7 @@ const int EC_COEFFICIENTS[9][512] = {
  * Determines the number of error correction codewords for a specified error correction
  * level.
  */
-+ (int)errorCorrectionCodewordCount:(int)errorCorrectionLevel {
++ (NSInteger)errorCorrectionCodewordCount:(NSInteger)errorCorrectionLevel {
   if (errorCorrectionLevel < 0 || errorCorrectionLevel > 8) {
     [NSException raise:NSInvalidArgumentException format:@"Error correction level must be between 0 and 8!"];
   }
@@ -130,7 +130,7 @@ const int EC_COEFFICIENTS[9][512] = {
  * Returns the recommended minimum error correction level as described in annex E of
  * ISO/IEC 15438:2001(E).
  */
-+ (int)recommendedMinimumErrorCorrectionLevel:(int)n error:(NSError **)error {
++ (NSInteger)recommendedMinimumErrorCorrectionLevel:(NSInteger)n error:(NSError **)error {
   if (n <= 0) {
     [NSException raise:NSInvalidArgumentException format:@"n must be > 0"];
   }
@@ -155,17 +155,17 @@ const int EC_COEFFICIENTS[9][512] = {
 /**
  * Generates the error correction codewords according to 4.10 in ISO/IEC 15438:2001(E).
  */
-+ (NSString *)generateErrorCorrection:(NSString *)dataCodewords errorCorrectionLevel:(int)errorCorrectionLevel {
-  int k = [self errorCorrectionCodewordCount:errorCorrectionLevel];
++ (NSString *)generateErrorCorrection:(NSString *)dataCodewords errorCorrectionLevel:(NSInteger)errorCorrectionLevel {
+  NSInteger k = [self errorCorrectionCodewordCount:errorCorrectionLevel];
   unichar e[k];
   memset(e, 0, k * sizeof(unichar));
 
-  int sld = dataCodewords.length;
-  for (int i = 0; i < sld; i++) {
-    int t1 = ([dataCodewords characterAtIndex:i] + e[k - 1]) % 929;
-    int t2;
-    int t3;
-    for (int j = k - 1; j >= 1; j--) {
+  NSInteger sld = dataCodewords.length;
+  for (NSInteger i = 0; i < sld; i++) {
+    NSInteger t1 = ([dataCodewords characterAtIndex:i] + e[k - 1]) % 929;
+    NSInteger t2;
+    NSInteger t3;
+    for (NSInteger j = k - 1; j >= 1; j--) {
       t2 = (t1 * EC_COEFFICIENTS[errorCorrectionLevel][j]) % 929;
       t3 = 929 - t2;
       e[j] = (unichar) ((e[j - 1] + t3) % 929);
@@ -175,7 +175,7 @@ const int EC_COEFFICIENTS[9][512] = {
     e[0] = (unichar) (t3 % 929);
   }
   NSMutableString *sb = [NSMutableString stringWithCapacity:k];
-  for (int j = k - 1; j >= 0; j--) {
+  for (NSInteger j = k - 1; j >= 0; j--) {
     if (e[j] != 0) {
       e[j] = (unichar) (929 - e[j]);
     }

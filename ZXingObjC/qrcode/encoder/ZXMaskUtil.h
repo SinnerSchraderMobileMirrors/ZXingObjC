@@ -18,10 +18,10 @@
 
 @interface ZXMaskUtil : NSObject
 
-+ (int)applyMaskPenaltyRule1:(ZXByteMatrix *)matrix;
-+ (int)applyMaskPenaltyRule2:(ZXByteMatrix *)matrix;
-+ (int)applyMaskPenaltyRule3:(ZXByteMatrix *)matrix;
-+ (int)applyMaskPenaltyRule4:(ZXByteMatrix *)matrix;
-+ (BOOL)dataMaskBit:(int)maskPattern x:(int)x y:(int)y;
++ (NSInteger)applyMaskPenaltyRule1:(ZXByteMatrix *)matrix;
++ (NSInteger)applyMaskPenaltyRule2:(ZXByteMatrix *)matrix;
++ (NSInteger)applyMaskPenaltyRule3:(ZXByteMatrix *)matrix;
++ (NSInteger)applyMaskPenaltyRule4:(ZXByteMatrix *)matrix;
++ (BOOL)dataMaskBit:(NSInteger)maskPattern x:(NSInteger)x y:(NSInteger)y;
 
 @end

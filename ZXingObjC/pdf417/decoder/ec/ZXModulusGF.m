@@ -22,7 +22,7 @@
 
 @property (nonatomic, strong) NSMutableArray *expTable;
 @property (nonatomic, strong) NSMutableArray *logTable;
-@property (nonatomic, assign) int modulus;
+@property (nonatomic, assign) NSInteger modulus;
 
 @end
 
@@ -32,36 +32,36 @@
   return [[ZXModulusGF alloc] initWithModulus:ZXPDF417_NUMBER_OF_CODEWORDS generator:3];
 }
 
-- (id)initWithModulus:(int)modulus generator:(int)generator {
+- (id)initWithModulus:(NSInteger)modulus generator:(NSInteger)generator {
   if (self = [super init]) {
     _modulus = modulus;
     _expTable = [NSMutableArray arrayWithCapacity:self.modulus];
     _logTable = [NSMutableArray arrayWithCapacity:self.modulus];
-    int x = 1;
-    for (int i = 0; i < modulus; i++) {
+    NSInteger x = 1;
+    for (NSInteger i = 0; i < modulus; i++) {
       [_expTable addObject:@(x)];
       x = (x * generator) % modulus;
     }
 
-    for (int i = 0; i < self.size; i++) {
+    for (NSInteger i = 0; i < self.size; i++) {
       [_logTable addObject:@0];
     }
 
-    for (int i = 0; i < self.size - 1; i++) {
+    for (NSInteger i = 0; i < self.size - 1; i++) {
       _logTable[[_expTable[i] intValue]] = @(i);
     }
     // logTable[0] == 0 but this should never be used
-    int zeroInt = 0;
+    NSInteger zeroInt = 0;
     _zero = [[ZXModulusPoly alloc] initWithField:self coefficients:&zeroInt coefficientsLen:1];
 
-    int oneInt = 1;
+    NSInteger oneInt = 1;
     _one = [[ZXModulusPoly alloc] initWithField:self coefficients:&oneInt coefficientsLen:1];
   }
 
   return self;
 }
 
-- (ZXModulusPoly *)buildMonomial:(int)degree coefficient:(int)coefficient {
+- (ZXModulusPoly *)buildMonomial:(NSInteger)degree coefficient:(NSInteger)coefficient {
   if (degree < 0) {
     [NSException raise:NSInvalidArgumentException format:@"Degree must be greater than 0."];
   }
@@ -69,51 +69,51 @@
     return self.zero;
   }
 
-  int coefficientsLen = degree + 1;
-  int coefficients[coefficientsLen];
+  NSInteger coefficientsLen = degree + 1;
+  NSInteger coefficients[coefficientsLen];
   coefficients[0] = coefficient;
-  for (int i = 1; i < coefficientsLen; i++) {
+  for (NSInteger i = 1; i < coefficientsLen; i++) {
     coefficients[i] = 0;
   }
   return [[ZXModulusPoly alloc] initWithField:self coefficients:coefficients coefficientsLen:coefficientsLen];
 }
 
-- (int)add:(int)a b:(int)b {
+- (NSInteger)add:(NSInteger)a b:(NSInteger)b {
   return (a + b) % self.modulus;
 }
 
-- (int)subtract:(int)a b:(int)b {
+- (NSInteger)subtract:(NSInteger)a b:(NSInteger)b {
   return (self.modulus + a - b) % self.modulus;
 }
 
-- (int)exp:(int)a {
+- (NSInteger)exp:(NSInteger)a {
   return [self.expTable[a] intValue];
 }
 
-- (int)log:(int)a {
+- (NSInteger)log:(NSInteger)a {
   if (a == 0) {
     [NSException raise:NSInvalidArgumentException format:@"Argument must be non-zero."];
   }
   return [self.logTable[a] intValue];
 }
 
-- (int)inverse:(int)a {
+- (NSInteger)inverse:(NSInteger)a {
   if (a == 0) {
     [NSException raise:NSInvalidArgumentException format:@"Argument must be non-zero."];
   }
   return [self.expTable[self.size - [self.logTable[a] intValue] - 1] intValue];
 }
 
-- (int)multiply:(int)a b:(int)b {
+- (NSInteger)multiply:(NSInteger)a b:(NSInteger)b {
   if (a == 0 || b == 0) {
     return 0;
   }
 
-  int logSum = [self.logTable[a] intValue] + [self.logTable[b] intValue];
+  NSInteger logSum = [self.logTable[a] intValue] + [self.logTable[b] intValue];
   return [self.expTable[logSum % (self.modulus - 1)] intValue];
 }
 
-- (int)size {
+- (NSInteger)size {
   return self.modulus;
 }
 

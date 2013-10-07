@@ -28,13 +28,13 @@ typedef enum {
 } UPC_EAN_PATTERNS;
 
 #define START_END_PATTERN_LEN 3
-extern const int START_END_PATTERN[];
+extern const NSInteger START_END_PATTERN[];
 #define MIDDLE_PATTERN_LEN 5
-extern const int MIDDLE_PATTERN[];
+extern const NSInteger MIDDLE_PATTERN[];
 #define L_PATTERNS_LEN 10
 #define L_PATTERNS_SUB_LEN 4
-extern const int L_PATTERNS[][4];
-extern const int L_AND_G_PATTERNS[][4];
+extern const NSInteger L_PATTERNS[][4];
+extern const NSInteger L_AND_G_PATTERNS[][4];
 
 @class ZXDecodeHints, ZXEANManufacturerOrgSupport, ZXResult, ZXUPCEANExtensionSupport;
 
@@ -44,11 +44,11 @@ extern const int L_AND_G_PATTERNS[][4];
 - (ZXBarcodeFormat)barcodeFormat;
 - (BOOL)checkChecksum:(NSString *)s error:(NSError **)error;
 + (BOOL)checkStandardUPCEANChecksum:(NSString *)s;
-+ (int)decodeDigit:(ZXBitArray *)row counters:(int[])counters countersLen:(int)countersLen rowOffset:(int)rowOffset patternType:(UPC_EAN_PATTERNS)patternType error:(NSError **)error;
-- (NSRange)decodeEnd:(ZXBitArray *)row endStart:(int)endStart error:(NSError **)error;
-- (int)decodeMiddle:(ZXBitArray *)row startRange:(NSRange)startRange result:(NSMutableString *)result error:(NSError **)error;
-- (ZXResult *)decodeRow:(int)rowNumber row:(ZXBitArray *)row startGuardRange:(NSRange)startGuardRange hints:(ZXDecodeHints *)hints error:(NSError **)error;
-+ (NSRange)findGuardPattern:(ZXBitArray *)row rowOffset:(int)rowOffset whiteFirst:(BOOL)whiteFirst pattern:(int *)pattern patternLen:(int)patternLen error:(NSError **)error;
-+ (NSRange)findGuardPattern:(ZXBitArray *)row rowOffset:(int)rowOffset whiteFirst:(BOOL)whiteFirst pattern:(int *)pattern patternLen:(int)patternLen counters:(int *)counters error:(NSError **)error;
++ (NSInteger)decodeDigit:(ZXBitArray *)row counters:(NSInteger[])counters countersLen:(NSInteger)countersLen rowOffset:(NSInteger)rowOffset patternType:(UPC_EAN_PATTERNS)patternType error:(NSError **)error;
+- (NSRange)decodeEnd:(ZXBitArray *)row endStart:(NSInteger)endStart error:(NSError **)error;
+- (NSInteger)decodeMiddle:(ZXBitArray *)row startRange:(NSRange)startRange result:(NSMutableString *)result error:(NSError **)error;
+- (ZXResult *)decodeRow:(NSInteger)rowNumber row:(ZXBitArray *)row startGuardRange:(NSRange)startGuardRange hints:(ZXDecodeHints *)hints error:(NSError **)error;
++ (NSRange)findGuardPattern:(ZXBitArray *)row rowOffset:(NSInteger)rowOffset whiteFirst:(BOOL)whiteFirst pattern:(NSInteger *)pattern patternLen:(NSInteger)patternLen error:(NSError **)error;
++ (NSRange)findGuardPattern:(ZXBitArray *)row rowOffset:(NSInteger)rowOffset whiteFirst:(BOOL)whiteFirst pattern:(NSInteger *)pattern patternLen:(NSInteger)patternLen counters:(NSInteger *)counters error:(NSError **)error;
 
 @end

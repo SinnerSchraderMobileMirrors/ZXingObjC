@@ -18,14 +18,14 @@
 
 @implementation AbstractErrorCorrectionTestCase
 
-- (void)corrupt:(NSMutableArray *)received howMany:(int)howMany {
+- (void)corrupt:(NSMutableArray *)received howMany:(NSInteger)howMany {
   BOOL corrupted[received.count];
-  for (int i = 0; i < received.count; i++) {
+  for (NSInteger i = 0; i < received.count; i++) {
     corrupted[i] = NO;
   }
 
-  for (int j = 0; j < howMany; j++) {
-    int location = arc4random() % received.count;
+  for (NSInteger j = 0; j < howMany; j++) {
+    NSInteger location = arc4random() % received.count;
     if (corrupted[location]) {
       j--;
     } else {
@@ -35,15 +35,15 @@
   }
 }
 
-- (NSArray *)erase:(NSMutableArray *)received howMany:(int)howMany {
+- (NSArray *)erase:(NSMutableArray *)received howMany:(NSInteger)howMany {
   BOOL erased[received.count];
-  for (int i = 0; i < received.count; i++) {
+  for (NSInteger i = 0; i < received.count; i++) {
     erased[i] = NO;
   }
 
   NSMutableArray *erasures = [NSMutableArray arrayWithCapacity:howMany];
-  for (int j = 0; j < howMany; j++) {
-    int location = arc4random() % received.count;
+  for (NSInteger j = 0; j < howMany; j++) {
+    NSInteger location = arc4random() % received.count;
     if (erased[location]) {
       j--;
     } else {

@@ -90,21 +90,21 @@
   return [NSArray arrayWithArray:results];
 }
 
-- (int)maxWidth:(ZXResultPoint *)p1 p2:(ZXResultPoint *)p2 {
+- (NSInteger)maxWidth:(ZXResultPoint *)p1 p2:(ZXResultPoint *)p2 {
   if (!p1 || !p2 || (id)p1 == [NSNull null] || p2 == (id)[NSNull null]) {
     return 0;
   }
   return abs(p1.x - p2.x);
 }
 
-- (int)minWidth:(ZXResultPoint *)p1 p2:(ZXResultPoint *)p2 {
+- (NSInteger)minWidth:(ZXResultPoint *)p1 p2:(ZXResultPoint *)p2 {
   if (!p1 || !p2 || (id)p1 == [NSNull null] || p2 == (id)[NSNull null]) {
     return INT_MAX;
   }
   return abs(p1.x - p2.x);
 }
 
-- (int)maxCodewordWidth:(NSArray *)p {
+- (NSInteger)maxCodewordWidth:(NSArray *)p {
   return MAX(
              MAX([self maxWidth:p[0] p2:p[4]], [self maxWidth:p[6] p2:p[2]] * ZXPDF417_MODULES_IN_CODEWORD /
                  ZXPDF417_MODULES_IN_STOP_PATTERN),
@@ -112,7 +112,7 @@
                  ZXPDF417_MODULES_IN_STOP_PATTERN));
 }
 
-- (int)minCodewordWidth:(NSArray *)p {
+- (NSInteger)minCodewordWidth:(NSArray *)p {
   return MIN(
              MIN([self minWidth:p[0] p2:p[4]], [self minWidth:p[6] p2:p[2]] * ZXPDF417_MODULES_IN_CODEWORD /
                  ZXPDF417_MODULES_IN_STOP_PATTERN),

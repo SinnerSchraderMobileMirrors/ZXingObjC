@@ -22,12 +22,12 @@
 
 - (id)initWithBitMatrix:(ZXBitMatrix *)bitMatrix error:(NSError **)error;
 - (NSArray *)readCodewords;
-- (BOOL)readModule:(int)row column:(int)column numRows:(int)numRows numColumns:(int)numColumns;
-- (int)readUtah:(int)row column:(int)column numRows:(int)numRows numColumns:(int)numColumns;
-- (int)readCorner1:(int)numRows numColumns:(int)numColumns;
-- (int)readCorner2:(int)numRows numColumns:(int)numColumns;
-- (int)readCorner3:(int)numRows numColumns:(int)numColumns;
-- (int)readCorner4:(int)numRows numColumns:(int)numColumns;
+- (BOOL)readModule:(NSInteger)row column:(NSInteger)column numRows:(NSInteger)numRows numColumns:(NSInteger)numColumns;
+- (NSInteger)readUtah:(NSInteger)row column:(NSInteger)column numRows:(NSInteger)numRows numColumns:(NSInteger)numColumns;
+- (NSInteger)readCorner1:(NSInteger)numRows numColumns:(NSInteger)numColumns;
+- (NSInteger)readCorner2:(NSInteger)numRows numColumns:(NSInteger)numColumns;
+- (NSInteger)readCorner3:(NSInteger)numRows numColumns:(NSInteger)numColumns;
+- (NSInteger)readCorner4:(NSInteger)numRows numColumns:(NSInteger)numColumns;
 - (ZXBitMatrix *)extractDataRegion:(ZXBitMatrix *)bitMatrix;
 
 @end

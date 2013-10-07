@@ -16,7 +16,7 @@
 
 @interface ZXPDF417BarcodeMatrix : NSObject
 
-- (NSNumber *)value:(int)row column:(int)column;
-- (void)setValue:(int)row column:(int)column value:(int)value;
+- (NSNumber *)value:(NSInteger)row column:(NSInteger)column;
+- (void)setValue:(NSInteger)row column:(NSInteger)column value:(NSInteger)value;
 
 @end

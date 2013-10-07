@@ -23,10 +23,10 @@ static float ZXPDF417_RATIOS_TABLE[ZXPDF417_SYMBOL_TABLE_LEN][ZXPDF417_BARS_IN_M
 
 + (void)initialize {
   // Pre-computes the symbol ratio table.
-  for (int i = 0; i < ZXPDF417_SYMBOL_TABLE_LEN; i++) {
-    int currentSymbol = ZXPDF417_SYMBOL_TABLE[i];
-    int currentBit = currentSymbol & 0x1;
-    for (int j = 0; j < ZXPDF417_BARS_IN_MODULE; j++) {
+  for (NSInteger i = 0; i < ZXPDF417_SYMBOL_TABLE_LEN; i++) {
+    NSInteger currentSymbol = ZXPDF417_SYMBOL_TABLE[i];
+    NSInteger currentBit = currentSymbol & 0x1;
+    for (NSInteger j = 0; j < ZXPDF417_BARS_IN_MODULE; j++) {
       float size = 0.0f;
       while ((currentSymbol & 0x1) == currentBit) {
         size += 1.0f;
@@ -38,8 +38,8 @@ static float ZXPDF417_RATIOS_TABLE[ZXPDF417_SYMBOL_TABLE_LEN][ZXPDF417_BARS_IN_M
   }
 }
 
-+ (int)decodedValue:(NSArray *)moduleBitCount {
-  int decodedValue = [self decodedCodewordValue:[self sampleBitCounts:moduleBitCount]];
++ (NSInteger)decodedValue:(NSArray *)moduleBitCount {
+  NSInteger decodedValue = [self decodedCodewordValue:[self sampleBitCounts:moduleBitCount]];
   if (decodedValue != -1) {
     return decodedValue;
   }
@@ -49,13 +49,13 @@ static float ZXPDF417_RATIOS_TABLE[ZXPDF417_SYMBOL_TABLE_LEN][ZXPDF417_BARS_IN_M
 + (NSArray *)sampleBitCounts:(NSArray *)moduleBitCount {
   float bitCountSum = [ZXPDF417Common bitCountSum:moduleBitCount];
   NSMutableArray *result = [NSMutableArray arrayWithCapacity:ZXPDF417_BARS_IN_MODULE];
-  for (int i = 0; i < ZXPDF417_BARS_IN_MODULE; i++) {
+  for (NSInteger i = 0; i < ZXPDF417_BARS_IN_MODULE; i++) {
     [result addObject:@0];
   }
 
-  int bitCountIndex = 0;
-  int sumPreviousBits = 0;
-  for (int i = 0; i < ZXPDF417_MODULES_IN_CODEWORD; i++) {
+  NSInteger bitCountIndex = 0;
+  NSInteger sumPreviousBits = 0;
+  for (NSInteger i = 0; i < ZXPDF417_MODULES_IN_CODEWORD; i++) {
     float sampleIndex =
       bitCountSum / (2 * ZXPDF417_MODULES_IN_CODEWORD) +
       (i * bitCountSum) / ZXPDF417_MODULES_IN_CODEWORD;
@@ -68,32 +68,32 @@ static float ZXPDF417_RATIOS_TABLE[ZXPDF417_SYMBOL_TABLE_LEN][ZXPDF417_BARS_IN_M
   return result;
 }
 
-+ (int)decodedCodewordValue:(NSArray *)moduleBitCount {
-  int decodedValue = [self bitValue:moduleBitCount];
++ (NSInteger)decodedCodewordValue:(NSArray *)moduleBitCount {
+  NSInteger decodedValue = [self bitValue:moduleBitCount];
   return [ZXPDF417Common codeword:decodedValue] == -1 ? -1 : decodedValue;
 }
 
-+ (int)bitValue:(NSArray *)moduleBitCount {
++ (NSInteger)bitValue:(NSArray *)moduleBitCount {
   long result = 0;
-  for (int i = 0; i < [moduleBitCount count]; i++) {
-    for (int bit = 0; bit < [moduleBitCount[i] intValue]; bit++) {
+  for (NSInteger i = 0; i < [moduleBitCount count]; i++) {
+    for (NSInteger bit = 0; bit < [moduleBitCount[i] intValue]; bit++) {
       result = (result << 1) | (i % 2 == 0 ? 1 : 0);
     }
   }
-  return (int) result;
+  return (NSInteger) result;
 }
 
-+ (int)closestDecodedValue:(NSArray *)moduleBitCount {
-  int bitCountSum = [ZXPDF417Common bitCountSum:moduleBitCount];
++ (NSInteger)closestDecodedValue:(NSArray *)moduleBitCount {
+  NSInteger bitCountSum = [ZXPDF417Common bitCountSum:moduleBitCount];
   float bitCountRatios[ZXPDF417_BARS_IN_MODULE];
-  for (int i = 0; i < ZXPDF417_BARS_IN_MODULE; i++) {
+  for (NSInteger i = 0; i < ZXPDF417_BARS_IN_MODULE; i++) {
     bitCountRatios[i] = [moduleBitCount[i] intValue] / (float) bitCountSum;
   }
   float bestMatchError = MAXFLOAT;
-  int bestMatch = -1;
-  for (int j = 0; j < ZXPDF417_SYMBOL_TABLE_LEN; j++) {
+  NSInteger bestMatch = -1;
+  for (NSInteger j = 0; j < ZXPDF417_SYMBOL_TABLE_LEN; j++) {
     float error = 0.0f;
-    for (int k = 0; k < ZXPDF417_BARS_IN_MODULE; k++) {
+    for (NSInteger k = 0; k < ZXPDF417_BARS_IN_MODULE; k++) {
       float diff = ZXPDF417_RATIOS_TABLE[j][k] - bitCountRatios[k];
       error += diff * diff;
     }

@@ -25,9 +25,9 @@ const char CODE93_ALPHABET[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-. $/+%abcd*
 
 /**
  * These represent the encodings of characters, as patterns of wide and narrow bars.
- * The 9 least-significant bits of each int correspond to the pattern of wide and narrow.
+ * The 9 least-significant bits of each NSInteger correspond to the pattern of wide and narrow.
  */
-const int CODE93_CHARACTER_ENCODINGS[48] = {
+const NSInteger CODE93_CHARACTER_ENCODINGS[48] = {
   0x114, 0x148, 0x144, 0x142, 0x128, 0x124, 0x122, 0x150, 0x112, 0x10A, // 0-9
   0x1A8, 0x1A4, 0x1A2, 0x194, 0x192, 0x18A, 0x168, 0x164, 0x162, 0x134, // A-J
   0x11A, 0x158, 0x14C, 0x146, 0x12C, 0x116, 0x1B4, 0x1B2, 0x1AC, 0x1A6, // K-T
@@ -36,7 +36,7 @@ const int CODE93_CHARACTER_ENCODINGS[48] = {
   0x126, 0x1DA, 0x1D6, 0x132, 0x15E, // Control chars? $-*
 };
 
-const int CODE93_ASTERISK_ENCODING = 0x15E;
+const NSInteger CODE93_ASTERISK_ENCODING = 0x15E;
 
 @interface ZXCode93Reader ()
 
@@ -54,30 +54,30 @@ const int CODE93_ASTERISK_ENCODING = 0x15E;
   return self;
 }
 
-- (ZXResult *)decodeRow:(int)rowNumber row:(ZXBitArray *)row hints:(ZXDecodeHints *)hints error:(NSError **)error {
-  const int countersLen = 6;
-  int counters[countersLen];
-  memset(counters, 0, countersLen * sizeof(int));
+- (ZXResult *)decodeRow:(NSInteger)rowNumber row:(ZXBitArray *)row hints:(ZXDecodeHints *)hints error:(NSError **)error {
+  const NSInteger countersLen = 6;
+  NSInteger counters[countersLen];
+  memset(counters, 0, countersLen * sizeof(NSInteger));
 
   [self.decodeRowResult setString:@""];
 
-  int start[2] = {0};
+  NSInteger start[2] = {0};
   if (![self findAsteriskPattern:row a:&start[0] b:&start[1]]) {
     if (error) *error = NotFoundErrorInstance();
     return nil;
   }
   // Read off white space
-  int nextStart = [row nextSet:start[1]];
-  int end = row.size;
+  NSInteger nextStart = [row nextSet:start[1]];
+  NSInteger end = row.size;
 
   unichar decodedChar;
-  int lastStart;
+  NSInteger lastStart;
   do {
     if (![ZXOneDReader recordPattern:row start:nextStart counters:counters countersSize:countersLen]) {
       if (error) *error = NotFoundErrorInstance();
       return nil;
     }
-    int pattern = [self toPattern:counters countersLen:countersLen];
+    NSInteger pattern = [self toPattern:counters countersLen:countersLen];
     if (pattern < 0) {
       if (error) *error = NotFoundErrorInstance();
       return nil;
@@ -89,7 +89,7 @@ const int CODE93_ASTERISK_ENCODING = 0x15E;
     }
     [self.decodeRowResult appendFormat:@"%C", decodedChar];
     lastStart = nextStart;
-    for (int i = 0; i < countersLen; i++) {
+    for (NSInteger i = 0; i < countersLen; i++) {
       nextStart += counters[i];
     }
     // Read off white space
@@ -129,20 +129,20 @@ const int CODE93_ASTERISK_ENCODING = 0x15E;
                            format:kBarcodeFormatCode93];
 }
 
-- (BOOL)findAsteriskPattern:(ZXBitArray *)row a:(int *)a b:(int *)b {
-  int width = row.size;
-  int rowOffset = [row nextSet:0];
+- (BOOL)findAsteriskPattern:(ZXBitArray *)row a:(NSInteger *)a b:(NSInteger *)b {
+  NSInteger width = row.size;
+  NSInteger rowOffset = [row nextSet:0];
 
-  int counterPosition = 0;
+  NSInteger counterPosition = 0;
 
-  const int patternLength = 6;
-  int counters[patternLength];
-  memset(counters, 0, patternLength * sizeof(int));
+  const NSInteger patternLength = 6;
+  NSInteger counters[patternLength];
+  memset(counters, 0, patternLength * sizeof(NSInteger));
 
-  int patternStart = rowOffset;
+  NSInteger patternStart = rowOffset;
   BOOL isWhite = NO;
 
-  for (int i = rowOffset; i < width; i++) {
+  for (NSInteger i = rowOffset; i < width; i++) {
     if ([row get:i] ^ isWhite) {
       counters[counterPosition]++;
     } else {
@@ -153,7 +153,7 @@ const int CODE93_ASTERISK_ENCODING = 0x15E;
           return YES;
         }
         patternStart += counters[0] + counters[1];
-        for (int y = 2; y < patternLength; y++) {
+        for (NSInteger y = 2; y < patternLength; y++) {
           counters[y - 2] = counters[y];
         }
         counters[patternLength - 2] = 0;
@@ -170,16 +170,16 @@ const int CODE93_ASTERISK_ENCODING = 0x15E;
   return NO;
 }
 
-- (int)toPattern:(int *)counters countersLen:(unsigned int)countersLen {
-  int max = countersLen;
-  int sum = 0;
-  for (int i = 0; i < max; i++) {
+- (NSInteger)toPattern:(NSInteger *)counters countersLen:(NSUInteger)countersLen {
+  NSInteger max = countersLen;
+  NSInteger sum = 0;
+  for (NSInteger i = 0; i < max; i++) {
     sum += counters[i];
   }
-  int pattern = 0;
-  for (int i = 0; i < max; i++) {
-    int scaledShifted = (counters[i] << INTEGER_MATH_SHIFT) * 9 / sum;
-    int scaledUnshifted = scaledShifted >> INTEGER_MATH_SHIFT;
+  NSInteger pattern = 0;
+  for (NSInteger i = 0; i < max; i++) {
+    NSInteger scaledShifted = (counters[i] << INTEGER_MATH_SHIFT) * 9 / sum;
+    NSInteger scaledUnshifted = scaledShifted >> INTEGER_MATH_SHIFT;
     if ((scaledShifted & 0xFF) > 0x7F) {
       scaledUnshifted++;
     }
@@ -187,7 +187,7 @@ const int CODE93_ASTERISK_ENCODING = 0x15E;
       return -1;
     }
     if ((i & 0x01) == 0) {
-      for (int j = 0; j < scaledUnshifted; j++) {
+      for (NSInteger j = 0; j < scaledUnshifted; j++) {
         pattern = (pattern << 1) | 0x01;
       }
     } else {
@@ -197,8 +197,8 @@ const int CODE93_ASTERISK_ENCODING = 0x15E;
   return pattern;
 }
 
-- (unichar)patternToChar:(int)pattern {
-  for (int i = 0; i < sizeof(CODE93_CHARACTER_ENCODINGS) / sizeof(int); i++) {
+- (unichar)patternToChar:(NSInteger)pattern {
+  for (NSInteger i = 0; i < sizeof(CODE93_CHARACTER_ENCODINGS) / sizeof(NSInteger); i++) {
     if (CODE93_CHARACTER_ENCODINGS[i] == pattern) {
       return CODE93_ALPHABET[i];
     }
@@ -208,9 +208,9 @@ const int CODE93_ASTERISK_ENCODING = 0x15E;
 }
 
 - (NSString *)decodeExtended:(NSMutableString *)encoded {
-  int length = [encoded length];
+  NSInteger length = [encoded length];
   NSMutableString *decoded = [NSMutableString stringWithCapacity:length];
-  for (int i = 0; i < length; i++) {
+  for (NSInteger i = 0; i < length; i++) {
     unichar c = [encoded characterAtIndex:i];
     if (c >= 'a' && c <= 'd') {
       if (i >= length - 1) {
@@ -263,18 +263,18 @@ const int CODE93_ASTERISK_ENCODING = 0x15E;
 }
 
 - (BOOL)checkChecksums:(NSMutableString *)result error:(NSError **)error {
-  int length = [result length];
+  NSInteger length = [result length];
   if (![self checkOneChecksum:result checkPosition:length - 2 weightMax:20 error:error]) {
     return NO;
   }
   return [self checkOneChecksum:result checkPosition:length - 1 weightMax:15 error:error];
 }
 
-- (BOOL)checkOneChecksum:(NSMutableString *)result checkPosition:(int)checkPosition weightMax:(int)weightMax error:(NSError **)error {
-  int weight = 1;
-  int total = 0;
+- (BOOL)checkOneChecksum:(NSMutableString *)result checkPosition:(NSInteger)checkPosition weightMax:(NSInteger)weightMax error:(NSError **)error {
+  NSInteger weight = 1;
+  NSInteger total = 0;
 
-  for (int i = checkPosition - 1; i >= 0; i--) {
+  for (NSInteger i = checkPosition - 1; i >= 0; i--) {
     total += weight * [CODE93_ALPHABET_STRING rangeOfString:[NSString stringWithFormat:@"%C", [result characterAtIndex:i]]].location;
     if (++weight > weightMax) {
       weight = 1;

@@ -23,8 +23,8 @@
 #import "ZXMaxiCodeReader.h"
 #import "ZXResult.h"
 
-const int MATRIX_WIDTH = 30;
-const int MATRIX_HEIGHT = 33;
+const NSInteger MATRIX_WIDTH = 30;
+const NSInteger MATRIX_HEIGHT = 33;
 
 @interface ZXMaxiCodeReader ()
 
@@ -100,17 +100,17 @@ const int MATRIX_HEIGHT = 33;
     return nil;
   }
 
-  int left = [enclosingRectangle[0] intValue];
-  int top = [enclosingRectangle[1] intValue];
-  int width = [enclosingRectangle[2] intValue];
-  int height = [enclosingRectangle[3] intValue];
+  NSInteger left = [enclosingRectangle[0] intValue];
+  NSInteger top = [enclosingRectangle[1] intValue];
+  NSInteger width = [enclosingRectangle[2] intValue];
+  NSInteger height = [enclosingRectangle[3] intValue];
 
   // Now just read off the bits
   ZXBitMatrix *bits = [[ZXBitMatrix alloc] initWithWidth:MATRIX_WIDTH height:MATRIX_HEIGHT];
-  for (int y = 0; y < MATRIX_HEIGHT; y++) {
-    int iy = top + (y * height + height / 2) / MATRIX_HEIGHT;
-    for (int x = 0; x < MATRIX_WIDTH; x++) {
-      int ix = left + (x * width + width / 2 + (y & 0x01) *  width / 2) / MATRIX_WIDTH;
+  for (NSInteger y = 0; y < MATRIX_HEIGHT; y++) {
+    NSInteger iy = top + (y * height + height / 2) / MATRIX_HEIGHT;
+    for (NSInteger x = 0; x < MATRIX_WIDTH; x++) {
+      NSInteger ix = left + (x * width + width / 2 + (y & 0x01) *  width / 2) / MATRIX_WIDTH;
       if ([image getX:ix y:iy]) {
         [bits setX:x y:y];
       }

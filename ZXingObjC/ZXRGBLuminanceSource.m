@@ -19,17 +19,17 @@
 @interface ZXRGBLuminanceSource ()
 
 @property (nonatomic, assign) int8_t *luminances;
-@property (nonatomic, assign) int luminancesCount;
-@property (nonatomic, assign) int dataWidth;
-@property (nonatomic, assign) int dataHeight;
-@property (nonatomic, assign) int left;
-@property (nonatomic, assign) int top;
+@property (nonatomic, assign) NSInteger luminancesCount;
+@property (nonatomic, assign) NSInteger dataWidth;
+@property (nonatomic, assign) NSInteger dataHeight;
+@property (nonatomic, assign) NSInteger left;
+@property (nonatomic, assign) NSInteger top;
 
 @end
 
 @implementation ZXRGBLuminanceSource
 
-- (id)initWithWidth:(int)width height:(int)height pixels:(int *)pixels pixelsLen:(int)pixelsLen {
+- (id)initWithWidth:(NSInteger)width height:(NSInteger)height pixels:(NSInteger *)pixels pixelsLen:(NSInteger)pixelsLen {
   if (self = [super initWithWidth:width height:height]) {
     _dataWidth = width;
     _dataHeight = height;
@@ -40,13 +40,13 @@
     // up front, which is the same as the Y channel of the YUVLuminanceSource in the real app.
     _luminancesCount = width * height;
     _luminances = (int8_t *)malloc(_luminancesCount * sizeof(int8_t));
-    for (int y = 0; y < height; y++) {
-      int offset = y * width;
-      for (int x = 0; x < width; x++) {
-        int pixel = pixels[offset + x];
-        int r = (pixel >> 16) & 0xff;
-        int g = (pixel >> 8) & 0xff;
-        int b = pixel & 0xff;
+    for (NSInteger y = 0; y < height; y++) {
+      NSInteger offset = y * width;
+      for (NSInteger x = 0; x < width; x++) {
+        NSInteger pixel = pixels[offset + x];
+        NSInteger r = (pixel >> 16) & 0xff;
+        NSInteger g = (pixel >> 8) & 0xff;
+        NSInteger b = pixel & 0xff;
         if (r == g && g == b) {
           // Image is already greyscale, so pick any channel.
           _luminances[offset + x] = (char) r;
@@ -61,8 +61,8 @@
   return self;
 }
 
-- (id)initWithPixels:(int8_t *)pixels pixelsLen:(int)pixelsLen dataWidth:(int)dataWidth dataHeight:(int)dataHeight
-                left:(int)left top:(int)top width:(int)width height:(int)height {
+- (id)initWithPixels:(int8_t *)pixels pixelsLen:(NSInteger)pixelsLen dataWidth:(NSInteger)dataWidth dataHeight:(NSInteger)dataHeight
+                left:(NSInteger)left top:(NSInteger)top width:(NSInteger)width height:(NSInteger)height {
   if (self = [super initWithWidth:width height:height]) {
     if (left + self.width > dataWidth || top + self.height > dataHeight) {
       [NSException raise:NSInvalidArgumentException format:@"Crop rectangle does not fit within image data."];
@@ -81,21 +81,21 @@
   return self;
 }
 
-- (int8_t *)row:(int)y {
+- (int8_t *)row:(NSInteger)y {
   if (y < 0 || y >= self.height) {
-    [NSException raise:NSInvalidArgumentException format:@"Requested row is outside the image: %d", y];
+    [NSException raise:NSInvalidArgumentException format:@"Requested row is outside the image: %ld", (long)y];
   }
   int8_t *row = (int8_t *)malloc(self.width * sizeof(int8_t));
 
-  int offset = (y + self.top) * self.dataWidth + self.left;
+  NSInteger offset = (y + self.top) * self.dataWidth + self.left;
   memcpy(row, self.luminances + offset, self.width);
   return row;
 }
 
 - (int8_t *)matrix {
-  int area = self.width * self.height;
+  NSInteger area = self.width * self.height;
   int8_t *matrix = (int8_t *)malloc(area * sizeof(int8_t));
-  int inputOffset = self.top * self.dataWidth + self.left;
+  NSInteger inputOffset = self.top * self.dataWidth + self.left;
 
   // If the width matches the full width of the underlying data, perform a single copy.
   if (self.width == self.dataWidth) {
@@ -104,8 +104,8 @@
   }
 
   // Otherwise copy one cropped row at a time.
-  for (int y = 0; y < self.height; y++) {
-    int outputOffset = y * self.width;
+  for (NSInteger y = 0; y < self.height; y++) {
+    NSInteger outputOffset = y * self.width;
     memcpy(matrix + outputOffset, self.luminances + inputOffset, self.width);
     inputOffset += self.dataWidth;
   }
@@ -116,7 +116,7 @@
   return YES;
 }
 
-- (ZXLuminanceSource *)crop:(int)left top:(int)top width:(int)width height:(int)height {
+- (ZXLuminanceSource *)crop:(NSInteger)left top:(NSInteger)top width:(NSInteger)width height:(NSInteger)height {
   return [[[self class] alloc] initWithPixels:self.luminances
                                     pixelsLen:self.luminancesCount
                                     dataWidth:self.dataWidth

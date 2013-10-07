@@ -20,7 +20,7 @@
 
 - (NSString *)toBitFieldString {
   NSMutableString *sb = [NSMutableString stringWithCapacity:self.bitsLen];
-  for (int i = 0; i < self.bitsLen; i++) {
+  for (NSInteger i = 0; i < self.bitsLen; i++) {
     [sb appendString:self.bits[i] == 1 ? @"1" : @"0"];
   }
   return [NSString stringWithString:sb];
@@ -28,10 +28,10 @@
 
 - (NSArray *)toBitFieldStringArray {
   NSMutableArray *array = [NSMutableArray arrayWithCapacity:self.numrows];
-  int startpos = 0;
-  for (int row = 0; row < self.numrows; row++) {
+  NSInteger startpos = 0;
+  for (NSInteger row = 0; row < self.numrows; row++) {
     NSMutableString *sb = [NSMutableString stringWithCapacity:self.bitsLen];
-    for (int i = 0; i < self.numcols; i++) {
+    for (NSInteger i = 0; i < self.numcols; i++) {
       [sb appendString:self.bits[startpos + i] == 1 ? @"1" : @"0"];
     }
     [array addObject:[NSString stringWithString:sb]];

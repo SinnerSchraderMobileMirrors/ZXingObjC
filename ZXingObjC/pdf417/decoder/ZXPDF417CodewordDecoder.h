@@ -16,6 +16,6 @@
 
 @interface ZXPDF417CodewordDecoder : NSObject
 
-+ (int)decodedValue:(NSArray *)moduleBitCount;
++ (NSInteger)decodedValue:(NSArray *)moduleBitCount;
 
 @end

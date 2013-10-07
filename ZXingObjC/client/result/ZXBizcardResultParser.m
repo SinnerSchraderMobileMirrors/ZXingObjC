@@ -65,12 +65,12 @@
   if (number3 != nil) {
     [numbers addObject:number3];
   }
-  int size = [numbers count];
+  NSUInteger size = [numbers count];
   if (size == 0) {
     return nil;
   }
   NSMutableArray *result = [NSMutableArray arrayWithCapacity:size];
-  for (int i = 0; i < size; i++) {
+  for (NSInteger i = 0; i < size; i++) {
     [result addObject:numbers[i]];
   }
   return result;

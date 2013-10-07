@@ -20,7 +20,7 @@
 #import "ZXUPCEANReader.h"
 
 #define EXTENSION_START_PATTERN_LEN 3
-const int EXTENSION_START_PATTERN[EXTENSION_START_PATTERN_LEN] = {1,1,2};
+const NSInteger EXTENSION_START_PATTERN[EXTENSION_START_PATTERN_LEN] = {1,1,2};
 
 @interface ZXUPCEANExtensionSupport ()
 
@@ -40,8 +40,8 @@ const int EXTENSION_START_PATTERN[EXTENSION_START_PATTERN_LEN] = {1,1,2};
   return self;
 }
 
-- (ZXResult *)decodeRow:(int)rowNumber row:(ZXBitArray *)row rowOffset:(int)rowOffset error:(NSError **)error {
-  NSRange extensionStartRange = [ZXUPCEANReader findGuardPattern:row rowOffset:rowOffset whiteFirst:NO pattern:(int *)EXTENSION_START_PATTERN patternLen:EXTENSION_START_PATTERN_LEN error:error];
+- (ZXResult *)decodeRow:(NSInteger)rowNumber row:(ZXBitArray *)row rowOffset:(NSInteger)rowOffset error:(NSError **)error {
+  NSRange extensionStartRange = [ZXUPCEANReader findGuardPattern:row rowOffset:rowOffset whiteFirst:NO pattern:(NSInteger *)EXTENSION_START_PATTERN patternLen:EXTENSION_START_PATTERN_LEN error:error];
 
   ZXResult *result = [self.fiveSupport decodeRow:rowNumber row:row extensionStartRange:extensionStartRange error:error];
   if (!result) {

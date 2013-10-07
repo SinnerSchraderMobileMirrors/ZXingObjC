@@ -25,7 +25,7 @@
 #define CODE_PATTERNS_LENGTH 107
 #define countersLength 7
 
-const int CODE_PATTERNS[CODE_PATTERNS_LENGTH][countersLength] = {
+const NSInteger CODE_PATTERNS[CODE_PATTERNS_LENGTH][countersLength] = {
   {2, 1, 2, 2, 2, 2}, // 0
   {2, 2, 2, 1, 2, 2},
   {2, 2, 2, 2, 2, 1},
@@ -135,57 +135,57 @@ const int CODE_PATTERNS[CODE_PATTERNS_LENGTH][countersLength] = {
   {2, 3, 3, 1, 1, 1, 2}
 };
 
-static int MAX_AVG_VARIANCE = -1;
-static int MAX_INDIVIDUAL_VARIANCE = -1;
+static NSInteger MAX_AVG_VARIANCE = -1;
+static NSInteger MAX_INDIVIDUAL_VARIANCE = -1;
 
-int const CODE_SHIFT = 98;
-int const CODE_CODE_C = 99;
-int const CODE_CODE_B = 100;
-int const CODE_CODE_A = 101;
-int const CODE_FNC_1 = 102;
-int const CODE_FNC_2 = 97;
-int const CODE_FNC_3 = 96;
-int const CODE_FNC_4_A = 101;
-int const CODE_FNC_4_B = 100;
-int const CODE_START_A = 103;
-int const CODE_START_B = 104;
-int const CODE_START_C = 105;
-int const CODE_STOP = 106;
+NSInteger const CODE_SHIFT = 98;
+NSInteger const CODE_CODE_C = 99;
+NSInteger const CODE_CODE_B = 100;
+NSInteger const CODE_CODE_A = 101;
+NSInteger const CODE_FNC_1 = 102;
+NSInteger const CODE_FNC_2 = 97;
+NSInteger const CODE_FNC_3 = 96;
+NSInteger const CODE_FNC_4_A = 101;
+NSInteger const CODE_FNC_4_B = 100;
+NSInteger const CODE_START_A = 103;
+NSInteger const CODE_START_B = 104;
+NSInteger const CODE_START_C = 105;
+NSInteger const CODE_STOP = 106;
 
 @implementation ZXCode128Reader
 
 + (void)initialize {
   if (MAX_AVG_VARIANCE == -1) {
-    MAX_AVG_VARIANCE = (int)(PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.25f);
+    MAX_AVG_VARIANCE = (NSInteger)(PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.25f);
   }
 
   if (MAX_INDIVIDUAL_VARIANCE == -1) {
-    MAX_INDIVIDUAL_VARIANCE = (int)(PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.7f);
+    MAX_INDIVIDUAL_VARIANCE = (NSInteger)(PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.7f);
   }
 }
 
 - (NSArray *)findStartPattern:(ZXBitArray *)row {
-  int width = row.size;
-  int rowOffset = [row nextSet:0];
+  NSInteger width = row.size;
+  NSInteger rowOffset = [row nextSet:0];
 
-  int counterPosition = 0;
+  NSInteger counterPosition = 0;
 
-  const int patternLength = 6;
-  int counters[patternLength];
-  memset(counters, 0, patternLength * sizeof(int));
+  const NSInteger patternLength = 6;
+  NSInteger counters[patternLength];
+  memset(counters, 0, patternLength * sizeof(NSInteger));
 
-  int patternStart = rowOffset;
+  NSInteger patternStart = rowOffset;
   BOOL isWhite = NO;
 
-  for (int i = rowOffset; i < width; i++) {
+  for (NSInteger i = rowOffset; i < width; i++) {
     if ([row get:i] ^ isWhite) {
       counters[counterPosition]++;
     } else {
       if (counterPosition == patternLength - 1) {
-        int bestVariance = MAX_AVG_VARIANCE;
-        int bestMatch = -1;
-        for (int startCode = CODE_START_A; startCode <= CODE_START_C; startCode++) {
-          int variance = [ZXOneDReader patternMatchVariance:counters countersSize:patternLength pattern:(int *)CODE_PATTERNS[startCode] maxIndividualVariance:MAX_INDIVIDUAL_VARIANCE];
+        NSInteger bestVariance = MAX_AVG_VARIANCE;
+        NSInteger bestMatch = -1;
+        for (NSInteger startCode = CODE_START_A; startCode <= CODE_START_C; startCode++) {
+          NSInteger variance = [ZXOneDReader patternMatchVariance:counters countersSize:patternLength pattern:(NSInteger *)CODE_PATTERNS[startCode] maxIndividualVariance:MAX_INDIVIDUAL_VARIANCE];
           if (variance < bestVariance) {
             bestVariance = variance;
             bestMatch = startCode;
@@ -197,7 +197,7 @@ int const CODE_STOP = 106;
           return @[@(patternStart), @(i), @(bestMatch)];
         }
         patternStart += counters[0] + counters[1];
-        for (int y = 2; y < patternLength; y++) {
+        for (NSInteger y = 2; y < patternLength; y++) {
           counters[y - 2] = counters[y];
         }
         counters[patternLength - 2] = 0;
@@ -214,16 +214,16 @@ int const CODE_STOP = 106;
   return nil;
 }
 
-- (int)decodeCode:(ZXBitArray *)row counters:(int[])counters countersCount:(int)countersCount rowOffset:(int)rowOffset {
+- (NSInteger)decodeCode:(ZXBitArray *)row counters:(NSInteger[])counters countersCount:(NSInteger)countersCount rowOffset:(NSInteger)rowOffset {
   if (![ZXOneDReader recordPattern:row start:rowOffset counters:counters countersSize:countersCount]) {
     return -1;
   }
-  int bestVariance = MAX_AVG_VARIANCE;
-  int bestMatch = -1;
+  NSInteger bestVariance = MAX_AVG_VARIANCE;
+  NSInteger bestMatch = -1;
 
-  for (int d = 0; d < CODE_PATTERNS_LENGTH; d++) {
-    int *pattern = (int *)CODE_PATTERNS[d];
-    int variance = [ZXOneDReader patternMatchVariance:counters countersSize:countersCount pattern:pattern maxIndividualVariance:MAX_INDIVIDUAL_VARIANCE];
+  for (NSInteger d = 0; d < CODE_PATTERNS_LENGTH; d++) {
+    NSInteger *pattern = (NSInteger *)CODE_PATTERNS[d];
+    NSInteger variance = [ZXOneDReader patternMatchVariance:counters countersSize:countersCount pattern:pattern maxIndividualVariance:MAX_INDIVIDUAL_VARIANCE];
     if (variance < bestVariance) {
       bestVariance = variance;
       bestMatch = d;
@@ -237,7 +237,7 @@ int const CODE_STOP = 106;
   }
 }
 
-- (ZXResult *)decodeRow:(int)rowNumber row:(ZXBitArray *)row hints:(ZXDecodeHints *)hints error:(NSError **)error {
+- (ZXResult *)decodeRow:(NSInteger)rowNumber row:(ZXBitArray *)row hints:(ZXDecodeHints *)hints error:(NSError **)error {
   BOOL convertFNC1 = hints && hints.assumeGS1;
 
   NSArray *startPatternInfo = [self findStartPattern:row];
@@ -246,8 +246,8 @@ int const CODE_STOP = 106;
     return nil;
   }
 
-  int startCode = [startPatternInfo[2] intValue];
-  int codeSet;
+  NSInteger startCode = [startPatternInfo[2] intValue];
+  NSInteger codeSet;
 
   switch (startCode) {
   case CODE_START_A:
@@ -270,17 +270,17 @@ int const CODE_STOP = 106;
   NSMutableString *result = [NSMutableString stringWithCapacity:20];
   NSMutableArray *rawCodes = [NSMutableArray arrayWithCapacity:20];
 
-  int lastStart = [startPatternInfo[0] intValue];
-  int nextStart = [startPatternInfo[1] intValue];
+  NSInteger lastStart = [startPatternInfo[0] intValue];
+  NSInteger nextStart = [startPatternInfo[1] intValue];
 
-  const int countersLen = 6;
-  int counters[countersLen];
-  memset(counters, 0, countersLen * sizeof(int));
+  const NSInteger countersLen = 6;
+  NSInteger counters[countersLen];
+  memset(counters, 0, countersLen * sizeof(NSInteger));
 
-  int lastCode = 0;
-  int code = 0;
-  int checksumTotal = startCode;
-  int multiplier = 0;
+  NSInteger lastCode = 0;
+  NSInteger code = 0;
+  NSInteger checksumTotal = startCode;
+  NSInteger multiplier = 0;
   BOOL lastCharacterWasPrintable = YES;
 
   while (!done) {
@@ -312,7 +312,7 @@ int const CODE_STOP = 106;
 
     // Advance to where the next code will to start
     lastStart = nextStart;
-    for (int i = 0; i < countersLen; i++) {
+    for (NSInteger i = 0; i < countersLen; i++) {
       nextStart += counters[i];
     }
 
@@ -417,7 +417,7 @@ int const CODE_STOP = 106;
         if (code < 10) {
           [result appendString:@"0"];
         }
-        [result appendFormat:@"%d", code];
+        [result appendFormat:@"%ld", (long)code];
       } else {
         if (code != CODE_STOP) {
           lastCharacterWasPrintable = NO;
@@ -474,7 +474,7 @@ int const CODE_STOP = 106;
   }
 
   // Need to pull out the check digits from string
-  int resultLength = [result length];
+  NSInteger resultLength = [result length];
   if (resultLength == 0) {
     // false positive
     if (error) *error = NotFoundErrorInstance();
@@ -494,9 +494,9 @@ int const CODE_STOP = 106;
   float left = (float)([startPatternInfo[1] intValue] + [startPatternInfo[0] intValue]) / 2.0f;
   float right = (float)(nextStart + lastStart) / 2.0f;
 
-  int rawCodesSize = [rawCodes count];
+  NSInteger rawCodesSize = [rawCodes count];
   int8_t rawBytes[rawCodesSize];
-  for (int i = 0; i < rawCodesSize; i++) {
+  for (NSInteger i = 0; i < rawCodesSize; i++) {
     rawBytes[i] = [rawCodes[i] charValue];
   }
 

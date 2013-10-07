@@ -69,16 +69,16 @@ static NSArray *symbols = nil;
   symbols = override;
 }
 
-- (id)initWithRectangular:(BOOL)rectangular dataCapacity:(int)dataCapacity errorCodewords:(int)errorCodewords
-              matrixWidth:(int)matrixWidth matrixHeight:(int)matrixHeight dataRegions:(int)dataRegions {
+- (id)initWithRectangular:(BOOL)rectangular dataCapacity:(NSInteger)dataCapacity errorCodewords:(NSInteger)errorCodewords
+              matrixWidth:(NSInteger)matrixWidth matrixHeight:(NSInteger)matrixHeight dataRegions:(NSInteger)dataRegions {
   return [self initWithRectangular:rectangular dataCapacity:dataCapacity errorCodewords:errorCodewords
                        matrixWidth:matrixWidth matrixHeight:matrixHeight dataRegions:dataRegions
                        rsBlockData:dataCapacity rsBlockError:errorCodewords];
 }
 
-- (id)initWithRectangular:(BOOL)rectangular dataCapacity:(int)dataCapacity errorCodewords:(int)errorCodewords
-              matrixWidth:(int)matrixWidth matrixHeight:(int)matrixHeight dataRegions:(int)dataRegions
-              rsBlockData:(int)rsBlockData rsBlockError:(int)rsBlockError {
+- (id)initWithRectangular:(BOOL)rectangular dataCapacity:(NSInteger)dataCapacity errorCodewords:(NSInteger)errorCodewords
+              matrixWidth:(NSInteger)matrixWidth matrixHeight:(NSInteger)matrixHeight dataRegions:(NSInteger)dataRegions
+              rsBlockData:(NSInteger)rsBlockData rsBlockError:(NSInteger)rsBlockError {
   if (self = [super init]) {
     _rectangular = rectangular;
     _dataCapacity = dataCapacity;
@@ -93,25 +93,25 @@ static NSArray *symbols = nil;
   return self;
 }
 
-+ (ZXSymbolInfo *)lookup:(int)dataCodewords {
++ (ZXSymbolInfo *)lookup:(NSInteger)dataCodewords {
   return [self lookup:dataCodewords shape:[ZXSymbolShapeHint forceNone] fail:YES];
 }
 
-+ (ZXSymbolInfo *)lookup:(int)dataCodewords shape:(ZXSymbolShapeHint *)shape {
++ (ZXSymbolInfo *)lookup:(NSInteger)dataCodewords shape:(ZXSymbolShapeHint *)shape {
   return [self lookup:dataCodewords shape:shape fail:YES];
 }
 
-+ (ZXSymbolInfo *)lookup:(int)dataCodewords allowRectangular:(BOOL)allowRectangular fail:(BOOL)fail {
++ (ZXSymbolInfo *)lookup:(NSInteger)dataCodewords allowRectangular:(BOOL)allowRectangular fail:(BOOL)fail {
   ZXSymbolShapeHint *shape = allowRectangular
     ? [ZXSymbolShapeHint forceNone] : [ZXSymbolShapeHint forceSquare];
   return [self lookup:dataCodewords shape:shape fail:fail];
 }
 
-+ (ZXSymbolInfo *)lookup:(int)dataCodewords shape:(ZXSymbolShapeHint *)shape fail:(BOOL)fail {
++ (ZXSymbolInfo *)lookup:(NSInteger)dataCodewords shape:(ZXSymbolShapeHint *)shape fail:(BOOL)fail {
   return [self lookup:dataCodewords shape:shape minSize:nil maxSize:nil fail:fail];
 }
 
-+ (ZXSymbolInfo *)lookup:(int)dataCodewords shape:(ZXSymbolShapeHint *)shape minSize:(ZXDimension *)minSize
++ (ZXSymbolInfo *)lookup:(NSInteger)dataCodewords shape:(ZXSymbolShapeHint *)shape minSize:(ZXDimension *)minSize
                  maxSize:(ZXDimension *)maxSize fail:(BOOL)fail {
   for (ZXSymbolInfo *symbol in symbols) {
     if (shape == [ZXSymbolShapeHint forceSquare] && symbol.rectangular) {
@@ -135,12 +135,12 @@ static NSArray *symbols = nil;
     }
   }
   if (fail) {
-    [NSException raise:NSInvalidArgumentException format:@"Can't find a symbol arrangement that matches the message. Data codewords: %d", dataCodewords];
+    [NSException raise:NSInvalidArgumentException format:@"Can't find a symbol arrangement that matches the message. Data codewords: %ld", (long)dataCodewords];
   }
   return nil;
 }
 
-- (int)horizontalDataRegions {
+- (NSInteger)horizontalDataRegions {
   switch (_dataRegions) {
     case 1:
       return 1;
@@ -157,7 +157,7 @@ static NSArray *symbols = nil;
   }
 }
 
-- (int)verticalDataRegions {
+- (NSInteger)verticalDataRegions {
   switch (_dataRegions) {
     case 1:
       return 1;
@@ -174,45 +174,45 @@ static NSArray *symbols = nil;
   }
 }
 
-- (int)symbolDataWidth {
+- (NSInteger)symbolDataWidth {
   return [self horizontalDataRegions] * _matrixWidth;
 }
 
-- (int)symbolDataHeight {
+- (NSInteger)symbolDataHeight {
   return [self verticalDataRegions] * _matrixHeight;
 }
 
-- (int)symbolWidth {
+- (NSInteger)symbolWidth {
   return [self symbolDataWidth] + ([self horizontalDataRegions] * 2);
 }
 
-- (int)symbolHeight {
+- (NSInteger)symbolHeight {
   return [self symbolDataHeight] + ([self verticalDataRegions] * 2);
 }
 
-- (int)codewordCount {
+- (NSInteger)codewordCount {
   return _dataCapacity + _errorCodewords;
 }
 
-- (int)interleavedBlockCount {
+- (NSInteger)interleavedBlockCount {
   return _dataCapacity / _rsBlockData;
 }
 
-- (int)dataLengthForInterleavedBlock:(int)index {
+- (NSInteger)dataLengthForInterleavedBlock:(NSInteger)index {
   return _rsBlockData;
 }
 
-- (int)errorLengthForInterleavedBlock:(int)index {
+- (NSInteger)errorLengthForInterleavedBlock:(NSInteger)index {
   return _rsBlockError;
 }
 
 - (NSString *)description {
   NSMutableString *sb = [NSMutableString string];
   [sb appendString:_rectangular ? @"Rectangular Symbol:" : @"Square Symbol:"];
-  [sb appendFormat:@" data region %dx%d", _matrixWidth, _matrixHeight];
-  [sb appendFormat:@", symbol size %dx%d", [self symbolWidth], [self symbolHeight]];
-  [sb appendFormat:@", symbol data size %dx%d", [self symbolDataWidth], [self symbolDataHeight]];
-  [sb appendFormat:@", codewords %d+%d", _dataCapacity, _errorCodewords];
+  [sb appendFormat:@" data region %ldx%ld", (long)_matrixWidth, (long)_matrixHeight];
+  [sb appendFormat:@", symbol size %ldx%ld", (long)[self symbolWidth], (long)[self symbolHeight]];
+  [sb appendFormat:@", symbol data size %ldx%ld",(long) [self symbolDataWidth], (long) (long)[self symbolDataHeight]];
+  [sb appendFormat:@", codewords %ld+%ld", (long)_dataCapacity, (long)_errorCodewords];
   return [NSString stringWithString:sb];
 }
 

@@ -18,7 +18,7 @@
 
 @implementation ZXDecodedInformation
 
-- (id)initWithNewPosition:(int)newPosition newString:(NSString *)newString {
+- (id)initWithNewPosition:(NSInteger)newPosition newString:(NSString *)newString {
   if (self = [super initWithNewPosition:newPosition]) {
     _remaining = NO;
     _remainingValue = 0;
@@ -28,7 +28,7 @@
   return self;
 }
 
-- (id)initWithNewPosition:(int)newPosition newString:(NSString *)newString remainingValue:(int)remainingValue {
+- (id)initWithNewPosition:(NSInteger)newPosition newString:(NSString *)newString remainingValue:(NSInteger)remainingValue {
   if (self = [super initWithNewPosition:newPosition]) {
     _remaining = YES;
     _remainingValue = remainingValue;

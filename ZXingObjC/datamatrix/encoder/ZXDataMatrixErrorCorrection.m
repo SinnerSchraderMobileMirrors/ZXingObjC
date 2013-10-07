@@ -21,13 +21,13 @@
  * Lookup table which factors to use for which number of error correction codewords.
  * See FACTORS.
  */
-const int FACTOR_SETS_LEN = 16;
-const int FACTOR_SETS[FACTOR_SETS_LEN] = {5, 7, 10, 11, 12, 14, 18, 20, 24, 28, 36, 42, 48, 56, 62, 68};
+const NSInteger FACTOR_SETS_LEN = 16;
+const NSInteger FACTOR_SETS[FACTOR_SETS_LEN] = {5, 7, 10, 11, 12, 14, 18, 20, 24, 28, 36, 42, 48, 56, 62, 68};
 
 /**
  * Precomputed polynomial factors for ECC 200.
  */
-const int FACTORS[16][68] = {
+const NSInteger FACTORS[16][68] = {
   {228, 48, 15, 111, 62},
   {23, 68, 144, 134, 240, 92, 254},
   {28, 24, 185, 166, 223, 248, 116, 255, 110, 61},
@@ -63,16 +63,16 @@ const int FACTORS[16][68] = {
     181, 241, 59, 52, 172, 25, 49, 232, 211, 189, 64, 54, 108, 153, 132, 63,
     96, 103, 82, 186}};
 
-const int MODULO_VALUE = 0x12D;
+const NSInteger MODULO_VALUE = 0x12D;
 
-static int LOG[256], ALOG[256];
+static NSInteger LOG[256], ALOG[256];
 
 @implementation ZXDataMatrixErrorCorrection
 
 + (void)initialize {
   //Create log and antilog table
-  int p = 1;
-  for (int i = 0; i < 255; i++) {
+  NSInteger p = 1;
+  for (NSInteger i = 0; i < 255; i++) {
     ALOG[i] = p;
     LOG[p] = i;
     p <<= 1;
@@ -89,7 +89,7 @@ static int LOG[256], ALOG[256];
   NSUInteger capacity = symbolInfo.dataCapacity + symbolInfo.errorCodewords;
   NSMutableString *sb = [NSMutableString stringWithCapacity:capacity];
   [sb appendString:codewords];
-  int blockCount = symbolInfo.interleavedBlockCount;
+  NSInteger blockCount = symbolInfo.interleavedBlockCount;
   if (blockCount == 1) {
     NSString *ecc = [self createECCBlock:codewords numECWords:symbolInfo.errorCodewords];
     [sb appendString:ecc];
@@ -97,10 +97,10 @@ static int LOG[256], ALOG[256];
     if (sb.length > capacity) {
       [sb deleteCharactersInRange:NSMakeRange(capacity, sb.length - capacity)];
     }
-    int dataSizes[blockCount];
-    int errorSizes[blockCount];
-    int startPos[blockCount];
-    for (int i = 0; i < blockCount; i++) {
+    NSInteger dataSizes[blockCount];
+    NSInteger errorSizes[blockCount];
+    NSInteger startPos[blockCount];
+    for (NSInteger i = 0; i < blockCount; i++) {
       dataSizes[i] = [symbolInfo dataLengthForInterleavedBlock:i + 1];
       errorSizes[i] = [symbolInfo errorLengthForInterleavedBlock:i + 1];
       startPos[i] = 0;
@@ -108,14 +108,14 @@ static int LOG[256], ALOG[256];
         startPos[i] = startPos[i - 1] + dataSizes[i];
       }
     }
-    for (int block = 0; block < blockCount; block++) {
+    for (NSInteger block = 0; block < blockCount; block++) {
       NSMutableString *temp = [NSMutableString stringWithCapacity:dataSizes[block]];
-      for (int d = block; d < symbolInfo.dataCapacity; d += blockCount) {
+      for (NSInteger d = block; d < symbolInfo.dataCapacity; d += blockCount) {
         [temp appendFormat:@"%c", [codewords characterAtIndex:d]];
       }
       NSString *ecc = [self createECCBlock:temp numECWords:errorSizes[block]];
-      int pos = 0;
-      for (int e = block; e < errorSizes[block] * blockCount; e += blockCount) {
+      NSInteger pos = 0;
+      for (NSInteger e = block; e < errorSizes[block] * blockCount; e += blockCount) {
         [sb replaceCharactersInRange:NSMakeRange(symbolInfo.dataCapacity + e, 1) withString:[ecc substringWithRange:NSMakeRange(pos++, 1)]];
       }
     }
@@ -123,29 +123,29 @@ static int LOG[256], ALOG[256];
   return [NSString stringWithString:sb];
 }
 
-+ (NSString *)createECCBlock:(NSString *)codewords numECWords:(int)numECWords {
++ (NSString *)createECCBlock:(NSString *)codewords numECWords:(NSInteger)numECWords {
   return [self createECCBlock:codewords start:0 len:codewords.length numECWords:numECWords];
 }
 
-+ (NSString *)createECCBlock:(NSString *)codewords start:(int)start len:(int)len numECWords:(int)numECWords {
-  int table = -1;
-  for (int i = 0; i < FACTOR_SETS_LEN; i++) {
++ (NSString *)createECCBlock:(NSString *)codewords start:(NSInteger)start len:(NSUInteger)len numECWords:(NSInteger)numECWords {
+  NSInteger table = -1;
+  for (NSInteger i = 0; i < FACTOR_SETS_LEN; i++) {
     if (FACTOR_SETS[i] == numECWords) {
       table = i;
       break;
     }
   }
   if (table < 0) {
-    [NSException raise:NSInvalidArgumentException format:@"Illegal number of error correction codewords specified: %d", numECWords];
+    [NSException raise:NSInvalidArgumentException format:@"Illegal number of error correction codewords specified: %ld", (long)numECWords];
   }
-  int *poly = (int *)FACTORS[table];
+  NSInteger *poly = (NSInteger *)FACTORS[table];
   unichar ecc[numECWords];
-  for (int i = 0; i < numECWords; i++) {
+  for (NSInteger i = 0; i < numECWords; i++) {
     ecc[i] = 0;
   }
-  for (int i = start; i < start + len; i++) {
-    int m = ecc[numECWords - 1] ^ [codewords characterAtIndex:i];
-    for (int k = numECWords - 1; k > 0; k--) {
+  for (NSInteger i = start; i < start + len; i++) {
+    NSInteger m = ecc[numECWords - 1] ^ [codewords characterAtIndex:i];
+    for (NSInteger k = numECWords - 1; k > 0; k--) {
       if (m != 0 && poly[k] != 0) {
         ecc[k] = (unichar) (ecc[k - 1] ^ ALOG[(LOG[m] + LOG[poly[k]]) % 255]);
       } else {
@@ -159,7 +159,7 @@ static int LOG[256], ALOG[256];
     }
   }
   unichar eccReversed[numECWords];
-  for (int i = 0; i < numECWords; i++) {
+  for (NSInteger i = 0; i < numECWords; i++) {
     eccReversed[i] = ecc[numECWords - i - 1];
   }
   return [NSString stringWithCharacters:eccReversed length:numECWords];

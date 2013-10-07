@@ -18,17 +18,17 @@
 
 @interface ZXModulusPoly : NSObject
 
-- (id)initWithField:(ZXModulusGF *)field coefficients:(int *)coefficients coefficientsLen:(int)coefficientsLen;
-- (int)degree;
+- (id)initWithField:(ZXModulusGF *)field coefficients:(NSInteger *)coefficients coefficientsLen:(NSInteger)coefficientsLen;
+- (NSInteger)degree;
 - (BOOL)zero;
-- (int)coefficient:(int)degree;
-- (int)evaluateAt:(int)a;
+- (NSInteger)coefficient:(NSInteger)degree;
+- (NSInteger)evaluateAt:(NSInteger)a;
 - (ZXModulusPoly *)add:(ZXModulusPoly *)other;
 - (ZXModulusPoly *)subtract:(ZXModulusPoly *)other;
 - (ZXModulusPoly *)multiply:(ZXModulusPoly *)other;
 - (ZXModulusPoly *)negative;
-- (ZXModulusPoly *)multiplyScalar:(int)scalar;
-- (ZXModulusPoly *)multiplyByMonomial:(int)degree coefficient:(int)coefficient;
+- (ZXModulusPoly *)multiplyScalar:(NSInteger)scalar;
+- (ZXModulusPoly *)multiplyByMonomial:(NSInteger)degree coefficient:(NSInteger)coefficient;
 - (NSArray *)divide:(ZXModulusPoly *)other;
 
 @end

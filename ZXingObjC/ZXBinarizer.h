@@ -34,13 +34,13 @@
 @interface ZXBinarizer : NSObject
 
 @property (nonatomic, strong, readonly) ZXLuminanceSource *luminanceSource;
-@property (nonatomic, assign, readonly) int width;
-@property (nonatomic, assign, readonly) int height;
+@property (nonatomic, assign, readonly) NSInteger width;
+@property (nonatomic, assign, readonly) NSInteger height;
 
 - (id)initWithSource:(ZXLuminanceSource *)source;
 + (id)binarizerWithSource:(ZXLuminanceSource *)source;
 - (ZXBitMatrix *)blackMatrixWithError:(NSError **)error;
-- (ZXBitArray *)blackRow:(int)y row:(ZXBitArray *)row error:(NSError **)error;
+- (ZXBitArray *)blackRow:(NSInteger)y row:(ZXBitArray *)row error:(NSError **)error;
 - (ZXBinarizer *)createBinarizer:(ZXLuminanceSource *)source;
 - (CGImageRef)createImage;
 

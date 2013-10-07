@@ -18,8 +18,8 @@
 
 @implementation TestResult
 
-- (id)initWithMustPassCount:(int)mustPassCount tryHarderCount:(int)tryHarderCount maxMisreads:(int)maxMisreads
-       maxTryHarderMisreads:(int)maxTryHarderMisreads rotation:(float)rotation {
+- (id)initWithMustPassCount:(NSInteger)mustPassCount tryHarderCount:(NSInteger)tryHarderCount maxMisreads:(NSInteger)maxMisreads
+       maxTryHarderMisreads:(NSInteger)maxTryHarderMisreads rotation:(float)rotation {
   if (self = [super init]) {
     _mustPassCount = mustPassCount;
     _tryHarderCount = tryHarderCount;

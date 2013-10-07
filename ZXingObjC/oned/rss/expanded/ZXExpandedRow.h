@@ -20,10 +20,10 @@
 @interface ZXExpandedRow : NSObject
 
 @property (nonatomic, strong, readonly) NSArray *pairs;
-@property (nonatomic, assign, readonly) int rowNumber;
+@property (nonatomic, assign, readonly) NSInteger rowNumber;
 @property (nonatomic, assign, readonly) BOOL wasReversed;
 
-- (id)initWithPairs:(NSArray *)pairs rowNumber:(int)rowNumber wasReversed:(BOOL)wasReversed;
+- (id)initWithPairs:(NSArray *)pairs rowNumber:(NSInteger)rowNumber wasReversed:(BOOL)wasReversed;
 - (BOOL)isReversed;
 - (BOOL)isEquivalent:(NSArray *)otherPairs;
 

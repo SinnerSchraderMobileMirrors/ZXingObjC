@@ -159,9 +159,9 @@
   STAssertEquals([ZXMaskUtil applyMaskPenaltyRule4:matrix], 30, @"Expected applyMaskPenaltyRule4 to return 30");
 }
 
-BOOL TestGetDataMaskBitInternal(int maskPattern, int *expected) {
-  for (int x = 0; x < 6; ++x) {
-    for (int y = 0; y < 6; ++y) {
+BOOL TestGetDataMaskBitInternal(NSInteger maskPattern, NSInteger *expected) {
+  for (NSInteger x = 0; x < 6; ++x) {
+    for (NSInteger y = 0; y < 6; ++y) {
       if ((expected[y*6+x] == 1) != [ZXMaskUtil dataMaskBit:maskPattern x:x y:y]) {
         return NO;
       }
@@ -172,7 +172,7 @@ BOOL TestGetDataMaskBitInternal(int maskPattern, int *expected) {
 
 // See mask patterns on the page 43 of JISX0510:2004.
 - (void)testGetDataMaskBit {
-  int mask0[6][6] = {
+  NSInteger mask0[6][6] = {
     {1, 0, 1, 0, 1, 0},
     {0, 1, 0, 1, 0, 1},
     {1, 0, 1, 0, 1, 0},
@@ -180,8 +180,8 @@ BOOL TestGetDataMaskBitInternal(int maskPattern, int *expected) {
     {1, 0, 1, 0, 1, 0},
     {0, 1, 0, 1, 0, 1},
   };
-  STAssertTrue(TestGetDataMaskBitInternal(0, (int *)mask0), @"Expected TestGetDataMaskBitInternal to return YES");
-  int mask1[6][6] = {
+  STAssertTrue(TestGetDataMaskBitInternal(0, (NSInteger *)mask0), @"Expected TestGetDataMaskBitInternal to return YES");
+  NSInteger mask1[6][6] = {
     {1, 1, 1, 1, 1, 1},
     {0, 0, 0, 0, 0, 0},
     {1, 1, 1, 1, 1, 1},
@@ -189,8 +189,8 @@ BOOL TestGetDataMaskBitInternal(int maskPattern, int *expected) {
     {1, 1, 1, 1, 1, 1},
     {0, 0, 0, 0, 0, 0},
   };
-  STAssertTrue(TestGetDataMaskBitInternal(1, (int *)mask1), @"Expected TestGetDataMaskBitInternal to return YES");
-  int mask2[6][6] = {
+  STAssertTrue(TestGetDataMaskBitInternal(1, (NSInteger *)mask1), @"Expected TestGetDataMaskBitInternal to return YES");
+  NSInteger mask2[6][6] = {
     {1, 0, 0, 1, 0, 0},
     {1, 0, 0, 1, 0, 0},
     {1, 0, 0, 1, 0, 0},
@@ -198,8 +198,8 @@ BOOL TestGetDataMaskBitInternal(int maskPattern, int *expected) {
     {1, 0, 0, 1, 0, 0},
     {1, 0, 0, 1, 0, 0},
   };
-  STAssertTrue(TestGetDataMaskBitInternal(2, (int *)mask2), @"Expected TestGetDataMaskBitInternal to return YES");
-  int mask3[6][6] = {
+  STAssertTrue(TestGetDataMaskBitInternal(2, (NSInteger *)mask2), @"Expected TestGetDataMaskBitInternal to return YES");
+  NSInteger mask3[6][6] = {
     {1, 0, 0, 1, 0, 0},
     {0, 0, 1, 0, 0, 1},
     {0, 1, 0, 0, 1, 0},
@@ -207,8 +207,8 @@ BOOL TestGetDataMaskBitInternal(int maskPattern, int *expected) {
     {0, 0, 1, 0, 0, 1},
     {0, 1, 0, 0, 1, 0},
   };
-  STAssertTrue(TestGetDataMaskBitInternal(3, (int *)mask3), @"Expected TestGetDataMaskBitInternal to return YES");
-  int mask4[6][6] = {
+  STAssertTrue(TestGetDataMaskBitInternal(3, (NSInteger *)mask3), @"Expected TestGetDataMaskBitInternal to return YES");
+  NSInteger mask4[6][6] = {
     {1, 1, 1, 0, 0, 0},
     {1, 1, 1, 0, 0, 0},
     {0, 0, 0, 1, 1, 1},
@@ -216,8 +216,8 @@ BOOL TestGetDataMaskBitInternal(int maskPattern, int *expected) {
     {1, 1, 1, 0, 0, 0},
     {1, 1, 1, 0, 0, 0},
   };
-  STAssertTrue(TestGetDataMaskBitInternal(4, (int *)mask4), @"Expected TestGetDataMaskBitInternal to return YES");
-  int mask5[6][6] = {
+  STAssertTrue(TestGetDataMaskBitInternal(4, (NSInteger *)mask4), @"Expected TestGetDataMaskBitInternal to return YES");
+  NSInteger mask5[6][6] = {
     {1, 1, 1, 1, 1, 1},
     {1, 0, 0, 0, 0, 0},
     {1, 0, 0, 1, 0, 0},
@@ -225,8 +225,8 @@ BOOL TestGetDataMaskBitInternal(int maskPattern, int *expected) {
     {1, 0, 0, 1, 0, 0},
     {1, 0, 0, 0, 0, 0},
   };
-  STAssertTrue(TestGetDataMaskBitInternal(5, (int *)mask5), @"Expected TestGetDataMaskBitInternal to return YES");
-  int mask6[6][6] = {
+  STAssertTrue(TestGetDataMaskBitInternal(5, (NSInteger *)mask5), @"Expected TestGetDataMaskBitInternal to return YES");
+  NSInteger mask6[6][6] = {
     {1, 1, 1, 1, 1, 1},
     {1, 1, 1, 0, 0, 0},
     {1, 1, 0, 1, 1, 0},
@@ -234,8 +234,8 @@ BOOL TestGetDataMaskBitInternal(int maskPattern, int *expected) {
     {1, 0, 1, 1, 0, 1},
     {1, 0, 0, 0, 1, 1},
   };
-  STAssertTrue(TestGetDataMaskBitInternal(6, (int *)mask6), @"Expected TestGetDataMaskBitInternal to return YES");
-  int mask7[6][6] = {
+  STAssertTrue(TestGetDataMaskBitInternal(6, (NSInteger *)mask6), @"Expected TestGetDataMaskBitInternal to return YES");
+  NSInteger mask7[6][6] = {
     {1, 0, 1, 0, 1, 0},
     {0, 0, 0, 1, 1, 1},
     {1, 0, 0, 0, 1, 1},
@@ -243,7 +243,7 @@ BOOL TestGetDataMaskBitInternal(int maskPattern, int *expected) {
     {1, 1, 1, 0, 0, 0},
     {0, 1, 1, 1, 0, 0},
   };
-  STAssertTrue(TestGetDataMaskBitInternal(7, (int *)mask7), @"Expected TestGetDataMaskBitInternal to return YES");
+  STAssertTrue(TestGetDataMaskBitInternal(7, (NSInteger *)mask7), @"Expected TestGetDataMaskBitInternal to return YES");
 }
 
 @end

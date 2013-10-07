@@ -33,8 +33,8 @@
 + (ZXGridSampler *)instance;
 + (void)setGridSampler:(ZXGridSampler *)newGridSampler;
 - (ZXBitMatrix *)sampleGrid:(ZXBitMatrix *)image
-                 dimensionX:(int)dimensionX
-                 dimensionY:(int)dimensionY
+                 dimensionX:(NSInteger)dimensionX
+                 dimensionY:(NSInteger)dimensionY
                       p1ToX:(float)p1ToX p1ToY:(float)p1ToY
                       p2ToX:(float)p2ToX p2ToY:(float)p2ToY
                       p3ToX:(float)p3ToX p3ToY:(float)p3ToY
@@ -45,10 +45,10 @@
                     p4FromX:(float)p4FromX p4FromY:(float)p4FromY
                       error:(NSError **)error;
 - (ZXBitMatrix *)sampleGrid:(ZXBitMatrix *)image
-                 dimensionX:(int)dimensionX
-                 dimensionY:(int)dimensionY
+                 dimensionX:(NSInteger)dimensionX
+                 dimensionY:(NSInteger)dimensionY
                   transform:(ZXPerspectiveTransform *)transform
                       error:(NSError **)error;
-+ (BOOL)checkAndNudgePoints:(ZXBitMatrix *)image points:(float *)points pointsLen:(int)pointsLen error:(NSError **)error;
++ (BOOL)checkAndNudgePoints:(ZXBitMatrix *)image points:(float *)points pointsLen:(NSInteger)pointsLen error:(NSError **)error;
 
 @end

@@ -41,10 +41,10 @@
 }
 
 - (ZXResult *)decode:(ZXBinaryBitmap *)image hints:(ZXDecodeHints *)hints error:(NSError **)error {
-  int width = image.width;
-  int height = image.height;
-  int halfWidth = width / 2;
-  int halfHeight = height / 2;
+  NSInteger width = image.width;
+  NSInteger height = image.height;
+  NSInteger halfWidth = width / 2;
+  NSInteger halfHeight = height / 2;
 
   ZXBinaryBitmap *topLeft = [image crop:0 top:0 width:halfWidth height:halfHeight];
   NSError *decodeError = nil;
@@ -86,8 +86,8 @@
     return nil;
   }
 
-  int quarterWidth = halfWidth / 2;
-  int quarterHeight = halfHeight / 2;
+  NSInteger quarterWidth = halfWidth / 2;
+  NSInteger quarterHeight = halfHeight / 2;
   ZXBinaryBitmap *center = [image crop:quarterWidth top:quarterHeight width:halfWidth height:halfHeight];
   return [self.delegate decode:center hints:hints error:error];
 }

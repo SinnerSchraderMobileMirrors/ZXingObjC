@@ -17,7 +17,7 @@
 #import "ZXAI01AndOtherAIs.h"
 #import "ZXGeneralAppIdDecoder.h"
 
-int const AI01_HEADER_SIZE = 1 + 1 + 2;
+NSInteger const AI01_HEADER_SIZE = 1 + 1 + 2;
 
 @implementation ZXAI01AndOtherAIs
 
@@ -25,9 +25,9 @@ int const AI01_HEADER_SIZE = 1 + 1 + 2;
   NSMutableString *buff = [NSMutableString string];
 
   [buff appendString:@"(01)"];
-  int initialGtinPosition = [buff length];
-  int firstGtinDigit = [self.generalDecoder extractNumericValueFromBitArray:AI01_HEADER_SIZE bits:4];
-  [buff appendFormat:@"%d", firstGtinDigit];
+  NSInteger initialGtinPosition = [buff length];
+  NSInteger firstGtinDigit = [self.generalDecoder extractNumericValueFromBitArray:AI01_HEADER_SIZE bits:4];
+  [buff appendFormat:@"%ld", (long)firstGtinDigit];
 
   [self encodeCompressedGtinWithoutAI:buff currentPos:AI01_HEADER_SIZE + 4 initialBufferPosition:initialGtinPosition];
 

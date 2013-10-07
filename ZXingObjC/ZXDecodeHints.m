@@ -65,7 +65,7 @@
   return [self.barcodeFormats containsObject:[NSNumber numberWithInt:format]];
 }
 
-- (int)numberOfPossibleFormats {
+- (NSInteger)numberOfPossibleFormats {
   return self.barcodeFormats.count;
 }
 

@@ -18,7 +18,7 @@
 
 @protocol ZXDataMatrixEncoder <NSObject>
 
-- (int)encodingMode;
+- (NSInteger)encodingMode;
 - (void)encode:(ZXEncoderContext *)context;
 
 @end

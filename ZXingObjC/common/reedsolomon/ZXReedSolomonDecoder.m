@@ -40,14 +40,14 @@
  * codewords. Really, this means it uses Reed-Solomon to detect and correct errors, in-place,
  * in the input.
  */
-- (BOOL)decode:(int *)received receivedLen:(int)receivedLen twoS:(int)twoS error:(NSError **)error {
+- (BOOL)decode:(NSInteger *)received receivedLen:(NSUInteger)receivedLen twoS:(NSInteger)twoS error:(NSError **)error {
   ZXGenericGFPoly *poly = [[ZXGenericGFPoly alloc] initWithField:self.field coefficients:received coefficientsLen:receivedLen];
-  int syndromeCoefficientsLen = twoS;
-  int syndromeCoefficients[syndromeCoefficientsLen];
+  NSInteger syndromeCoefficientsLen = twoS;
+  NSInteger syndromeCoefficients[syndromeCoefficientsLen];
   BOOL noError = YES;
 
-  for (int i = 0; i < twoS; i++) {
-    int eval = [poly evaluateAt:[self.field exp:i + self.field.generatorBase]];
+  for (NSInteger i = 0; i < twoS; i++) {
+    NSInteger eval = [poly evaluateAt:[self.field exp:i + self.field.generatorBase]];
     syndromeCoefficients[syndromeCoefficientsLen - 1 - i] = eval;
     if (eval != 0) {
       noError = NO;
@@ -68,8 +68,8 @@
     return NO;
   }
   NSArray *errorMagnitudes = [self findErrorMagnitudes:omega errorLocations:errorLocations];
-  for (int i = 0; i < [errorLocations count]; i++) {
-    int position = receivedLen - 1 - [self.field log:[errorLocations[i] intValue]];
+  for (NSInteger i = 0; i < [errorLocations count]; i++) {
+    NSInteger position = receivedLen - 1 - [self.field log:[errorLocations[i] intValue]];
     if (position < 0) {
       NSDictionary *userInfo = @{NSLocalizedDescriptionKey: @"Bad error location"};
       
@@ -81,7 +81,7 @@
   return YES;
 }
 
-- (NSArray *)runEuclideanAlgorithm:(ZXGenericGFPoly *)a b:(ZXGenericGFPoly *)b R:(int)R error:(NSError **)error {
+- (NSArray *)runEuclideanAlgorithm:(ZXGenericGFPoly *)a b:(ZXGenericGFPoly *)b R:(NSInteger)R error:(NSError **)error {
   if (a.degree < b.degree) {
     ZXGenericGFPoly *temp = a;
     a = b;
@@ -107,12 +107,12 @@
     }
     r = rLastLast;
     ZXGenericGFPoly *q = [self.field zero];
-    int denominatorLeadingTerm = [rLast coefficient:[rLast degree]];
-    int dltInverse = [self.field inverse:denominatorLeadingTerm];
+    NSInteger denominatorLeadingTerm = [rLast coefficient:[rLast degree]];
+    NSInteger dltInverse = [self.field inverse:denominatorLeadingTerm];
 
     while ([r degree] >= [rLast degree] && ![r zero]) {
-      int degreeDiff = [r degree] - [rLast degree];
-      int scale = [self.field multiply:[r coefficient:[r degree]] b:dltInverse];
+      NSInteger degreeDiff = [r degree] - [rLast degree];
+      NSInteger scale = [self.field multiply:[r coefficient:[r degree]] b:dltInverse];
       q = [q addOrSubtract:[self.field buildMonomial:degreeDiff coefficient:scale]];
       r = [r addOrSubtract:[rLast multiplyByMonomial:degreeDiff coefficient:scale]];
     }
@@ -126,7 +126,7 @@
     }
   }
 
-  int sigmaTildeAtZero = [t coefficient:0];
+  NSInteger sigmaTildeAtZero = [t coefficient:0];
   if (sigmaTildeAtZero == 0) {
     NSDictionary *userInfo = @{NSLocalizedDescriptionKey: @"sigmaTilde(0) was zero"};
 
@@ -134,20 +134,20 @@
     return NO;
   }
 
-  int inverse = [self.field inverse:sigmaTildeAtZero];
+  NSInteger inverse = [self.field inverse:sigmaTildeAtZero];
   ZXGenericGFPoly *sigma = [t multiplyScalar:inverse];
   ZXGenericGFPoly *omega = [r multiplyScalar:inverse];
   return @[sigma, omega];
 }
 
 - (NSArray *)findErrorLocations:(ZXGenericGFPoly *)errorLocator error:(NSError **)error {
-  int numErrors = [errorLocator degree];
+  NSInteger numErrors = [errorLocator degree];
   if (numErrors == 1) {
     return @[@([errorLocator coefficient:1])];
   }
   NSMutableArray *result = [NSMutableArray arrayWithCapacity:numErrors];
-  int e = 0;
-  for (int i = 1; i < [self.field size] && e < numErrors; i++) {
+  NSInteger e = 0;
+  for (NSInteger i = 1; i < [self.field size] && e < numErrors; i++) {
     if ([errorLocator evaluateAt:i] == 0) {
       [result addObject:@([self.field inverse:i])];
       e++;
@@ -164,15 +164,15 @@
 }
 
 - (NSArray *)findErrorMagnitudes:(ZXGenericGFPoly *)errorEvaluator errorLocations:(NSArray *)errorLocations {
-  int s = [errorLocations count];
+  NSUInteger s = [errorLocations count];
   NSMutableArray *result = [NSMutableArray array];
-  for (int i = 0; i < s; i++) {
-    int xiInverse = [self.field inverse:[errorLocations[i] intValue]];
-    int denominator = 1;
-    for (int j = 0; j < s; j++) {
+  for (NSInteger i = 0; i < s; i++) {
+    NSInteger xiInverse = [self.field inverse:[errorLocations[i] intValue]];
+    NSInteger denominator = 1;
+    for (NSInteger j = 0; j < s; j++) {
       if (i != j) {
-        int term = [self.field multiply:[errorLocations[j] intValue] b:xiInverse];
-        int termPlus1 = (term & 0x1) == 0 ? term | 1 : term & ~1;
+        NSInteger term = [self.field multiply:[errorLocations[j] intValue] b:xiInverse];
+        NSInteger termPlus1 = (term & 0x1) == 0 ? term | 1 : term & ~1;
         denominator = [self.field multiply:denominator b:termPlus1];
       }
     }

@@ -18,14 +18,14 @@
 
 @interface NegativeTestResult : NSObject
 
-@property (nonatomic, assign) int falsePositivesAllowed;
+@property (nonatomic, assign) NSInteger falsePositivesAllowed;
 @property (nonatomic, assign) float rotation;
 
 @end
 
 @implementation NegativeTestResult
 
-- (id)initWithFalsePositivesAllowed:(int)falsePositivesAllowed rotation:(float)rotation {
+- (id)initWithFalsePositivesAllowed:(NSInteger)falsePositivesAllowed rotation:(float)rotation {
   if (self = [super init]) {
     _falsePositivesAllowed = falsePositivesAllowed;
     _rotation = rotation;
@@ -53,7 +53,7 @@
   return self;
 }
 
-- (void)addTest:(int)falsePositivesAllowed rotation:(float)rotation {
+- (void)addTest:(NSInteger)falsePositivesAllowed rotation:(float)rotation {
   [self.testResults addObject:[[NegativeTestResult alloc] initWithFalsePositivesAllowed:falsePositivesAllowed rotation:rotation]];
 }
 
@@ -73,14 +73,14 @@
 
   NSArray *imageFiles = [self imageFiles];
 
-  int falsePositives[self.testResults.count];
-  memset(falsePositives, 0, self.testResults.count * sizeof(int));
+  NSInteger falsePositives[self.testResults.count];
+  memset(falsePositives, 0, self.testResults.count * sizeof(NSInteger));
 
   for (NSURL *testImage in imageFiles) {
     NSLog(@"Starting %@", [self pathInBundle:testImage]);
 
     ZXImage *image = [[ZXImage alloc] initWithURL:testImage];
-    for (int x = 0; x < self.testResults.count; x++) {
+    for (NSInteger x = 0; x < self.testResults.count; x++) {
       NegativeTestResult *testResult = self.testResults[x];
       if (![self checkForFalsePositives:image rotationInDegrees:testResult.rotation]) {
         falsePositives[x]++;
@@ -88,26 +88,26 @@
     }
   }
 
-  int totalFalsePositives = 0;
-  int totalAllowed = 0;
+  NSInteger totalFalsePositives = 0;
+  NSInteger totalAllowed = 0;
 
-  for (int x = 0; x < self.testResults.count; x++) {
+  for (NSInteger x = 0; x < self.testResults.count; x++) {
     NegativeTestResult *testResult = self.testResults[x];
     totalFalsePositives += falsePositives[x];
     totalAllowed += testResult.falsePositivesAllowed;
   }
 
   if (totalFalsePositives < totalAllowed) {
-    NSLog(@"  +++ Test too lax by %d images", totalAllowed - totalFalsePositives);
+    NSLog(@"  +++ Test too lax by %ld images", totalAllowed - totalFalsePositives);
   } else if (totalFalsePositives > totalAllowed) {
-    NSLog(@"  --- Test failed by %d images", totalFalsePositives - totalAllowed);
+    NSLog(@"  --- Test failed by %ld images", totalFalsePositives - totalAllowed);
   }
 
-  for (int x = 0; x < self.testResults.count; x++) {
+  for (NSInteger x = 0; x < self.testResults.count; x++) {
     NegativeTestResult *testResult = self.testResults[x];
-    NSLog(@"Rotation %d degrees: %d of %d images were false positives (%d allowed)",
-          (int)testResult.rotation, falsePositives[x], (int)imageFiles.count,
-          testResult.falsePositivesAllowed);
+    NSLog(@"Rotation %ld degrees: %ld of %ld images were false positives (%ld allowed)",
+          (long)testResult.rotation, (long)falsePositives[x], (long)imageFiles.count,
+          (long)testResult.falsePositivesAllowed);
     STAssertTrue(falsePositives[x] <= testResult.falsePositivesAllowed,
                  @"Rotation %f degrees: Too many false positives found", testResult.rotation);
   }
@@ -123,8 +123,8 @@
   NSError *error = nil;
   ZXResult *result = [self.barcodeReader decode:bitmap error:&error];
   if (result) {
-    NSLog(@"Found false positive: '%@' with format '%@' (rotation: %d)",
-          result.text, [AbstractBlackBoxTestCase barcodeFormatAsString:result.barcodeFormat], (int) rotationInDegrees);
+    NSLog(@"Found false positive: '%@' with format '%@' (rotation: %ld)",
+          result.text, [AbstractBlackBoxTestCase barcodeFormatAsString:result.barcodeFormat], (long) rotationInDegrees);
     return NO;
   }
 
@@ -133,8 +133,8 @@
   hints.tryHarder = YES;
   result = [self.barcodeReader decode:bitmap hints:hints error:&error];
   if (result) {
-    NSLog(@"Try harder found false positive: '%@' with format '%@' (rotation: %d)",
-          result.text, [AbstractBlackBoxTestCase barcodeFormatAsString:result.barcodeFormat], (int) rotationInDegrees);
+    NSLog(@"Try harder found false positive: '%@' with format '%@' (rotation: %ld)",
+          result.text, [AbstractBlackBoxTestCase barcodeFormatAsString:result.barcodeFormat], (long) rotationInDegrees);
     return NO;
   }
   return YES;

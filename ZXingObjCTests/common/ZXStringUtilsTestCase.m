@@ -36,7 +36,7 @@
   [self doTestWithBytes:bytes length:9 encoding:NSShiftJISStringEncoding];
 }
 
-- (void)doTestWithBytes:(int8_t *)bytes length:(int)length encoding:(NSStringEncoding)encoding {
+- (void)doTestWithBytes:(int8_t *)bytes length:(NSInteger)length encoding:(NSStringEncoding)encoding {
   STAssertEquals([ZXStringUtils guessEncoding:bytes length:length hints:nil], encoding, @"Encodings do not match");
 }
 

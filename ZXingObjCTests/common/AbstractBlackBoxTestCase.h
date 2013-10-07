@@ -22,8 +22,8 @@
 
 - (id)initWithInvocation:(NSInvocation *)invocation testBasePathSuffix:(NSString *)testBasePathSuffix barcodeReader:(id<ZXReader>)barcodeReader expectedFormat:(ZXBarcodeFormat)expectedFormat;
 + (NSString *)barcodeFormatAsString:(ZXBarcodeFormat)format;
-- (void)addTest:(int)mustPassCount tryHarderCount:(int)tryHarderCount rotation:(float)rotation;
-- (void)addTest:(int)mustPassCount tryHarderCount:(int)tryHarderCount maxMisreads:(int)maxMisreads maxTryHarderMisreads:(int)maxTryHarderMisreads rotation:(float)rotation;
+- (void)addTest:(NSInteger)mustPassCount tryHarderCount:(NSInteger)tryHarderCount rotation:(float)rotation;
+- (void)addTest:(NSInteger)mustPassCount tryHarderCount:(NSInteger)tryHarderCount maxMisreads:(NSInteger)maxMisreads maxTryHarderMisreads:(NSInteger)maxTryHarderMisreads rotation:(float)rotation;
 - (void)runTests;
 
 - (NSArray *)imageFiles;

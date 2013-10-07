@@ -19,9 +19,9 @@
 @interface ZXGeneralAppIdDecoder : NSObject
 
 - (id)initWithInformation:(ZXBitArray *)information;
-- (NSString *)decodeAllCodes:(NSMutableString *)buff initialPosition:(int)initialPosition error:(NSError **)error;
-- (int)extractNumericValueFromBitArray:(int)pos bits:(int)bits;
-+ (int)extractNumericValueFromBitArray:(ZXBitArray *)information pos:(int)pos bits:(int)bits;
-- (ZXDecodedInformation *)decodeGeneralPurposeField:(int)pos remaining:(NSString *)remaining;
+- (NSString *)decodeAllCodes:(NSMutableString *)buff initialPosition:(NSInteger)initialPosition error:(NSError **)error;
+- (NSInteger)extractNumericValueFromBitArray:(NSInteger)pos bits:(NSInteger)bits;
++ (NSInteger)extractNumericValueFromBitArray:(ZXBitArray *)information pos:(NSInteger)pos bits:(NSInteger)bits;
+- (ZXDecodedInformation *)decodeGeneralPurposeField:(NSInteger)pos remaining:(NSString *)remaining;
 
 @end

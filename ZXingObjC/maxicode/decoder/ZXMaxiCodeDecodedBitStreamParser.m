@@ -63,20 +63,20 @@ const unichar SETS[1][383] = {
 
 @implementation ZXMaxiCodeDecodedBitStreamParser
 
-+ (ZXDecoderResult *)decode:(int8_t *)bytes length:(unsigned int)length mode:(int)mode {
++ (ZXDecoderResult *)decode:(int8_t *)bytes length:(NSUInteger)length mode:(NSInteger)mode {
   NSMutableString *result = [NSMutableString stringWithCapacity:144];
   switch (mode) {
     case 2:
     case 3: {
       NSString *postcode;
       if (mode == 2) {
-        int pc = [self postCode2:bytes length:length];
-        postcode = [NSString stringWithFormat:@"%9d", pc];
+        NSInteger pc = [self postCode2:bytes length:length];
+        postcode = [NSString stringWithFormat:@"%9ld", (long)pc];
       } else {
         postcode = [self postCode3:bytes length:length];
       }
-      NSString *country = [NSString stringWithFormat:@"%3d", [self country:bytes length:length]];
-      NSString *service = [NSString stringWithFormat:@"%3d", [self serviceClass:bytes length:length]];
+      NSString *country = [NSString stringWithFormat:@"%3ld", (long)[self country:bytes length:length]];
+      NSString *service = [NSString stringWithFormat:@"%3ld", (long)[self serviceClass:bytes length:length]];
       [result appendString:[self message:bytes length:length start:10 len:84]];
       if ([result hasPrefix:[NSString stringWithFormat:@"[)>%C01%C", RS, GS]]) {
         [result insertString:[NSString stringWithFormat:@"%@%C%@%C%@%C", postcode, GS, country, GS, service, GS] atIndex:9];
@@ -96,45 +96,45 @@ const unichar SETS[1][383] = {
                                              length:length
                                                text:result
                                        byteSegments:nil
-                                            ecLevel:[NSString stringWithFormat:@"%d", mode]];
+                                            ecLevel:[NSString stringWithFormat:@"%ld", (long)mode]];
 }
 
-+ (int)bit:(int)bit bytes:(int8_t *)bytes length:(unsigned int)length {
++ (NSInteger)bit:(NSInteger)bit bytes:(int8_t *)bytes length:(NSUInteger)length {
   bit--;
   return (bytes[bit / 6] & (1 << (5 - (bit % 6)))) == 0 ? 0 : 1;
 }
 
-+ (int)integer:(int8_t *)bytes length:(unsigned int)length x:(int8_t *)x xLength:(unsigned int)xLength {
-  int val = 0;
-  for (int i = 0; i < xLength; i++) {
++ (NSInteger)integer:(int8_t *)bytes length:(NSUInteger)length x:(int8_t *)x xLength:(NSUInteger)xLength {
+  NSInteger val = 0;
+  for (NSInteger i = 0; i < xLength; i++) {
     val += [self bit:x[i] bytes:bytes length:length] << (xLength - i - 1);
   }
   return val;
 }
 
 #define COUNTRY_ARRAY_LEN 10
-+ (int)country:(int8_t *)bytes length:(unsigned int)length {
++ (NSInteger)country:(int8_t *)bytes length:(NSUInteger)length {
   int8_t array[COUNTRY_ARRAY_LEN] = {53, 54, 43, 44, 45, 46, 47, 48, 37, 38};
 
   return [self integer:bytes length:length x:array xLength:COUNTRY_ARRAY_LEN];
 }
 
 #define SERVICE_ARRAY_LEN 10
-+ (int)serviceClass:(int8_t *)bytes length:(unsigned int)length {
++ (NSInteger)serviceClass:(int8_t *)bytes length:(NSUInteger)length {
   int8_t array[SERVICE_ARRAY_LEN] = {55, 56, 57, 58, 59, 60, 49, 50, 51, 52};
 
   return [self integer:bytes length:length x:array xLength:SERVICE_ARRAY_LEN];
 }
 
 #define POST_CODE2_LENGTH_LEN 10
-+ (int)postCode2Length:(int8_t *)bytes length:(unsigned int)length {
++ (NSInteger)postCode2Length:(int8_t *)bytes length:(NSUInteger)length {
   int8_t array[POST_CODE2_LENGTH_LEN] = {39, 40, 41, 42, 31, 32};
 
   return [self integer:bytes length:length x:array xLength:POST_CODE2_LENGTH_LEN];
 }
 
 #define POST_CODE2_LEN 30
-+ (int)postCode2:(int8_t *)bytes length:(unsigned int)length {
++ (NSInteger)postCode2:(int8_t *)bytes length:(NSUInteger)length {
   int8_t array[POST_CODE2_LEN] = {33, 34, 35, 36, 25, 26, 27, 28, 29, 30, 19,
     20, 21, 22, 23, 24, 13, 14, 15, 16, 17, 18, 7, 8, 9, 10, 11, 12, 1, 2};
 
@@ -142,7 +142,7 @@ const unichar SETS[1][383] = {
 }
 
 #define POST_CODE3_LEN 6
-+ (NSString *)postCode3:(int8_t *)bytes length:(unsigned int)length {
++ (NSString *)postCode3:(int8_t *)bytes length:(NSUInteger)length {
   int8_t array[POST_CODE3_LEN][POST_CODE3_LEN] = {
     {39, 40, 41, 42, 31, 32},
     {33, 34, 35, 36, 25, 26},
@@ -161,12 +161,12 @@ const unichar SETS[1][383] = {
           SETS[0][[self integer:bytes length:length x:array[5] xLength:POST_CODE3_LEN]]];
 }
 
-+ (NSString *)message:(int8_t *)bytes length:(unsigned int)length start:(int)start len:(int)len {
++ (NSString *)message:(int8_t *)bytes length:(NSUInteger)length start:(NSInteger)start len:(NSUInteger)len {
   NSMutableString *sb = [NSMutableString string];
-  int shift = -1;
-  int set = 0;
-  int lastset = 0;
-  for (int i = start; i < start + len; i++) {
+  NSInteger shift = -1;
+  NSInteger set = 0;
+  NSInteger lastset = 0;
+  for (NSInteger i = start; i < start + len; i++) {
     unichar c = SETS[set][bytes[i]];
     switch (c) {
       case LATCHA:
@@ -197,13 +197,13 @@ const unichar SETS[1][383] = {
         shift = 3;
         break;
       case NS: {
-        int nsval1 = bytes[++i] << 24;
-        int nsval2 = bytes[++i] << 18;
-        int nsval3 = bytes[++i] << 12;
-        int nsval4 = bytes[++i] << 6;
-        int nsval5 = bytes[++i];
-        int nsval = nsval1 + nsval2 + nsval3 + nsval4 + nsval5;
-        [sb appendFormat:@"%9d", nsval];
+        NSInteger nsval1 = bytes[++i] << 24;
+        NSInteger nsval2 = bytes[++i] << 18;
+        NSInteger nsval3 = bytes[++i] << 12;
+        NSInteger nsval4 = bytes[++i] << 6;
+        NSInteger nsval5 = bytes[++i];
+        NSInteger nsval = nsval1 + nsval2 + nsval3 + nsval4 + nsval5;
+        [sb appendFormat:@"%9ld", (long)nsval];
         break;
       }
       case LOCK:

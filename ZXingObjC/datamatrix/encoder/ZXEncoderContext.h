@@ -20,27 +20,27 @@
 
 @property (nonatomic, copy) NSMutableString *codewords;
 @property (nonatomic, copy) NSString *message;
-@property (nonatomic, assign) int newEncoding;
-@property (nonatomic, assign) int pos;
-@property (nonatomic, assign) int skipAtEnd;
+@property (nonatomic, assign) NSInteger newEncoding;
+@property (nonatomic, assign) NSInteger pos;
+@property (nonatomic, assign) NSInteger skipAtEnd;
 @property (nonatomic, strong) ZXSymbolShapeHint *symbolShape;
 @property (nonatomic, strong) ZXSymbolInfo *symbolInfo;
 
 - (id)initWithMessage:(NSString *)msg;
 - (void)setSizeConstraints:(ZXDimension *)minSize maxSize:(ZXDimension *)maxSize;
-- (void)setSkipAtEnd:(int)count;
+- (void)setSkipAtEnd:(NSInteger)count;
 - (unichar)currentChar;
 - (unichar)current;
 - (void)writeCodewords:(NSString *)codewords;
 - (void)writeCodeword:(unichar)codeword;
-- (int)codewordCount;
-- (void)signalEncoderChange:(int)encoding;
+- (NSInteger)codewordCount;
+- (void)signalEncoderChange:(NSInteger)encoding;
 - (void)resetEncoderSignal;
 - (BOOL)hasMoreCharacters;
-- (int)totalMessageCharCount;
-- (int)remainingCharacters;
+- (NSInteger)totalMessageCharCount;
+- (NSInteger)remainingCharacters;
 - (void)updateSymbolInfo;
-- (void)updateSymbolInfoWithLength:(int)len;
+- (void)updateSymbolInfoWithLength:(NSInteger)len;
 - (void)resetSymbolInfo;
 
 @end

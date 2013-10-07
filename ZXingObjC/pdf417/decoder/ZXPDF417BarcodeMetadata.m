@@ -18,8 +18,8 @@
 
 @implementation ZXPDF417BarcodeMetadata
 
-- (id)initWithColumnCount:(int)columnCount rowCountUpperPart:(int)rowCountUpperPart rowCountLowerPart:(int)rowCountLowerPart
-     errorCorrectionLevel:(int)errorCorrectionLevel {
+- (id)initWithColumnCount:(NSInteger)columnCount rowCountUpperPart:(NSInteger)rowCountUpperPart rowCountLowerPart:(NSInteger)rowCountLowerPart
+     errorCorrectionLevel:(NSInteger)errorCorrectionLevel {
   self = [super init];
   if (self) {
     _columnCount = columnCount;

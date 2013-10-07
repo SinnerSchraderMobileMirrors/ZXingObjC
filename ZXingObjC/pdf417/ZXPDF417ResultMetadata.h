@@ -16,7 +16,7 @@
 
 @interface ZXPDF417ResultMetadata : NSObject
 
-@property (nonatomic, assign) int segmentIndex;
+@property (nonatomic, assign) NSInteger segmentIndex;
 @property (nonatomic, copy) NSString *fileId;
 @property (nonatomic, strong) NSArray *optionalData;
 @property (nonatomic, assign) BOOL lastSegment;

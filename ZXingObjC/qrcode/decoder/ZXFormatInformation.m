@@ -17,13 +17,13 @@
 #import "ZXErrorCorrectionLevel.h"
 #import "ZXFormatInformation.h"
 
-int const FORMAT_INFO_MASK_QR = 0x5412;
+NSInteger const FORMAT_INFO_MASK_QR = 0x5412;
 
 /**
  * See ISO 18004:2006, Annex C, Table C.1
  */
-int const FORMAT_INFO_DECODE_LOOKUP_LEN = 32;
-int const FORMAT_INFO_DECODE_LOOKUP[FORMAT_INFO_DECODE_LOOKUP_LEN][2] = {
+NSInteger const FORMAT_INFO_DECODE_LOOKUP_LEN = 32;
+NSInteger const FORMAT_INFO_DECODE_LOOKUP[FORMAT_INFO_DECODE_LOOKUP_LEN][2] = {
   {0x5412, 0x00},
   {0x5125, 0x01},
   {0x5E7C, 0x02},
@@ -61,11 +61,11 @@ int const FORMAT_INFO_DECODE_LOOKUP[FORMAT_INFO_DECODE_LOOKUP_LEN][2] = {
 /**
  * Offset i holds the number of 1 bits in the binary representation of i
  */
-int const BITS_SET_IN_HALF_BYTE[16] = {0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4};
+NSInteger const BITS_SET_IN_HALF_BYTE[16] = {0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4};
 
 @implementation ZXFormatInformation
 
-- (id)initWithFormatInfo:(int)formatInfo {
+- (id)initWithFormatInfo:(NSInteger)formatInfo {
   if (self = [super init]) {
     _errorCorrectionLevel = [ZXErrorCorrectionLevel forBits:(formatInfo >> 3) & 0x03];
     _dataMask = (char)(formatInfo & 0x07);
@@ -74,19 +74,19 @@ int const BITS_SET_IN_HALF_BYTE[16] = {0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3,
   return self;
 }
 
-+ (int)numBitsDiffering:(int)a b:(int)b {
++ (NSInteger)numBitsDiffering:(NSInteger)a b:(NSInteger)b {
   a ^= b;
   return BITS_SET_IN_HALF_BYTE[a & 0x0F] +
-      BITS_SET_IN_HALF_BYTE[((int)((unsigned int)a) >> 4 & 0x0F)] +
-      BITS_SET_IN_HALF_BYTE[((int)((unsigned int)a) >> 8 & 0x0F)] +
-      BITS_SET_IN_HALF_BYTE[((int)((unsigned int)a) >> 12 & 0x0F)] +
-      BITS_SET_IN_HALF_BYTE[((int)((unsigned int)a) >> 16 & 0x0F)] +
-      BITS_SET_IN_HALF_BYTE[((int)((unsigned int)a) >> 20 & 0x0F)] +
-      BITS_SET_IN_HALF_BYTE[((int)((unsigned int)a) >> 24 & 0x0F)] +
-      BITS_SET_IN_HALF_BYTE[((int)((unsigned int)a) >> 28 & 0x0F)];
+      BITS_SET_IN_HALF_BYTE[((NSInteger)((NSUInteger)a) >> 4 & 0x0F)] +
+      BITS_SET_IN_HALF_BYTE[((NSInteger)((NSUInteger)a) >> 8 & 0x0F)] +
+      BITS_SET_IN_HALF_BYTE[((NSInteger)((NSUInteger)a) >> 12 & 0x0F)] +
+      BITS_SET_IN_HALF_BYTE[((NSInteger)((NSUInteger)a) >> 16 & 0x0F)] +
+      BITS_SET_IN_HALF_BYTE[((NSInteger)((NSUInteger)a) >> 20 & 0x0F)] +
+      BITS_SET_IN_HALF_BYTE[((NSInteger)((NSUInteger)a) >> 24 & 0x0F)] +
+      BITS_SET_IN_HALF_BYTE[((NSInteger)((NSUInteger)a) >> 28 & 0x0F)];
 }
 
-+ (ZXFormatInformation *)decodeFormatInformation:(int)maskedFormatInfo1 maskedFormatInfo2:(int)maskedFormatInfo2 {
++ (ZXFormatInformation *)decodeFormatInformation:(NSInteger)maskedFormatInfo1 maskedFormatInfo2:(NSInteger)maskedFormatInfo2 {
   ZXFormatInformation *formatInfo = [self doDecodeFormatInformation:maskedFormatInfo1 maskedFormatInfo2:maskedFormatInfo2];
   if (formatInfo != nil) {
     return formatInfo;
@@ -94,16 +94,16 @@ int const BITS_SET_IN_HALF_BYTE[16] = {0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3,
   return [self doDecodeFormatInformation:maskedFormatInfo1 ^ FORMAT_INFO_MASK_QR maskedFormatInfo2:maskedFormatInfo2 ^ FORMAT_INFO_MASK_QR];
 }
 
-+ (ZXFormatInformation *)doDecodeFormatInformation:(int)maskedFormatInfo1 maskedFormatInfo2:(int)maskedFormatInfo2 {
-  int bestDifference = INT_MAX;
-  int bestFormatInfo = 0;
++ (ZXFormatInformation *)doDecodeFormatInformation:(NSInteger)maskedFormatInfo1 maskedFormatInfo2:(NSInteger)maskedFormatInfo2 {
+  NSInteger bestDifference = INT_MAX;
+  NSInteger bestFormatInfo = 0;
 
-  for (int i = 0; i < FORMAT_INFO_DECODE_LOOKUP_LEN; i++) {
-    int targetInfo = FORMAT_INFO_DECODE_LOOKUP[i][0];
+  for (NSInteger i = 0; i < FORMAT_INFO_DECODE_LOOKUP_LEN; i++) {
+    NSInteger targetInfo = FORMAT_INFO_DECODE_LOOKUP[i][0];
     if (targetInfo == maskedFormatInfo1 || targetInfo == maskedFormatInfo2) {
       return [[ZXFormatInformation alloc] initWithFormatInfo:FORMAT_INFO_DECODE_LOOKUP[i][1]];
     }
-    int bitsDifference = [self numBitsDiffering:maskedFormatInfo1 b:targetInfo];
+    NSInteger bitsDifference = [self numBitsDiffering:maskedFormatInfo1 b:targetInfo];
     if (bitsDifference < bestDifference) {
       bestFormatInfo = FORMAT_INFO_DECODE_LOOKUP[i][1];
       bestDifference = bitsDifference;
@@ -124,7 +124,7 @@ int const BITS_SET_IN_HALF_BYTE[16] = {0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3,
 }
 
 - (NSUInteger)hash {
-  return (self.errorCorrectionLevel.ordinal << 3) | (int)self.dataMask;
+  return (self.errorCorrectionLevel.ordinal << 3) | (NSInteger)self.dataMask;
 }
 
 - (BOOL)isEqual:(id)o {

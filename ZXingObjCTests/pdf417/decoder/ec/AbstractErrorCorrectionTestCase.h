@@ -18,7 +18,7 @@
 
 @interface AbstractErrorCorrectionTestCase : SenTestCase
 
-- (void)corrupt:(NSMutableArray *)received howMany:(int)howMany;
-- (NSArray *)erase:(NSMutableArray *)received howMany:(int)howMany;
+- (void)corrupt:(NSMutableArray *)received howMany:(NSInteger)howMany;
+- (NSArray *)erase:(NSMutableArray *)received howMany:(NSInteger)howMany;
 
 @end

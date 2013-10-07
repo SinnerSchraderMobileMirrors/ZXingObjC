@@ -25,29 +25,29 @@
 
 @implementation ZXGenericGFPoly
 
-- (id)initWithField:(ZXGenericGF *)field coefficients:(int *)coefficients coefficientsLen:(int)coefficientsLen {
+- (id)initWithField:(ZXGenericGF *)field coefficients:(NSInteger *)coefficients coefficientsLen:(NSInteger)coefficientsLen {
   if (self = [super init]) {
     _field = field;
     if (coefficientsLen > 1 && coefficients[0] == 0) {
-      int firstNonZero = 1;
+      NSInteger firstNonZero = 1;
       while (firstNonZero < coefficientsLen && coefficients[firstNonZero] == 0) {
         firstNonZero++;
       }
       if (firstNonZero == coefficientsLen) {
         ZXGenericGFPoly *zero = [field zero];
-        _coefficients = (int *)malloc(zero.coefficientsLen * sizeof(int));
-        memcpy(_coefficients, zero.coefficients, zero.coefficientsLen * sizeof(int));
+        _coefficients = (NSInteger *)malloc(zero.coefficientsLen * sizeof(NSInteger));
+        memcpy(_coefficients, zero.coefficients, zero.coefficientsLen * sizeof(NSInteger));
         _coefficientsLen = zero.coefficientsLen;
       } else {
         _coefficientsLen = (coefficientsLen - firstNonZero);
-        _coefficients = (int *)malloc(_coefficientsLen * sizeof(int));
-        for (int i = 0; i < _coefficientsLen; i++) {
+        _coefficients = (NSInteger *)malloc(_coefficientsLen * sizeof(NSInteger));
+        for (NSInteger i = 0; i < _coefficientsLen; i++) {
           _coefficients[i] = coefficients[firstNonZero + i];
         }
       }
     } else {
-      _coefficients = (int *)malloc(coefficientsLen * sizeof(int));
-      memcpy(_coefficients, coefficients, coefficientsLen * sizeof(int));
+      _coefficients = (NSInteger *)malloc(coefficientsLen * sizeof(NSInteger));
+      memcpy(_coefficients, coefficients, coefficientsLen * sizeof(NSInteger));
       _coefficientsLen = coefficientsLen;
     }
   }
@@ -62,7 +62,7 @@
   }
 }
 
-- (int)degree {
+- (NSInteger)degree {
   return self.coefficientsLen - 1;
 }
 
@@ -70,24 +70,24 @@
   return self.coefficients[0] == 0;
 }
 
-- (int)coefficient:(int)degree {
+- (NSInteger)coefficient:(NSInteger)degree {
   return self.coefficients[self.coefficientsLen - 1 - degree];
 }
 
-- (int)evaluateAt:(int)a {
+- (NSInteger)evaluateAt:(NSInteger)a {
   if (a == 0) {
     return [self coefficient:0];
   }
-  int size = self.coefficientsLen;
+  NSInteger size = self.coefficientsLen;
   if (a == 1) {
-    int result = 0;
-    for (int i = 0; i < size; i++) {
+    NSInteger result = 0;
+    for (NSInteger i = 0; i < size; i++) {
       result = [ZXGenericGF addOrSubtract:result b:self.coefficients[i]];
     }
     return result;
   }
-  int result = self.coefficients[0];
-  for (int i = 1; i < size; i++) {
+  NSInteger result = self.coefficients[0];
+  for (NSInteger i = 1; i < size; i++) {
     result = [ZXGenericGF addOrSubtract:[self.field multiply:a b:result] b:self.coefficients[i]];
   }
   return result;
@@ -104,24 +104,24 @@
     return self;
   }
 
-  int *smallerCoefficients = self.coefficients;
-  int smallerCoefficientsLen = self.coefficientsLen;
-  int *largerCoefficients = other.coefficients;
-  int largerCoefficientsLen = other.coefficientsLen;
+  NSInteger *smallerCoefficients = self.coefficients;
+  NSInteger smallerCoefficientsLen = self.coefficientsLen;
+  NSInteger *largerCoefficients = other.coefficients;
+  NSInteger largerCoefficientsLen = other.coefficientsLen;
   if (smallerCoefficientsLen > largerCoefficientsLen) {
-    int *temp = smallerCoefficients;
-    int tempLen = smallerCoefficientsLen;
+    NSInteger *temp = smallerCoefficients;
+    NSInteger tempLen = smallerCoefficientsLen;
     smallerCoefficients = largerCoefficients;
     smallerCoefficientsLen = largerCoefficientsLen;
     largerCoefficients = temp;
     largerCoefficientsLen = tempLen;
   }
-  int sumDiff[largerCoefficientsLen];
-  int lengthDiff = largerCoefficientsLen - smallerCoefficientsLen;
-  for (int i = 0; i < lengthDiff; i++) {
+  NSInteger sumDiff[largerCoefficientsLen];
+  NSInteger lengthDiff = largerCoefficientsLen - smallerCoefficientsLen;
+  for (NSInteger i = 0; i < lengthDiff; i++) {
     sumDiff[i] = largerCoefficients[i];
   }
-  for (int i = lengthDiff; i < largerCoefficientsLen; i++) {
+  for (NSInteger i = lengthDiff; i < largerCoefficientsLen; i++) {
     sumDiff[i] = [ZXGenericGF addOrSubtract:smallerCoefficients[i - lengthDiff] b:largerCoefficients[i]];
   }
 
@@ -135,17 +135,17 @@
   if (self.zero || other.zero) {
     return self.field.zero;
   }
-  int *aCoefficients = self.coefficients;
-  int aLength = self.coefficientsLen;
-  int *bCoefficients = other.coefficients;
-  int bLength = other.coefficientsLen;
-  int productLen = aLength + bLength - 1;
-  int product[productLen];
-  memset(product, 0, productLen * sizeof(int));
+  NSInteger *aCoefficients = self.coefficients;
+  NSInteger aLength = self.coefficientsLen;
+  NSInteger *bCoefficients = other.coefficients;
+  NSInteger bLength = other.coefficientsLen;
+  NSInteger productLen = aLength + bLength - 1;
+  NSInteger product[productLen];
+  memset(product, 0, productLen * sizeof(NSInteger));
 
-  for (int i = 0; i < aLength; i++) {
-    int aCoeff = aCoefficients[i];
-    for (int j = 0; j < bLength; j++) {
+  for (NSInteger i = 0; i < aLength; i++) {
+    NSInteger aCoeff = aCoefficients[i];
+    for (NSInteger j = 0; j < bLength; j++) {
       product[i + j] = [ZXGenericGF addOrSubtract:product[i + j]
                                                 b:[self.field multiply:aCoeff b:bCoefficients[j]]];
     }
@@ -153,31 +153,31 @@
   return [[ZXGenericGFPoly alloc] initWithField:self.field coefficients:product coefficientsLen:productLen];
 }
 
-- (ZXGenericGFPoly *)multiplyScalar:(int)scalar {
+- (ZXGenericGFPoly *)multiplyScalar:(NSInteger)scalar {
   if (scalar == 0) {
     return self.field.zero;
   }
   if (scalar == 1) {
     return self;
   }
-  int size = self.coefficientsLen;
-  int product[size];
-  for (int i = 0; i < size; i++) {
+  NSInteger size = self.coefficientsLen;
+  NSInteger product[size];
+  for (NSInteger i = 0; i < size; i++) {
     product[i] = [self.field multiply:self.coefficients[i] b:scalar];
   }
   return [[ZXGenericGFPoly alloc] initWithField:self.field coefficients:product coefficientsLen:size];
 }
 
-- (ZXGenericGFPoly *)multiplyByMonomial:(int)degree coefficient:(int)coefficient {
+- (ZXGenericGFPoly *)multiplyByMonomial:(NSInteger)degree coefficient:(NSInteger)coefficient {
   if (degree < 0) {
     [NSException raise:NSInvalidArgumentException format:@"Degree must be greater than 0."];
   }
   if (coefficient == 0) {
     return self.field.zero;
   }
-  int size = self.coefficientsLen;
-  int product[size + degree];
-  for (int i = 0; i < size + degree; i++) {
+  NSInteger size = self.coefficientsLen;
+  NSInteger product[size + degree];
+  for (NSInteger i = 0; i < size + degree; i++) {
     if (i < size) {
       product[i] = [self.field multiply:self.coefficients[i] b:coefficient];
     } else {
@@ -199,12 +199,12 @@
   ZXGenericGFPoly *quotient = self.field.zero;
   ZXGenericGFPoly *remainder = self;
 
-  int denominatorLeadingTerm = [other coefficient:other.degree];
-  int inverseDenominatorLeadingTerm = [self.field inverse:denominatorLeadingTerm];
+  NSInteger denominatorLeadingTerm = [other coefficient:other.degree];
+  NSInteger inverseDenominatorLeadingTerm = [self.field inverse:denominatorLeadingTerm];
 
   while ([remainder degree] >= other.degree && !remainder.zero) {
-    int degreeDifference = remainder.degree - other.degree;
-    int scale = [self.field multiply:[remainder coefficient:remainder.degree] b:inverseDenominatorLeadingTerm];
+    NSInteger degreeDifference = remainder.degree - other.degree;
+    NSInteger scale = [self.field multiply:[remainder coefficient:remainder.degree] b:inverseDenominatorLeadingTerm];
     ZXGenericGFPoly *term = [other multiplyByMonomial:degreeDifference coefficient:scale];
     ZXGenericGFPoly *iterationQuotient = [self.field buildMonomial:degreeDifference coefficient:scale];
     quotient = [quotient addOrSubtract:iterationQuotient];
@@ -216,8 +216,8 @@
 
 - (NSString *) description {
   NSMutableString *result = [NSMutableString stringWithCapacity:8 * [self degree]];
-  for (int degree = [self degree]; degree >= 0; degree--) {
-    int coefficient = [self coefficient:degree];
+  for (NSInteger degree = [self degree]; degree >= 0; degree--) {
+    NSInteger coefficient = [self coefficient:degree];
     if (coefficient != 0) {
       if (coefficient < 0) {
         [result appendString:@" - "];
@@ -228,14 +228,14 @@
         }
       }
       if (degree == 0 || coefficient != 1) {
-        int alphaPower = [self.field log:coefficient];
+        NSInteger alphaPower = [self.field log:coefficient];
         if (alphaPower == 0) {
           [result appendString:@"1"];
         } else if (alphaPower == 1) {
           [result appendString:@"a"];
         } else {
           [result appendString:@"a^"];
-          [result appendFormat:@"%d", alphaPower];
+          [result appendFormat:@"%ld", (long)alphaPower];
         }
       }
       if (degree != 0) {
@@ -243,7 +243,7 @@
           [result appendString:@"x"];
         } else {
           [result appendString:@"x^"];
-          [result appendFormat:@"%d", degree];
+          [result appendFormat:@"%ld", (long)degree];
         }
       }
     }

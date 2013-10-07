@@ -18,10 +18,10 @@
 
 @interface ZXPDF417BoundingBox : NSObject
 
-@property (nonatomic, assign, readonly) int minX;
-@property (nonatomic, assign, readonly) int maxX;
-@property (nonatomic, assign, readonly) int minY;
-@property (nonatomic, assign, readonly) int maxY;
+@property (nonatomic, assign, readonly) NSInteger minX;
+@property (nonatomic, assign, readonly) NSInteger maxX;
+@property (nonatomic, assign, readonly) NSInteger minY;
+@property (nonatomic, assign, readonly) NSInteger maxY;
 @property (nonatomic, strong, readonly) ZXResultPoint *topLeft;
 @property (nonatomic, strong) ZXResultPoint *topRight;
 @property (nonatomic, strong, readonly) ZXResultPoint *bottomLeft;
@@ -32,6 +32,6 @@
 - (id)initWithBoundingBox:(ZXPDF417BoundingBox *)boundingBox;
 
 + (ZXPDF417BoundingBox *)mergeLeftBox:(ZXPDF417BoundingBox *)leftBox rightBox:(ZXPDF417BoundingBox *)rightBox;
-- (void)addMissingRows:(int)missingStartRows missingEndRows:(int)missingEndRows isLeft:(BOOL)isLeft;
+- (void)addMissingRows:(NSInteger)missingStartRows missingEndRows:(NSInteger)missingEndRows isLeft:(BOOL)isLeft;
 
 @end

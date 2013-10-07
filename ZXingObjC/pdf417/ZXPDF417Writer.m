@@ -22,7 +22,7 @@
 
 @implementation ZXPDF417Writer
 
-- (ZXBitMatrix *)encode:(NSString *)contents format:(ZXBarcodeFormat)format width:(int)width height:(int)height
+- (ZXBitMatrix *)encode:(NSString *)contents format:(ZXBarcodeFormat)format width:(NSInteger)width height:(NSInteger)height
                   hints:(ZXEncodeHints *)hints error:(NSError **)error {
   if (format != kBarcodeFormatPDF417) {
     [NSException raise:NSInvalidArgumentException format:@"Can only encode PDF_417, but got %d", format];
@@ -45,24 +45,24 @@
   return [self bitMatrixFromEncoder:encoder contents:contents width:width height:height error:error];
 }
 
-- (ZXBitMatrix *)encode:(NSString *)contents format:(ZXBarcodeFormat)format width:(int)width height:(int)height error:(NSError **)error {
+- (ZXBitMatrix *)encode:(NSString *)contents format:(ZXBarcodeFormat)format width:(NSInteger)width height:(NSInteger)height error:(NSError **)error {
   return [self encode:contents format:format width:width height:height hints:nil error:error];
 }
 
 /**
  * Takes encoder, accounts for width/height, and retrieves bit matrix
  */
-- (ZXBitMatrix *)bitMatrixFromEncoder:(ZXPDF417 *)encoder contents:(NSString *)contents width:(int)width height:(int)height error:(NSError **)error {
-  int errorCorrectionLevel = 2;
+- (ZXBitMatrix *)bitMatrixFromEncoder:(ZXPDF417 *)encoder contents:(NSString *)contents width:(NSInteger)width height:(NSInteger)height error:(NSError **)error {
+  NSInteger errorCorrectionLevel = 2;
   if (![encoder generateBarcodeLogic:contents errorCorrectionLevel:errorCorrectionLevel error:error]) {
     return nil;
   }
 
-  int lineThickness = 2;
-  int aspectRatio = 4;
+  NSInteger lineThickness = 2;
+  NSInteger aspectRatio = 4;
 
-  int scaleHeight;
-  int scaleWidth;
+  NSInteger scaleHeight;
+  NSInteger scaleWidth;
   int8_t **originalScale = [[encoder barcodeMatrix] scaledMatrixWithHeight:&scaleHeight width:&scaleWidth xScale:lineThickness yScale:aspectRatio * lineThickness];
   BOOL rotated = NO;
   if ((height > width) ^ (scaleWidth < scaleHeight)) {
@@ -72,10 +72,10 @@
     rotated = YES;
   }
 
-  int scaleX = width / scaleWidth;
-  int scaleY = height / scaleHeight;
+  NSInteger scaleX = width / scaleWidth;
+  NSInteger scaleY = height / scaleHeight;
 
-  int scale;
+  NSInteger scale;
   if (scaleX < scaleY) {
     scale = scaleX;
   } else {
@@ -103,15 +103,15 @@
 /**
  * This takes an array holding the values of the PDF 417
  */
-- (ZXBitMatrix *)bitMatrixFrombitArray:(int8_t **)input height:(int)height width:(int)width {
+- (ZXBitMatrix *)bitMatrixFrombitArray:(int8_t **)input height:(NSInteger)height width:(NSInteger)width {
   // Creates a small whitespace boarder around the barcode
-  int whiteSpace = 30;
+  NSInteger whiteSpace = 30;
 
   // Creates the bitmatrix with extra space for whtespace
   ZXBitMatrix *output = [[ZXBitMatrix alloc] initWithWidth:width + 2 * whiteSpace height:height + 2 * whiteSpace];
   [output clear];
-  for (int y = 0, yOutput = output.height - whiteSpace; y < height; y++, yOutput--) {
-    for (int x = 0; x < width; x++) {
+  for (NSInteger y = 0, yOutput = output.height - whiteSpace; y < height; y++, yOutput--) {
+    for (NSInteger x = 0; x < width; x++) {
       // Zero is white in the bytematrix
       if (input[y][x] == 1) {
         [output setX:x + whiteSpace y:yOutput];
@@ -124,13 +124,13 @@
 /**
  * Takes and rotates the it 90 degrees
  */
-- (int8_t **)rotateArray:(int8_t **)bitarray height:(int)height width:(int)width {
+- (int8_t **)rotateArray:(int8_t **)bitarray height:(NSInteger)height width:(NSInteger)width {
   int8_t **temp = (int8_t **)malloc(width * sizeof(int8_t *));
-  for (int ii = 0; ii < height; ii++) {
+  for (NSInteger ii = 0; ii < height; ii++) {
     // This makes the direction consistent on screen when rotating the
     // screen;
-    int inverseii = height - ii - 1;
-    for (int jj = 0; jj < width; jj++) {
+    NSInteger inverseii = height - ii - 1;
+    for (NSInteger jj = 0; jj < width; jj++) {
       temp[jj][inverseii] = bitarray[ii][jj];
     }
   }

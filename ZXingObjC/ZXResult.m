@@ -25,11 +25,11 @@
 
 @implementation ZXResult
 
-- (id)initWithText:(NSString *)text rawBytes:(int8_t *)rawBytes length:(unsigned int)length resultPoints:(NSArray *)resultPoints format:(ZXBarcodeFormat)format {
+- (id)initWithText:(NSString *)text rawBytes:(int8_t *)rawBytes length:(NSUInteger)length resultPoints:(NSArray *)resultPoints format:(ZXBarcodeFormat)format {
   return [self initWithText:text rawBytes:rawBytes length:length resultPoints:resultPoints format:format timestamp:CFAbsoluteTimeGetCurrent()];
 }
 
-- (id)initWithText:(NSString *)text rawBytes:(int8_t *)rawBytes length:(unsigned int)length resultPoints:(NSArray *)resultPoints format:(ZXBarcodeFormat)format timestamp:(long)timestamp {
+- (id)initWithText:(NSString *)text rawBytes:(int8_t *)rawBytes length:(NSUInteger)length resultPoints:(NSArray *)resultPoints format:(ZXBarcodeFormat)format timestamp:(long)timestamp {
   if (self = [super init]) {
     _text = text;
     if (rawBytes != NULL && length > 0) {
@@ -49,11 +49,11 @@
   return self;
 }
 
-+ (id)resultWithText:(NSString *)text rawBytes:(int8_t *)rawBytes length:(unsigned int)length resultPoints:(NSArray *)resultPoints format:(ZXBarcodeFormat)format {
++ (id)resultWithText:(NSString *)text rawBytes:(int8_t *)rawBytes length:(NSUInteger)length resultPoints:(NSArray *)resultPoints format:(ZXBarcodeFormat)format {
   return [[self alloc] initWithText:text rawBytes:rawBytes length:length resultPoints:resultPoints format:format];
 }
 
-+ (id)resultWithText:(NSString *)text rawBytes:(int8_t *)rawBytes length:(unsigned int)length resultPoints:(NSArray *)resultPoints format:(ZXBarcodeFormat)format timestamp:(long)timestamp {
++ (id)resultWithText:(NSString *)text rawBytes:(int8_t *)rawBytes length:(NSUInteger)length resultPoints:(NSArray *)resultPoints format:(ZXBarcodeFormat)format timestamp:(long)timestamp {
   return [[self alloc] initWithText:text rawBytes:rawBytes length:length resultPoints:resultPoints format:format timestamp:timestamp];
 }
 

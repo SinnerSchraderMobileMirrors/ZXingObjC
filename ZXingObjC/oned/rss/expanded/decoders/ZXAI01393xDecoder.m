@@ -22,9 +22,9 @@
 
 @implementation ZXAI01393xDecoder
 
-int const AI01393xDecoder_HEADER_SIZE = 5 + 1 + 2;
-int const AI01393xDecoder_LAST_DIGIT_SIZE = 2;
-int const AI01393xDecoder_FIRST_THREE_DIGITS_SIZE = 10;
+NSInteger const AI01393xDecoder_HEADER_SIZE = 5 + 1 + 2;
+NSInteger const AI01393xDecoder_LAST_DIGIT_SIZE = 2;
+NSInteger const AI01393xDecoder_FIRST_THREE_DIGITS_SIZE = 10;
 
 - (NSString *)parseInformationWithError:(NSError **)error {
   if (self.information.size < AI01393xDecoder_HEADER_SIZE + GTIN_SIZE) {
@@ -36,18 +36,18 @@ int const AI01393xDecoder_FIRST_THREE_DIGITS_SIZE = 10;
 
   [self encodeCompressedGtin:buf currentPos:AI01393xDecoder_HEADER_SIZE];
 
-  int lastAIdigit = [self.generalDecoder extractNumericValueFromBitArray:AI01393xDecoder_HEADER_SIZE + GTIN_SIZE bits:AI01393xDecoder_LAST_DIGIT_SIZE];
+  NSInteger lastAIdigit = [self.generalDecoder extractNumericValueFromBitArray:AI01393xDecoder_HEADER_SIZE + GTIN_SIZE bits:AI01393xDecoder_LAST_DIGIT_SIZE];
 
-  [buf appendFormat:@"(393%d)", lastAIdigit];
+  [buf appendFormat:@"(393%ld)", (long)lastAIdigit];
 
-  int firstThreeDigits = [self.generalDecoder extractNumericValueFromBitArray:AI01393xDecoder_HEADER_SIZE + GTIN_SIZE + AI01393xDecoder_LAST_DIGIT_SIZE bits:AI01393xDecoder_FIRST_THREE_DIGITS_SIZE];
+  NSInteger firstThreeDigits = [self.generalDecoder extractNumericValueFromBitArray:AI01393xDecoder_HEADER_SIZE + GTIN_SIZE + AI01393xDecoder_LAST_DIGIT_SIZE bits:AI01393xDecoder_FIRST_THREE_DIGITS_SIZE];
   if (firstThreeDigits / 100 == 0) {
     [buf appendString:@"0"];
   }
   if (firstThreeDigits / 10 == 0) {
     [buf appendString:@"0"];
   }
-  [buf appendFormat:@"%d", firstThreeDigits];
+  [buf appendFormat:@"%ld", (long) (long)firstThreeDigits];
 
   ZXDecodedInformation *generalInformation = [self.generalDecoder decodeGeneralPurposeField:AI01393xDecoder_HEADER_SIZE + GTIN_SIZE + AI01393xDecoder_LAST_DIGIT_SIZE + AI01393xDecoder_FIRST_THREE_DIGITS_SIZE remaining:nil];
   [buf appendString:generalInformation.theNewString];

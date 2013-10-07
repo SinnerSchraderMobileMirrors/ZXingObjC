@@ -17,13 +17,13 @@
 @interface ZXBarcodeRow : NSObject
 
 @property (nonatomic, assign, readonly) int8_t *row;
-@property (nonatomic, assign, readonly) int rowLength;
+@property (nonatomic, assign, readonly) NSInteger rowLength;
 
-+ (ZXBarcodeRow *)barcodeRowWithWidth:(int)width;
-- (id)initWithWidth:(int)width;
-- (void)setX:(int)x value:(int8_t)value;
-- (void)setX:(int)x black:(BOOL)black;
-- (void)addBar:(BOOL)black width:(int)width;
-- (int8_t *)scaledRow:(int)scale;
++ (ZXBarcodeRow *)barcodeRowWithWidth:(NSInteger)width;
+- (id)initWithWidth:(NSInteger)width;
+- (void)setX:(NSInteger)x value:(int8_t)value;
+- (void)setX:(NSInteger)x black:(BOOL)black;
+- (void)addBar:(BOOL)black width:(NSInteger)width;
+- (int8_t *)scaledRow:(NSInteger)scale;
 
 @end

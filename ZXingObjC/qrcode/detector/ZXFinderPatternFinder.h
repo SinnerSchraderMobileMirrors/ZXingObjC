@@ -21,8 +21,8 @@
  * This class is thread-safe but not reentrant. Each thread must allocate its own object.
  */
 
-extern int const FINDER_PATTERN_MIN_SKIP;
-extern int const FINDER_PATTERN_MAX_MODULES;
+extern NSInteger const FINDER_PATTERN_MIN_SKIP;
+extern NSInteger const FINDER_PATTERN_MAX_MODULES;
 
 @class ZXBitMatrix, ZXDecodeHints, ZXFinderPatternInfo;
 @protocol ZXResultPointCallback;
@@ -35,7 +35,7 @@ extern int const FINDER_PATTERN_MAX_MODULES;
 - (id)initWithImage:(ZXBitMatrix *)image;
 - (id)initWithImage:(ZXBitMatrix *)image resultPointCallback:(id<ZXResultPointCallback>)resultPointCallback;
 - (ZXFinderPatternInfo *)find:(ZXDecodeHints *)hints error:(NSError **)error;
-+ (BOOL)foundPatternCross:(int[])stateCount;
-- (BOOL)handlePossibleCenter:(int[])stateCount i:(int)i j:(int)j;
++ (BOOL)foundPatternCross:(NSInteger[])stateCount;
+- (BOOL)handlePossibleCenter:(NSInteger[])stateCount i:(NSInteger)i j:(NSInteger)j;
 
 @end

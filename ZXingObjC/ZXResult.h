@@ -25,16 +25,16 @@
 
 @property (nonatomic, copy, readonly) NSString *text;
 @property (nonatomic, assign, readonly) int8_t *rawBytes;
-@property (nonatomic, assign, readonly) int length;
+@property (nonatomic, assign, readonly) NSInteger length;
 @property (nonatomic, strong, readonly) NSMutableArray *resultPoints;
 @property (nonatomic, assign, readonly) ZXBarcodeFormat barcodeFormat;
 @property (nonatomic, strong, readonly) NSMutableDictionary *resultMetadata;
 @property (nonatomic, assign, readonly) long timestamp;
 
-- (id)initWithText:(NSString *)text rawBytes:(int8_t *)rawBytes length:(unsigned int)length resultPoints:(NSArray *)resultPoints format:(ZXBarcodeFormat)format;
-- (id)initWithText:(NSString *)text rawBytes:(int8_t *)rawBytes length:(unsigned int)length resultPoints:(NSArray *)resultPoints format:(ZXBarcodeFormat)format timestamp:(long)timestamp;
-+ (id)resultWithText:(NSString *)text rawBytes:(int8_t *)rawBytes length:(unsigned int)length resultPoints:(NSArray *)resultPoints format:(ZXBarcodeFormat)format;
-+ (id)resultWithText:(NSString *)text rawBytes:(int8_t *)rawBytes length:(unsigned int)length resultPoints:(NSArray *)resultPoints format:(ZXBarcodeFormat)format timestamp:(long)timestamp;
+- (id)initWithText:(NSString *)text rawBytes:(int8_t *)rawBytes length:(NSUInteger)length resultPoints:(NSArray *)resultPoints format:(ZXBarcodeFormat)format;
+- (id)initWithText:(NSString *)text rawBytes:(int8_t *)rawBytes length:(NSUInteger)length resultPoints:(NSArray *)resultPoints format:(ZXBarcodeFormat)format timestamp:(long)timestamp;
++ (id)resultWithText:(NSString *)text rawBytes:(int8_t *)rawBytes length:(NSUInteger)length resultPoints:(NSArray *)resultPoints format:(ZXBarcodeFormat)format;
++ (id)resultWithText:(NSString *)text rawBytes:(int8_t *)rawBytes length:(NSUInteger)length resultPoints:(NSArray *)resultPoints format:(ZXBarcodeFormat)format timestamp:(long)timestamp;
 - (void)putMetadata:(ZXResultMetadataType)type value:(id)value;
 - (void)putAllMetadata:(NSMutableDictionary *)metadata;
 - (void)addResultPoints:(NSArray *)newPoints;

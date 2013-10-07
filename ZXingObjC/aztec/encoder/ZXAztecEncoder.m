@@ -21,26 +21,26 @@
 #import "ZXGenericGF.h"
 #import "ZXReedSolomonEncoder.h"
 
-int ZX_DEFAULT_AZTEC_EC_PERCENT = 33;
+NSInteger ZX_DEFAULT_AZTEC_EC_PERCENT = 33;
 
-const int TABLE_UPPER  = 0; // 5 bits
-const int TABLE_LOWER  = 1; // 5 bits
-const int TABLE_DIGIT  = 2; // 4 bits
-const int TABLE_MIXED  = 3; // 5 bits
-const int TABLE_PUNCT  = 4; // 5 bits
-const int TABLE_BINARY = 5; // 8 bits
+const NSInteger TABLE_UPPER  = 0; // 5 bits
+const NSInteger TABLE_LOWER  = 1; // 5 bits
+const NSInteger TABLE_DIGIT  = 2; // 4 bits
+const NSInteger TABLE_MIXED  = 3; // 5 bits
+const NSInteger TABLE_PUNCT  = 4; // 5 bits
+const NSInteger TABLE_BINARY = 5; // 8 bits
 
-static int CHAR_MAP[5][256]; // reverse mapping ASCII -> table offset, per table
-static int SHIFT_TABLE[6][6]; // mode shift codes, per table
-static int LATCH_TABLE[6][6]; // mode latch codes, per table
+static NSInteger CHAR_MAP[5][256]; // reverse mapping ASCII -> table offset, per table
+static NSInteger SHIFT_TABLE[6][6]; // mode shift codes, per table
+static NSInteger LATCH_TABLE[6][6]; // mode latch codes, per table
 
-const int NB_BITS_LEN = 33;
-static int NB_BITS[NB_BITS_LEN]; // total bits per compact symbol for a given number of layers
+const NSInteger NB_BITS_LEN = 33;
+static NSInteger NB_BITS[NB_BITS_LEN]; // total bits per compact symbol for a given number of layers
 
-const int NB_BITS_COMPACT_LEN = 5;
-static int NB_BITS_COMPACT[NB_BITS_COMPACT_LEN]; // total bits per full symbol for a given number of layers
+const NSInteger NB_BITS_COMPACT_LEN = 5;
+static NSInteger NB_BITS_COMPACT[NB_BITS_COMPACT_LEN]; // total bits per full symbol for a given number of layers
 
-static int WORD_SIZE[33] = {
+static NSInteger WORD_SIZE[33] = {
   4, 6, 6, 8, 8, 8, 8, 8, 8, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
   12, 12, 12, 12, 12, 12, 12, 12, 12, 12
 };
@@ -49,40 +49,40 @@ static int WORD_SIZE[33] = {
 
 + (void)initialize {
   CHAR_MAP[TABLE_UPPER][' '] = 1;
-  for (int c = 'A'; c <= 'Z'; c++) {
+  for (NSInteger c = 'A'; c <= 'Z'; c++) {
     CHAR_MAP[TABLE_UPPER][c] = c - 'A' + 2;
   }
   CHAR_MAP[TABLE_LOWER][' '] = 1;
-  for (int c = 'a'; c <= 'z'; c++) {
+  for (NSInteger c = 'a'; c <= 'z'; c++) {
     CHAR_MAP[TABLE_LOWER][c] = c - 'a' + 2;
   }
   CHAR_MAP[TABLE_DIGIT][' '] = 1;
-  for (int c = '0'; c <= '9'; c++) {
+  for (NSInteger c = '0'; c <= '9'; c++) {
     CHAR_MAP[TABLE_DIGIT][c] = c - '0' + 2;
   }
   CHAR_MAP[TABLE_DIGIT][','] = 12;
   CHAR_MAP[TABLE_DIGIT]['.'] = 13;
 
-  const int mixedTableLen = 28;
-  int mixedTable[mixedTableLen] = {
+  const NSInteger mixedTableLen = 28;
+  NSInteger mixedTable[mixedTableLen] = {
     '\0', ' ', '\1', '\2', '\3', '\4', '\5', '\6', '\7', '\b', '\t', '\n', '\13', '\f', '\r',
     '\33', '\34', '\35', '\36', '\37', '@', '\\', '^', '_', '`', '|', '~', '\177'
   };
-  for (int i = 0; i < 28; i++) {
+  for (NSInteger i = 0; i < 28; i++) {
     CHAR_MAP[TABLE_MIXED][mixedTable[i]] = i;
   }
-  const int punctTableLen = 31;
-  int punctTable[punctTableLen] = {
+  const NSInteger punctTableLen = 31;
+  NSInteger punctTable[punctTableLen] = {
     '\0', '\r', '\0', '\0', '\0', '\0', '!', '\'', '#', '$', '%', '&', '\'', '(', ')', '*', '+',
     ',', '-', '.', '/', ':', ';', '<', '=', '>', '?', '[', ']', '{', '}'
   };
-  for (int i = 0; i < punctTableLen; i++) {
+  for (NSInteger i = 0; i < punctTableLen; i++) {
     if (punctTable[i] > 0) {
       CHAR_MAP[TABLE_PUNCT][punctTable[i]] = i;
     }
   }
-  for (int i = 0; i < 6; i++) {
-    for (int j = 0; j < 6; j++) {
+  for (NSInteger i = 0; i < 6; i++) {
+    for (NSInteger j = 0; j < 6; j++) {
       SHIFT_TABLE[i][j] = -1;
       LATCH_TABLE[i][j] = -1;
     }
@@ -106,10 +106,10 @@ static int WORD_SIZE[33] = {
   SHIFT_TABLE[TABLE_DIGIT][TABLE_PUNCT] = 0;
   LATCH_TABLE[TABLE_DIGIT][TABLE_UPPER] = 30;
   SHIFT_TABLE[TABLE_DIGIT][TABLE_UPPER] = 31;
-  for (int i = 1; i < NB_BITS_COMPACT_LEN; i++) {
+  for (NSInteger i = 1; i < NB_BITS_COMPACT_LEN; i++) {
     NB_BITS_COMPACT[i] = (88 + 16 * i) * i;
   }
-  for (int i = 1; i < NB_BITS_LEN; i++) {
+  for (NSInteger i = 1; i < NB_BITS_LEN; i++) {
     NB_BITS[i] = (112 + 16 * i) * i;
   }
 }
@@ -117,23 +117,23 @@ static int WORD_SIZE[33] = {
 /**
  * Encodes the given binary content as an Aztec symbol
  */
-+ (ZXAztecCode *)encode:(int8_t *)data len:(int)len {
++ (ZXAztecCode *)encode:(int8_t *)data len:(NSUInteger)len {
   return [self encode:data len:len minECCPercent:ZX_DEFAULT_AZTEC_EC_PERCENT];
 }
 
 /**
  * Encodes the given binary content as an Aztec symbol
  */
-+ (ZXAztecCode *)encode:(int8_t *)data len:(int)len minECCPercent:(int)minECCPercent {
++ (ZXAztecCode *)encode:(int8_t *)data len:(NSUInteger)len minECCPercent:(NSInteger)minECCPercent {
   // High-level encode
   ZXBitArray *bits = [self highLevelEncode:data len:len];
 
   // stuff bits and choose symbol size
-  int eccBits = bits.size * minECCPercent / 100 + 11;
-  int totalSizeBits = bits.size + eccBits;
-  int layers;
-  int wordSize = 0;
-  int totalSymbolBits = 0;
+  NSInteger eccBits = bits.size * minECCPercent / 100 + 11;
+  NSInteger totalSizeBits = bits.size + eccBits;
+  NSInteger layers;
+  NSInteger wordSize = 0;
+  NSInteger totalSymbolBits = 0;
   ZXBitArray *stuffedBits = nil;
   for (layers = 1; layers < NB_BITS_COMPACT_LEN; layers++) {
     if (NB_BITS_COMPACT[layers] >= totalSizeBits) {
@@ -168,24 +168,24 @@ static int WORD_SIZE[33] = {
   }
 
   // pad the end
-  int messageSizeInWords = (stuffedBits.size + wordSize - 1) / wordSize;
-  for (int i = messageSizeInWords * wordSize - stuffedBits.size; i > 0; i--) {
+  NSInteger messageSizeInWords = (stuffedBits.size + wordSize - 1) / wordSize;
+  for (NSInteger i = messageSizeInWords * wordSize - stuffedBits.size; i > 0; i--) {
     [stuffedBits appendBit:YES];
   }
 
   // generate check words
   ZXReedSolomonEncoder *rs = [[ZXReedSolomonEncoder alloc] initWithField:[self getGF:wordSize]];
-  int totalSizeInFullWords = totalSymbolBits / wordSize;
+  NSInteger totalSizeInFullWords = totalSymbolBits / wordSize;
 
-  int messageWords[totalSizeInFullWords];
+  NSInteger messageWords[totalSizeInFullWords];
   [self bitsToWords:stuffedBits wordSize:wordSize totalWords:totalSizeInFullWords message:messageWords];
   [rs encode:messageWords toEncodeLen:totalSizeInFullWords ecBytes:totalSizeInFullWords - messageSizeInWords];
 
   // convert to bit array and pad in the beginning
-  int startPad = totalSymbolBits % wordSize;
+  NSInteger startPad = totalSymbolBits % wordSize;
   ZXBitArray *messageBits = [[ZXBitArray alloc] init];
   [messageBits appendBits:0 numBits:startPad];
-  for (int i = 0; i < totalSizeInFullWords; i++) {
+  for (NSInteger i = 0; i < totalSizeInFullWords; i++) {
     [messageBits appendBits:messageWords[i] numBits:wordSize];
   }
 
@@ -193,21 +193,21 @@ static int WORD_SIZE[33] = {
   ZXBitArray *modeMessage = [self generateModeMessageCompact:compact layers:layers messageSizeInWords:messageSizeInWords];
 
   // allocate symbol
-  int baseMatrixSize = compact ? 11 + layers * 4 : 14 + layers * 4; // not including alignment lines
-  int alignmentMap[baseMatrixSize];
-  int matrixSize;
+  NSInteger baseMatrixSize = compact ? 11 + layers * 4 : 14 + layers * 4; // not including alignment lines
+  NSInteger alignmentMap[baseMatrixSize];
+  NSInteger matrixSize;
   if (compact) {
     // no alignment marks in compact mode, alignmentMap is a no-op
     matrixSize = baseMatrixSize;
-    for (int i = 0; i < baseMatrixSize; i++) {
+    for (NSInteger i = 0; i < baseMatrixSize; i++) {
       alignmentMap[i] = i;
     }
   } else {
     matrixSize = baseMatrixSize + 1 + 2 * ((baseMatrixSize / 2 - 1) / 15);
-    int origCenter = baseMatrixSize / 2;
-    int center = matrixSize / 2;
-    for (int i = 0; i < origCenter; i++) {
-      int newOffset = i + i / 15;
+    NSInteger origCenter = baseMatrixSize / 2;
+    NSInteger center = matrixSize / 2;
+    for (NSInteger i = 0; i < origCenter; i++) {
+      NSInteger newOffset = i + i / 15;
       alignmentMap[origCenter - i - 1] = center - newOffset - 1;
       alignmentMap[origCenter + i] = center + newOffset + 1;
     }
@@ -215,11 +215,11 @@ static int WORD_SIZE[33] = {
   ZXBitMatrix *matrix = [[ZXBitMatrix alloc] initWithDimension:matrixSize];
 
   // draw mode and data bits
-  for (int i = 0, rowOffset = 0; i < layers; i++) {
-    int rowSize = compact ? (layers - i) * 4 + 9 : (layers - i) * 4 + 12;
-    for (int j = 0; j < rowSize; j++) {
-      int columnOffset = j * 2;
-      for (int k = 0; k < 2; k++) {
+  for (NSInteger i = 0, rowOffset = 0; i < layers; i++) {
+    NSInteger rowSize = compact ? (layers - i) * 4 + 9 : (layers - i) * 4 + 12;
+    for (NSInteger j = 0; j < rowSize; j++) {
+      NSInteger columnOffset = j * 2;
+      for (NSInteger k = 0; k < 2; k++) {
         if ([messageBits get:rowOffset + columnOffset + k]) {
           [matrix setX:alignmentMap[i * 2 + k] y:alignmentMap[i * 2 + j]];
         }
@@ -243,8 +243,8 @@ static int WORD_SIZE[33] = {
     [self drawBullsEye:matrix center:matrixSize / 2 size:5];
   } else {
     [self drawBullsEye:matrix center:matrixSize / 2 size:7];
-    for (int i = 0, j = 0; i < baseMatrixSize / 2 - 1; i += 15, j += 16) {
-      for (int k = (matrixSize / 2) & 1; k < matrixSize; k += 2) {
+    for (NSInteger i = 0, j = 0; i < baseMatrixSize / 2 - 1; i += 15, j += 16) {
+      for (NSInteger k = (matrixSize / 2) & 1; k < matrixSize; k += 2) {
         [matrix setX:matrixSize / 2 - j y:k];
         [matrix setX:matrixSize / 2 + j y:k];
         [matrix setX:k y:matrixSize / 2 - j];
@@ -262,9 +262,9 @@ static int WORD_SIZE[33] = {
   return aztec;
 }
 
-+ (void)drawBullsEye:(ZXBitMatrix *)matrix center:(int)center size:(int)size {
-  for (int i = 0; i < size; i += 2) {
-    for (int j = center - i; j <= center + i; j++) {
++ (void)drawBullsEye:(ZXBitMatrix *)matrix center:(NSInteger)center size:(NSInteger)size {
+  for (NSInteger i = 0; i < size; i += 2) {
+    for (NSInteger j = center - i; j <= center + i; j++) {
       [matrix setX:j y:center - i];
       [matrix setX:j y:center + i];
       [matrix setX:center - i y:j];
@@ -279,7 +279,7 @@ static int WORD_SIZE[33] = {
   [matrix setX:center + size y:center + size - 1];
 }
 
-+ (ZXBitArray *)generateModeMessageCompact:(BOOL)compact layers:(int)layers messageSizeInWords:(int)messageSizeInWords {
++ (ZXBitArray *)generateModeMessageCompact:(BOOL)compact layers:(NSInteger)layers messageSizeInWords:(NSInteger)messageSizeInWords {
   ZXBitArray *modeMessage = [[ZXBitArray alloc] init];
   if (compact) {
     [modeMessage appendBits:layers - 1 numBits:2];
@@ -293,9 +293,9 @@ static int WORD_SIZE[33] = {
   return modeMessage;
 }
 
-+ (void)drawModeMessage:(ZXBitMatrix *)matrix compact:(BOOL)compact matrixSize:(int)matrixSize modeMessage:(ZXBitArray *)modeMessage {
++ (void)drawModeMessage:(ZXBitMatrix *)matrix compact:(BOOL)compact matrixSize:(NSInteger)matrixSize modeMessage:(ZXBitArray *)modeMessage {
   if (compact) {
-    for (int i = 0; i < 7; i++) {
+    for (NSInteger i = 0; i < 7; i++) {
       if ([modeMessage get:i]) {
         [matrix setX:matrixSize / 2 - 3 + i y:matrixSize / 2 - 5];
       }
@@ -310,7 +310,7 @@ static int WORD_SIZE[33] = {
       }
     }
   } else {
-    for (int i = 0; i < 10; i++) {
+    for (NSInteger i = 0; i < 10; i++) {
       if ([modeMessage get:i]) {
         [matrix setX:matrixSize / 2 - 5 + i + i / 5 y:matrixSize / 2 - 7];
       }
@@ -327,40 +327,40 @@ static int WORD_SIZE[33] = {
   }
 }
 
-+ (ZXBitArray *)generateCheckWords:(ZXBitArray *)stuffedBits totalSymbolBits:(int)totalSymbolBits wordSize:(int)wordSize {
-  int messageSizeInWords = (stuffedBits.size + wordSize - 1) / wordSize;
-  for (int i = messageSizeInWords * wordSize - stuffedBits.size; i > 0; i--) {
++ (ZXBitArray *)generateCheckWords:(ZXBitArray *)stuffedBits totalSymbolBits:(NSInteger)totalSymbolBits wordSize:(NSInteger)wordSize {
+  NSInteger messageSizeInWords = (stuffedBits.size + wordSize - 1) / wordSize;
+  for (NSInteger i = messageSizeInWords * wordSize - stuffedBits.size; i > 0; i--) {
     [stuffedBits appendBit:YES];
   }
   ZXReedSolomonEncoder *rs = [[ZXReedSolomonEncoder alloc] initWithField:[self getGF:wordSize]];
-  int totalSizeInFullWords = totalSymbolBits / wordSize;
+  NSInteger totalSizeInFullWords = totalSymbolBits / wordSize;
 
-  int messageWords[totalSizeInFullWords];
+  NSInteger messageWords[totalSizeInFullWords];
   [self bitsToWords:stuffedBits wordSize:wordSize totalWords:totalSizeInFullWords message:messageWords];
 
   [rs encode:messageWords toEncodeLen:totalSizeInFullWords ecBytes:totalSizeInFullWords - messageSizeInWords];
-  int startPad = totalSymbolBits % wordSize;
+  NSInteger startPad = totalSymbolBits % wordSize;
   ZXBitArray *messageBits = [[ZXBitArray alloc] init];
   [messageBits appendBits:0 numBits:startPad];
-  for (int i = 0; i < totalSizeInFullWords; i++) {
+  for (NSInteger i = 0; i < totalSizeInFullWords; i++) {
     [messageBits appendBits:messageWords[i] numBits:wordSize];
   }
   return messageBits;
 }
 
-+ (void)bitsToWords:(ZXBitArray *)stuffedBits wordSize:(int)wordSize totalWords:(int)totalWords message:(int *)message {
-  int i;
-  int n;
++ (void)bitsToWords:(ZXBitArray *)stuffedBits wordSize:(NSInteger)wordSize totalWords:(NSInteger)totalWords message:(NSInteger *)message {
+  NSInteger i;
+  NSInteger n;
   for (i = 0, n = stuffedBits.size / wordSize; i < n; i++) {
-    int value = 0;
-    for (int j = 0; j < wordSize; j++) {
+    NSInteger value = 0;
+    for (NSInteger j = 0; j < wordSize; j++) {
       value |= [stuffedBits get:i * wordSize + j] ? (1 << (wordSize - j - 1)) : 0;
     }
     message[i] = value;
   }
 }
 
-+ (ZXGenericGF *)getGF:(int)wordSize {
++ (ZXGenericGF *)getGF:(NSInteger)wordSize {
   switch (wordSize) {
     case 4:
       return [ZXGenericGF AztecParam];
@@ -377,15 +377,15 @@ static int WORD_SIZE[33] = {
   }
 }
 
-+ (ZXBitArray *)stuffBits:(ZXBitArray *)bits wordSize:(int)wordSize {
++ (ZXBitArray *)stuffBits:(ZXBitArray *)bits wordSize:(NSInteger)wordSize {
   ZXBitArray *arrayOut = [[ZXBitArray alloc] init];
 
   // 1. stuff the bits
-  int n = bits.size;
-  int mask = (1 << wordSize) - 2;
-  for (int i = 0; i < n; i += wordSize) {
-    int word = 0;
-    for (int j = 0; j < wordSize; j++) {
+  NSInteger n = bits.size;
+  NSInteger mask = (1 << wordSize) - 2;
+  for (NSInteger i = 0; i < n; i += wordSize) {
+    NSInteger word = 0;
+    for (NSInteger j = 0; j < wordSize; j++) {
       if (i + j >= n || [bits get:i + j]) {
         word |= 1 << (wordSize - 1 - j);
       }
@@ -403,15 +403,15 @@ static int WORD_SIZE[33] = {
 
   // 2. pad last word to wordSize
   n = arrayOut.size;
-  int remainder = n % wordSize;
+  NSInteger remainder = n % wordSize;
   if (remainder != 0) {
-    int j = 1;
-    for (int i = 0; i < remainder; i++) {
+    NSInteger j = 1;
+    for (NSInteger i = 0; i < remainder; i++) {
       if (![arrayOut get:n - 1 - i]) {
         j = 0;
       }
     }
-    for (int i = remainder; i < wordSize - 1; i++) {
+    for (NSInteger i = remainder; i < wordSize - 1; i++) {
       [arrayOut appendBit:YES];
     }
     [arrayOut appendBit:j == 0];
@@ -419,16 +419,16 @@ static int WORD_SIZE[33] = {
   return arrayOut;
 }
 
-+ (ZXBitArray *)highLevelEncode:(int8_t *)data len:(int)len {
++ (ZXBitArray *)highLevelEncode:(int8_t *)data len:(NSUInteger)len {
   ZXBitArray *bits = [[ZXBitArray alloc] init];
-  int mode = TABLE_UPPER;
-  int idx[5] = {0, 0, 0, 0, 0};
-  int idxnext[5] = {0, 0, 0, 0, 0};
+  NSInteger mode = TABLE_UPPER;
+  NSInteger idx[5] = {0, 0, 0, 0, 0};
+  NSInteger idxnext[5] = {0, 0, 0, 0, 0};
 
-  for (int i = 0; i < len; i++) {
-    int c = data[i] & 0xFF;
-    int next = i < len - 1 ? data[i + 1] & 0xFF : 0;
-    int punctWord = 0;
+  for (NSInteger i = 0; i < len; i++) {
+    NSInteger c = data[i] & 0xFF;
+    NSInteger next = i < len - 1 ? data[i + 1] & 0xFF : 0;
+    NSInteger punctWord = 0;
     // special case: double-character codes
     if (c == '\r' && next == '\n') {
       punctWord = 2;
@@ -458,10 +458,10 @@ static int WORD_SIZE[33] = {
       }
     }
     // find the best matching table, taking current mode and next character into account
-    int firstMatch = -1;
-    int shiftMode = -1;
-    int latchMode = -1;
-    int j;
+    NSInteger firstMatch = -1;
+    NSInteger shiftMode = -1;
+    NSInteger latchMode = -1;
+    NSInteger j;
     for (j = 0; j < TABLE_BINARY; j++) {
       idx[j] = CHAR_MAP[j][c];
       if (idx[j] > 0 && firstMatch < 0) {
@@ -513,8 +513,8 @@ static int WORD_SIZE[33] = {
         }
         // use binary table
         // find the binary string length
-        int k;
-        int lookahead;
+        NSInteger k;
+        NSInteger lookahead;
         for (k = i + 1, lookahead = 0; k < len; k++) {
           next = data[k] & 0xFF;
           BOOL binary = YES;
@@ -576,7 +576,7 @@ static int WORD_SIZE[33] = {
 
 }
 
-+ (void)outputWord:(ZXBitArray *)bits mode:(int)mode value:(int)value {
++ (void)outputWord:(ZXBitArray *)bits mode:(NSInteger)mode value:(NSInteger)value {
   if (mode == TABLE_DIGIT) {
     [bits appendBits:value numBits:4];
   } else if (mode < TABLE_BINARY) {

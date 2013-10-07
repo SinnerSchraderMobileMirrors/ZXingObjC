@@ -45,11 +45,11 @@
  * Convenience method that can decode a Data Matrix Code represented as a 2D array of booleans.
  * "true" is taken to mean a black module.
  */
-- (ZXDecoderResult *)decode:(BOOL **)image length:(unsigned int)length error:(NSError **)error {
-  int dimension = length;
+- (ZXDecoderResult *)decode:(BOOL **)image length:(NSUInteger)length error:(NSError **)error {
+  NSInteger dimension = length;
   ZXBitMatrix *bits = [[ZXBitMatrix alloc] initWithDimension:dimension];
-  for (int i = 0; i < dimension; i++) {
-    for (int j = 0; j < dimension; j++) {
+  for (NSInteger i = 0; i < dimension; i++) {
+    for (NSInteger j = 0; j < dimension; j++) {
       if (image[i][j]) {
         [bits setX:j y:i];
       }
@@ -74,10 +74,10 @@
   NSArray *codewords = [parser readCodewords];
   NSArray *dataBlocks = [ZXDataMatrixDataBlock dataBlocks:codewords version:version];
 
-  int dataBlocksCount = [dataBlocks count];
+  NSUInteger dataBlocksCount = [dataBlocks count];
 
-  int totalBytes = 0;
-  for (int i = 0; i < dataBlocksCount; i++) {
+  NSInteger totalBytes = 0;
+  for (NSInteger i = 0; i < dataBlocksCount; i++) {
     totalBytes += [dataBlocks[i] numDataCodewords];
   }
 
@@ -87,14 +87,14 @@
 
   int8_t resultBytes[totalBytes];
 
-  for (int j = 0; j < dataBlocksCount; j++) {
+  for (NSInteger j = 0; j < dataBlocksCount; j++) {
     ZXDataMatrixDataBlock *dataBlock = dataBlocks[j];
     NSMutableArray *codewordBytes = dataBlock.codewords;
-    int numDataCodewords = [dataBlock numDataCodewords];
+    NSInteger numDataCodewords = [dataBlock numDataCodewords];
     if (![self correctErrors:codewordBytes numDataCodewords:numDataCodewords error:error]) {
       return nil;
     }
-    for (int i = 0; i < numDataCodewords; i++) {
+    for (NSInteger i = 0; i < numDataCodewords; i++) {
       resultBytes[i * dataBlocksCount + j] = [codewordBytes[i] charValue];
     }
   }
@@ -107,16 +107,16 @@
  * Given data and error-correction codewords received, possibly corrupted by errors, attempts to
  * correct the errors in-place using Reed-Solomon error correction.
  */
-- (BOOL)correctErrors:(NSMutableArray *)codewordBytes numDataCodewords:(int)numDataCodewords error:(NSError **)error {
-  int numCodewords = [codewordBytes count];
-  int codewordsInts[numCodewords];
-  for (int i = 0; i < numCodewords; i++) {
+- (BOOL)correctErrors:(NSMutableArray *)codewordBytes numDataCodewords:(NSInteger)numDataCodewords error:(NSError **)error {
+  NSInteger numCodewords = [codewordBytes count];
+  NSInteger codewordsInts[numCodewords];
+  for (NSInteger i = 0; i < numCodewords; i++) {
     codewordsInts[i] = [codewordBytes[i] charValue] & 0xFF;
   }
-  int numECCodewords = [codewordBytes count] - numDataCodewords;
+  NSInteger numECCodewords = [codewordBytes count] - numDataCodewords;
 
   NSError *decodeError = nil;
-  if (![self.rsDecoder decode:codewordsInts receivedLen:numCodewords twoS:numECCodewords error:&decodeError]) {
+  if (![self.rsDecoder decode:codewordsInts receivedLen:numCodewords twoS:(NSInteger)numECCodewords error:&decodeError]) {
     if (decodeError.code == ZXReedSolomonError) {
       if (error) *error = ChecksumErrorInstance();
       return NO;
@@ -126,7 +126,7 @@
     }
   }
 
-  for (int i = 0; i < numDataCodewords; i++) {
+  for (NSInteger i = 0; i < numDataCodewords; i++) {
     codewordBytes[i] = [NSNumber numberWithChar:codewordsInts[i]];
   }
   return YES;

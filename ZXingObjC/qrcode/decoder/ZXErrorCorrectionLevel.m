@@ -20,7 +20,7 @@
 
 static NSArray *FOR_BITS = nil;
 
-- (id)initWithOrdinal:(int)ordinal bits:(int)bits name:(NSString *)name {
+- (id)initWithOrdinal:(NSInteger)ordinal bits:(NSInteger)bits name:(NSString *)name {
   if (self = [super init]) {
     _ordinal = ordinal;
     _bits = bits;
@@ -34,7 +34,7 @@ static NSArray *FOR_BITS = nil;
   return self.name;
 }
 
-+ (ZXErrorCorrectionLevel *)forBits:(int)bits {
++ (ZXErrorCorrectionLevel *)forBits:(NSInteger)bits {
   if (!FOR_BITS) {
     FOR_BITS = @[[ZXErrorCorrectionLevel errorCorrectionLevelM], [ZXErrorCorrectionLevel errorCorrectionLevelL],
                  [ZXErrorCorrectionLevel errorCorrectionLevelH], [ZXErrorCorrectionLevel errorCorrectionLevelQ]];

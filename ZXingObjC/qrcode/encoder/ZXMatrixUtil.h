@@ -18,15 +18,15 @@
 
 @interface ZXMatrixUtil : NSObject
 
-+ (BOOL)buildMatrix:(ZXBitArray *)dataBits ecLevel:(ZXErrorCorrectionLevel *)ecLevel version:(ZXQRCodeVersion *)version maskPattern:(int)maskPattern matrix:(ZXByteMatrix *)matrix error:(NSError **)error;
++ (BOOL)buildMatrix:(ZXBitArray *)dataBits ecLevel:(ZXErrorCorrectionLevel *)ecLevel version:(ZXQRCodeVersion *)version maskPattern:(NSInteger)maskPattern matrix:(ZXByteMatrix *)matrix error:(NSError **)error;
 + (void)clearMatrix:(ZXByteMatrix *)matrix;
 + (BOOL)embedBasicPatterns:(ZXQRCodeVersion *)version matrix:(ZXByteMatrix *)matrix error:(NSError **)error;
-+ (BOOL)embedTypeInfo:(ZXErrorCorrectionLevel *)ecLevel maskPattern:(int)maskPattern matrix:(ZXByteMatrix *)matrix error:(NSError **)error;
++ (BOOL)embedTypeInfo:(ZXErrorCorrectionLevel *)ecLevel maskPattern:(NSInteger)maskPattern matrix:(ZXByteMatrix *)matrix error:(NSError **)error;
 + (BOOL)maybeEmbedVersionInfo:(ZXQRCodeVersion *)version matrix:(ZXByteMatrix *)matrix error:(NSError **)error;
-+ (BOOL)embedDataBits:(ZXBitArray *)dataBits maskPattern:(int)maskPattern matrix:(ZXByteMatrix *)matrix error:(NSError **)error;
-+ (int)findMSBSet:(int)value;
-+ (int)calculateBCHCode:(int)value poly:(int)poly;
-+ (BOOL)makeTypeInfoBits:(ZXErrorCorrectionLevel *)ecLevel maskPattern:(int)maskPattern bits:(ZXBitArray *)bits error:(NSError **)error;
++ (BOOL)embedDataBits:(ZXBitArray *)dataBits maskPattern:(NSInteger)maskPattern matrix:(ZXByteMatrix *)matrix error:(NSError **)error;
++ (NSInteger)findMSBSet:(NSInteger)value;
++ (NSInteger)calculateBCHCode:(NSInteger)value poly:(NSInteger)poly;
++ (BOOL)makeTypeInfoBits:(ZXErrorCorrectionLevel *)ecLevel maskPattern:(NSInteger)maskPattern bits:(ZXBitArray *)bits error:(NSError **)error;
 + (BOOL)makeVersionInfoBits:(ZXQRCodeVersion *)version bits:(ZXBitArray *)bits error:(NSError **)error;
 
 @end

@@ -23,7 +23,7 @@
 #import "ZXQRCode.h"
 #import "ZXQRCodeVersion.h"
 
-int const POSITION_DETECTION_PATTERN[7][7] = {
+NSInteger const POSITION_DETECTION_PATTERN[7][7] = {
   {1, 1, 1, 1, 1, 1, 1},
   {1, 0, 0, 0, 0, 0, 1},
   {1, 0, 1, 1, 1, 0, 1},
@@ -33,7 +33,7 @@ int const POSITION_DETECTION_PATTERN[7][7] = {
   {1, 1, 1, 1, 1, 1, 1},
 };
 
-int const POSITION_ADJUSTMENT_PATTERN[5][5] = {
+NSInteger const POSITION_ADJUSTMENT_PATTERN[5][5] = {
   {1, 1, 1, 1, 1},
   {1, 0, 0, 0, 1},
   {1, 0, 1, 0, 1},
@@ -42,7 +42,7 @@ int const POSITION_ADJUSTMENT_PATTERN[5][5] = {
 };
 
 // From Appendix E. Table 1, JIS0510X:2004 (p 71). The table was double-checked by komatsu.
-int const POSITION_ADJUSTMENT_PATTERN_COORDINATE_TABLE[40][7] = {
+NSInteger const POSITION_ADJUSTMENT_PATTERN_COORDINATE_TABLE[40][7] = {
   {-1, -1, -1, -1,  -1,  -1,  -1},  // Version 1
   { 6, 18, -1, -1,  -1,  -1,  -1},  // Version 2
   { 6, 22, -1, -1,  -1,  -1,  -1},  // Version 3
@@ -86,7 +86,7 @@ int const POSITION_ADJUSTMENT_PATTERN_COORDINATE_TABLE[40][7] = {
 };
 
 // Type info cells at the left top corner.
-int const TYPE_INFO_COORDINATES[15][2] = {
+NSInteger const TYPE_INFO_COORDINATES[15][2] = {
   {8, 0},
   {8, 1},
   {8, 2},
@@ -105,11 +105,11 @@ int const TYPE_INFO_COORDINATES[15][2] = {
 };
 
 // From Appendix D in JISX0510:2004 (p. 67)
-int const VERSION_INFO_POLY = 0x1f25;  // 1 1111 0010 0101
+NSInteger const VERSION_INFO_POLY = 0x1f25;  // 1 1111 0010 0101
 
 // From Appendix C in JISX0510:2004 (p.65).
-int const TYPE_INFO_POLY = 0x537;
-int const TYPE_INFO_MASK_PATTERN = 0x5412;
+NSInteger const TYPE_INFO_POLY = 0x537;
+NSInteger const TYPE_INFO_MASK_PATTERN = 0x5412;
 
 @implementation ZXMatrixUtil
 
@@ -120,7 +120,7 @@ int const TYPE_INFO_MASK_PATTERN = 0x5412;
 
 // Build 2D matrix of QR Code from "dataBits" with "ecLevel", "version" and "getMaskPattern". On
 // success, store the result in "matrix" and return true.
-+ (BOOL)buildMatrix:(ZXBitArray *)dataBits ecLevel:(ZXErrorCorrectionLevel *)ecLevel version:(ZXQRCodeVersion *)version maskPattern:(int)maskPattern matrix:(ZXByteMatrix *)matrix error:(NSError **)error {
++ (BOOL)buildMatrix:(ZXBitArray *)dataBits ecLevel:(ZXErrorCorrectionLevel *)ecLevel version:(ZXQRCodeVersion *)version maskPattern:(NSInteger)maskPattern matrix:(ZXByteMatrix *)matrix error:(NSError **)error {
   [self clearMatrix:matrix];
   if (![self embedBasicPatterns:version matrix:matrix error:error]) {
     return NO;
@@ -167,31 +167,31 @@ int const TYPE_INFO_MASK_PATTERN = 0x5412;
 }
 
 // Embed type information. On success, modify the matrix.
-+ (BOOL)embedTypeInfo:(ZXErrorCorrectionLevel *)ecLevel maskPattern:(int)maskPattern matrix:(ZXByteMatrix *)matrix error:(NSError **)error {
++ (BOOL)embedTypeInfo:(ZXErrorCorrectionLevel *)ecLevel maskPattern:(NSInteger)maskPattern matrix:(ZXByteMatrix *)matrix error:(NSError **)error {
   ZXBitArray *typeInfoBits = [[ZXBitArray alloc] init];
   if (![self makeTypeInfoBits:ecLevel maskPattern:maskPattern bits:typeInfoBits error:error]) {
     return NO;
   }
 
-  for (int i = 0; i < [typeInfoBits size]; ++i) {
+  for (NSInteger i = 0; i < [typeInfoBits size]; ++i) {
     // Place bits in LSB to MSB order.  LSB (least significant bit) is the last value in
     // "typeInfoBits".
     BOOL bit = [typeInfoBits get:[typeInfoBits size] - 1 - i];
 
     // Type info bits at the left top corner. See 8.9 of JISX0510:2004 (p.46).
-    int x1 = TYPE_INFO_COORDINATES[i][0];
-    int y1 = TYPE_INFO_COORDINATES[i][1];
+    NSInteger x1 = TYPE_INFO_COORDINATES[i][0];
+    NSInteger y1 = TYPE_INFO_COORDINATES[i][1];
     [matrix setX:x1 y:y1 boolValue:bit];
 
     if (i < 8) {
       // Right top corner.
-      int x2 = [matrix width] - i - 1;
-      int y2 = 8;
+      NSInteger x2 = [matrix width] - i - 1;
+      NSInteger y2 = 8;
       [matrix setX:x2 y:y2 boolValue:bit];
     } else {
       // Left bottom corner.
-      int x2 = 8;
-      int y2 = [matrix height] - 7 + (i - 8);
+      NSInteger x2 = 8;
+      NSInteger y2 = [matrix height] - 7 + (i - 8);
       [matrix setX:x2 y:y2 boolValue:bit];
     }
   }
@@ -210,9 +210,9 @@ int const TYPE_INFO_MASK_PATTERN = 0x5412;
     return NO;
   }
 
-  int bitIndex = 6 * 3 - 1; // It will decrease from 17 to 0.
-  for (int i = 0; i < 6; ++i) {
-    for (int j = 0; j < 3; ++j) {
+  NSInteger bitIndex = 6 * 3 - 1; // It will decrease from 17 to 0.
+  for (NSInteger i = 0; i < 6; ++i) {
+    for (NSInteger j = 0; j < 3; ++j) {
       // Place bits in LSB (least significant bit) to MSB order.
       BOOL bit = [versionInfoBits get:bitIndex];
       bitIndex--;
@@ -229,20 +229,20 @@ int const TYPE_INFO_MASK_PATTERN = 0x5412;
 // Embed "dataBits" using "getMaskPattern". On success, modify the matrix and return true.
 // For debugging purposes, it skips masking process if "getMaskPattern" is -1.
 // See 8.7 of JISX0510:2004 (p.38) for how to embed data bits.
-+ (BOOL)embedDataBits:(ZXBitArray *)dataBits maskPattern:(int)maskPattern matrix:(ZXByteMatrix *)matrix error:(NSError **)error {
-  int bitIndex = 0;
-  int direction = -1;
++ (BOOL)embedDataBits:(ZXBitArray *)dataBits maskPattern:(NSInteger)maskPattern matrix:(ZXByteMatrix *)matrix error:(NSError **)error {
+  NSInteger bitIndex = 0;
+  NSInteger direction = -1;
   // Start from the right bottom cell.
-  int x = [matrix width] - 1;
-  int y = [matrix height] - 1;
+  NSInteger x = [matrix width] - 1;
+  NSInteger y = [matrix height] - 1;
   while (x > 0) {
     // Skip the vertical timing pattern.
     if (x == 6) {
       x -= 1;
     }
     while (y >= 0 && y < [matrix height]) {
-      for (int i = 0; i < 2; ++i) {
-        int xx = x - i;
+      for (NSInteger i = 0; i < 2; ++i) {
+        NSInteger xx = x - i;
         // Skip the cell if it's not empty.
         if (![self isEmpty:[matrix getX:xx y:y]]) {
           continue;
@@ -271,7 +271,7 @@ int const TYPE_INFO_MASK_PATTERN = 0x5412;
   }
   // All bits should be consumed.
   if (bitIndex != [dataBits size]) {
-    NSDictionary *userInfo = @{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Not all bits consumed: %d/%d", bitIndex, [dataBits size]]};
+    NSDictionary *userInfo = @{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Not all bits consumed: %ld/%ld", (long)bitIndex, (long)[dataBits size]]};
 
     if (error) *error = [[NSError alloc] initWithDomain:ZXErrorDomain code:ZXNotFoundError userInfo:userInfo];
     return NO;
@@ -285,10 +285,10 @@ int const TYPE_INFO_MASK_PATTERN = 0x5412;
 // - findMSBSet(0) => 0
 // - findMSBSet(1) => 1
 // - findMSBSet(255) => 8
-+ (int)findMSBSet:(int)value {
-  int numDigits = 0;
++ (NSInteger)findMSBSet:(NSInteger)value {
+  NSInteger numDigits = 0;
   while (value != 0) {
-    value = (int)((unsigned int)value >> 1);
+    value = (NSInteger)((NSUInteger)value >> 1);
     ++numDigits;
   }
   return numDigits;
@@ -319,10 +319,10 @@ int const TYPE_INFO_MASK_PATTERN = 0x5412;
 //
 // Since all coefficients in the polynomials are 1 or 0, we can do the calculation by bit
 // operations. We don't care if cofficients are positive or negative.
-+ (int)calculateBCHCode:(int)value poly:(int)poly {
++ (NSInteger)calculateBCHCode:(NSInteger)value poly:(NSInteger)poly {
   // If poly is "1 1111 0010 0101" (version info poly), msbSetInPoly is 13. We'll subtract 1
   // from 13 to make it 12.
-  int msbSetInPoly = [self findMSBSet:poly];
+  NSInteger msbSetInPoly = [self findMSBSet:poly];
   value <<= msbSetInPoly - 1;
   // Do the division business using exclusive-or operations.
   while ([self findMSBSet:value] >= msbSetInPoly) {
@@ -335,17 +335,17 @@ int const TYPE_INFO_MASK_PATTERN = 0x5412;
 // Make bit vector of type information. On success, store the result in "bits" and return true.
 // Encode error correction level and mask pattern. See 8.9 of
 // JISX0510:2004 (p.45) for details.
-+ (BOOL)makeTypeInfoBits:(ZXErrorCorrectionLevel *)ecLevel maskPattern:(int)maskPattern bits:(ZXBitArray *)bits error:(NSError **)error {
++ (BOOL)makeTypeInfoBits:(ZXErrorCorrectionLevel *)ecLevel maskPattern:(NSInteger)maskPattern bits:(ZXBitArray *)bits error:(NSError **)error {
   if (![ZXQRCode isValidMaskPattern:maskPattern]) {
     NSDictionary *userInfo = @{NSLocalizedDescriptionKey: @"Invalid mask pattern"};
 
     if (error) *error = [[NSError alloc] initWithDomain:ZXErrorDomain code:ZXNotFoundError userInfo:userInfo];
     return NO;
   }
-  int typeInfo = ([ecLevel bits] << 3) | maskPattern;
+  NSInteger typeInfo = ([ecLevel bits] << 3) | maskPattern;
   [bits appendBits:typeInfo numBits:5];
 
-  int bchCode = [self calculateBCHCode:typeInfo poly:TYPE_INFO_POLY];
+  NSInteger bchCode = [self calculateBCHCode:typeInfo poly:TYPE_INFO_POLY];
   [bits appendBits:bchCode numBits:10];
 
   ZXBitArray *maskBits = [[ZXBitArray alloc] init];
@@ -353,7 +353,7 @@ int const TYPE_INFO_MASK_PATTERN = 0x5412;
   [bits xor:maskBits];
 
   if ([bits size] != 15) { // Just in case.
-    NSDictionary *userInfo = @{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"should not happen but we got: %d", [bits size]]};
+    NSDictionary *userInfo = @{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"should not happen but we got: %ld", (long)[bits size]]};
 
     if (error) *error = [[NSError alloc] initWithDomain:ZXErrorDomain code:ZXNotFoundError userInfo:userInfo];
     return NO;
@@ -366,11 +366,11 @@ int const TYPE_INFO_MASK_PATTERN = 0x5412;
 // See 8.10 of JISX0510:2004 (p.45) for details.
 + (BOOL)makeVersionInfoBits:(ZXQRCodeVersion *)version bits:(ZXBitArray *)bits error:(NSError **)error {
   [bits appendBits:version.versionNumber numBits:6];
-  int bchCode = [self calculateBCHCode:version.versionNumber poly:VERSION_INFO_POLY];
+  NSInteger bchCode = [self calculateBCHCode:version.versionNumber poly:VERSION_INFO_POLY];
   [bits appendBits:bchCode numBits:12];
 
   if ([bits size] != 18) { // Just in case.
-    NSDictionary *userInfo = @{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"should not happen but we got: %d", [bits size]]};
+    NSDictionary *userInfo = @{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"should not happen but we got: %ld", (long)[bits size]]};
 
     if (error) *error = [[NSError alloc] initWithDomain:ZXErrorDomain code:ZXNotFoundError userInfo:userInfo];
     return NO;
@@ -380,15 +380,15 @@ int const TYPE_INFO_MASK_PATTERN = 0x5412;
 }
 
 // Check if "value" is empty.
-+ (BOOL)isEmpty:(int)value {
++ (BOOL)isEmpty:(NSInteger)value {
   return value == -1;
 }
 
 + (void)embedTimingPatterns:(ZXByteMatrix *)matrix {
   // -8 is for skipping position detection patterns (size 7), and two horizontal/vertical
   // separation patterns (size 1). Thus, 8 = 7 + 1.
-  for (int i = 8; i < [matrix width] - 8; ++i) {
-    int bit = (i + 1) % 2;
+  for (NSInteger i = 8; i < [matrix width] - 8; ++i) {
+    NSInteger bit = (i + 1) % 2;
     // Horizontal line.
     if ([self isEmpty:[matrix getX:i y:6]]) {
       [matrix setX:i y:6 boolValue:bit];
@@ -410,8 +410,8 @@ int const TYPE_INFO_MASK_PATTERN = 0x5412;
   return YES;
 }
 
-+ (BOOL)embedHorizontalSeparationPattern:(int)xStart yStart:(int)yStart matrix:(ZXByteMatrix *)matrix {
-  for (int x = 0; x < 8; ++x) {
++ (BOOL)embedHorizontalSeparationPattern:(NSInteger)xStart yStart:(NSInteger)yStart matrix:(ZXByteMatrix *)matrix {
+  for (NSInteger x = 0; x < 8; ++x) {
     if (![self isEmpty:[matrix getX:xStart + x y:yStart]]) {
       return NO;
     }
@@ -421,8 +421,8 @@ int const TYPE_INFO_MASK_PATTERN = 0x5412;
   return YES;
 }
 
-+ (BOOL)embedVerticalSeparationPattern:(int)xStart yStart:(int)yStart matrix:(ZXByteMatrix *)matrix {
-  for (int y = 0; y < 7; ++y) {
++ (BOOL)embedVerticalSeparationPattern:(NSInteger)xStart yStart:(NSInteger)yStart matrix:(ZXByteMatrix *)matrix {
+  for (NSInteger y = 0; y < 7; ++y) {
     if (![self isEmpty:[matrix getX:xStart y:yStart + y]]) {
       return NO;
     }
@@ -435,17 +435,17 @@ int const TYPE_INFO_MASK_PATTERN = 0x5412;
 // Note that we cannot unify the function with embedPositionDetectionPattern() despite they are
 // almost identical, since we cannot write a function that takes 2D arrays in different sizes in
 // C/C++. We should live with the fact.
-+ (void)embedPositionAdjustmentPattern:(int)xStart yStart:(int)yStart matrix:(ZXByteMatrix *)matrix {
-  for (int y = 0; y < 5; ++y) {
-    for (int x = 0; x < 5; ++x) {
++ (void)embedPositionAdjustmentPattern:(NSInteger)xStart yStart:(NSInteger)yStart matrix:(ZXByteMatrix *)matrix {
+  for (NSInteger y = 0; y < 5; ++y) {
+    for (NSInteger x = 0; x < 5; ++x) {
       [matrix setX:xStart + x y:yStart + y intValue:POSITION_ADJUSTMENT_PATTERN[y][x]];
     }
   }
 }
 
-+ (void)embedPositionDetectionPattern:(int)xStart yStart:(int)yStart matrix:(ZXByteMatrix *)matrix {
-  for (int y = 0; y < 7; ++y) {
-    for (int x = 0; x < 7; ++x) {
++ (void)embedPositionDetectionPattern:(NSInteger)xStart yStart:(NSInteger)yStart matrix:(ZXByteMatrix *)matrix {
+  for (NSInteger y = 0; y < 7; ++y) {
+    for (NSInteger x = 0; x < 7; ++x) {
       [matrix setX:xStart + x y:yStart + y intValue:POSITION_DETECTION_PATTERN[y][x]];
     }
   }
@@ -454,7 +454,7 @@ int const TYPE_INFO_MASK_PATTERN = 0x5412;
 // Embed position detection patterns and surrounding vertical/horizontal separators.
 + (BOOL)embedPositionDetectionPatternsAndSeparators:(ZXByteMatrix *)matrix {
   // Embed three big squares at corners.
-  int pdpWidth = sizeof(POSITION_DETECTION_PATTERN[0]) / sizeof(int);
+  NSInteger pdpWidth = sizeof(POSITION_DETECTION_PATTERN[0]) / sizeof(NSInteger);
   // Left top corner.
   [self embedPositionDetectionPattern:0 yStart:0 matrix:matrix];
   // Right top corner.
@@ -463,7 +463,7 @@ int const TYPE_INFO_MASK_PATTERN = 0x5412;
   [self embedPositionDetectionPattern:0 yStart:[matrix width] - pdpWidth matrix:matrix];
 
   // Embed horizontal separation patterns around the squares.
-  int hspWidth = 8;
+  NSInteger hspWidth = 8;
   // Left top corner.
   [self embedHorizontalSeparationPattern:0 yStart:hspWidth - 1 matrix:matrix];
   // Right top corner.
@@ -472,7 +472,7 @@ int const TYPE_INFO_MASK_PATTERN = 0x5412;
   [self embedHorizontalSeparationPattern:0 yStart:[matrix width] - hspWidth matrix:matrix];
 
   // Embed vertical separation patterns around the squares.
-  int vspSize = 7;
+  NSInteger vspSize = 7;
   // Left top corner.
   if (![self embedVerticalSeparationPattern:vspSize yStart:0 matrix:matrix]) {
     return NO;
@@ -494,12 +494,12 @@ int const TYPE_INFO_MASK_PATTERN = 0x5412;
   if (version.versionNumber < 2) { // The patterns appear if version >= 2
     return;
   }
-  int index = version.versionNumber - 1;
-  int numCoordinates = sizeof(POSITION_ADJUSTMENT_PATTERN_COORDINATE_TABLE[index]) / sizeof(int);
-  for (int i = 0; i < numCoordinates; ++i) {
-    for (int j = 0; j < numCoordinates; ++j) {
-      int y = POSITION_ADJUSTMENT_PATTERN_COORDINATE_TABLE[index][i];
-      int x = POSITION_ADJUSTMENT_PATTERN_COORDINATE_TABLE[index][j];
+  NSInteger index = version.versionNumber - 1;
+  NSInteger numCoordinates = sizeof(POSITION_ADJUSTMENT_PATTERN_COORDINATE_TABLE[index]) / sizeof(NSInteger);
+  for (NSInteger i = 0; i < numCoordinates; ++i) {
+    for (NSInteger j = 0; j < numCoordinates; ++j) {
+      NSInteger y = POSITION_ADJUSTMENT_PATTERN_COORDINATE_TABLE[index][i];
+      NSInteger x = POSITION_ADJUSTMENT_PATTERN_COORDINATE_TABLE[index][j];
       if (x == -1 || y == -1) {
         continue;
       }

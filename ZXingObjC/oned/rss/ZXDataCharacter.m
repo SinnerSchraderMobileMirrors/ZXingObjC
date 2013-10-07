@@ -18,7 +18,7 @@
 
 @implementation ZXDataCharacter
 
-- (id)initWithValue:(int)value checksumPortion:(int)checksumPortion {
+- (id)initWithValue:(NSInteger)value checksumPortion:(NSInteger)checksumPortion {
   if (self = [super init]) {
     _value = value;
     _checksumPortion = checksumPortion;
@@ -28,7 +28,7 @@
 }
 
 - (NSString *)description {
-  return [NSString stringWithFormat:@"%d(%d)", self.value, self.checksumPortion];
+  return [NSString stringWithFormat:@"%ld(%ld)", (long)self.value, (long)self.checksumPortion];
 }
 
 - (BOOL)isEqual:(id)object {

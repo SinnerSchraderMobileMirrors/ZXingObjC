@@ -44,14 +44,14 @@
     smsURIWithoutQuery = [rawText substringWithRange:NSMakeRange(4, queryStart - 4)];
   }
 
-  int lastComma = -1;
-  int comma;
+  NSInteger lastComma = -1;
+  NSInteger comma;
   NSMutableArray *numbers = [NSMutableArray arrayWithCapacity:1];
   NSMutableArray *vias = [NSMutableArray arrayWithCapacity:1];
-  while ((comma = [smsURIWithoutQuery rangeOfString:@"," options:NSLiteralSearch range:NSMakeRange(lastComma + 1, [smsURIWithoutQuery length] - lastComma - 1)].location) > lastComma && comma != (int)NSNotFound) {
+  while ((comma = [smsURIWithoutQuery rangeOfString:@"," options:NSLiteralSearch range:NSMakeRange(lastComma + 1, [smsURIWithoutQuery length] - lastComma - 1)].location) > lastComma && comma != (NSInteger)NSNotFound) {
     NSString *numberPart = [smsURIWithoutQuery substringWithRange:NSMakeRange(lastComma + 1, comma - lastComma - 1)];
     [self addNumberVia:numbers vias:vias numberPart:numberPart];
-    lastComma = (int)comma;
+    lastComma = (NSInteger)comma;
   }
   [self addNumberVia:numbers vias:vias numberPart:[smsURIWithoutQuery substringFromIndex:lastComma + 1]];
 

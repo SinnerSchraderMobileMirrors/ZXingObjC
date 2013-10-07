@@ -18,13 +18,13 @@
 
 @implementation ZXByteMatrix
 
-- (id)initWithWidth:(int)width height:(int)height {
+- (id)initWithWidth:(NSInteger)width height:(NSInteger)height {
   if (self = [super init]) {
     _width = width;
     _height = height;
 
     _array = (int8_t **)malloc(height * sizeof(int8_t *));
-    for (int i = 0; i < height; i++) {
+    for (NSInteger i = 0; i < height; i++) {
       _array[i] = (int8_t *)malloc(width * sizeof(int8_t));
     }
     [self clear:0];
@@ -35,7 +35,7 @@
 
 - (void)dealloc {
   if (_array != NULL) {
-    for (int i = 0; i < self.height; i++) {
+    for (NSInteger i = 0; i < self.height; i++) {
       free(_array[i]);
     }
     free(_array);
@@ -43,25 +43,25 @@
   }
 }
 
-- (char)getX:(int)x y:(int)y {
+- (char)getX:(NSInteger)x y:(NSInteger)y {
   return self.array[y][x];
 }
 
-- (void)setX:(int)x y:(int)y charValue:(char)value {
+- (void)setX:(NSInteger)x y:(NSInteger)y charValue:(char)value {
   self.array[y][x] = value;
 }
 
-- (void)setX:(int)x y:(int)y intValue:(int)value {
+- (void)setX:(NSInteger)x y:(NSInteger)y intValue:(NSInteger)value {
   self.array[y][x] = (char)value;
 }
 
-- (void)setX:(int)x y:(int)y boolValue:(BOOL)value {
+- (void)setX:(NSInteger)x y:(NSInteger)y boolValue:(BOOL)value {
   self.array[y][x] = (char)value;
 }
 
 - (void)clear:(char)value {
-  for (int y = 0; y < self.height; ++y) {
-    for (int x = 0; x < self.width; ++x) {
+  for (NSInteger y = 0; y < self.height; ++y) {
+    for (NSInteger x = 0; x < self.width; ++x) {
       self.array[y][x] = value;
     }
   }
@@ -70,8 +70,8 @@
 - (NSString *)description {
   NSMutableString *result = [NSMutableString string];
 
-  for (int y = 0; y < self.height; ++y) {
-    for (int x = 0; x < self.width; ++x) {
+  for (NSInteger y = 0; y < self.height; ++y) {
+    for (NSInteger x = 0; x < self.width; ++x) {
       switch (self.array[y][x]) {
       case 0:
         [result appendString:@" 0"];

@@ -43,7 +43,7 @@
 
   NSMutableArray *attendees = [self matchVCardPrefixedField:@"ATTENDEE" rawText:rawText trim:YES];
   if (attendees != nil) {
-    for (int i = 0; i < attendees.count; i++) {
+    for (NSInteger i = 0; i < attendees.count; i++) {
       attendees[i] = [self stripMailto:attendees[i]];
     }
   }
@@ -87,9 +87,9 @@
   if (values == nil || values.count == 0) {
     return nil;
   }
-  int size = values.count;
+  NSUInteger size = values.count;
   NSMutableArray *result = [NSMutableArray arrayWithCapacity:size];
-  for (int i = 0; i < size; i++) {
+  for (NSInteger i = 0; i < size; i++) {
     [result addObject:values[i][0]];
   }
   return result;

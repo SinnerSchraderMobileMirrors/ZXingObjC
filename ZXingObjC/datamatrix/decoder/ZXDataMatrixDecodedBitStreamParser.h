@@ -25,6 +25,6 @@
 
 @interface ZXDataMatrixDecodedBitStreamParser : NSObject
 
-+ (ZXDecoderResult *)decode:(int8_t *)bytes length:(unsigned int)length error:(NSError **)error;
++ (ZXDecoderResult *)decode:(int8_t *)bytes length:(NSUInteger)length error:(NSError **)error;
 
 @end

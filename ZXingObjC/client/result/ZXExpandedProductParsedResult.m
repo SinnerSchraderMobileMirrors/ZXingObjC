@@ -95,7 +95,7 @@ NSString * const ZX_POUND = @"LB";
 }
 
 - (NSUInteger)hash {
-  int hash = 0;
+  NSInteger hash = 0;
   hash ^= [self.productID hash];
   hash ^= [self.sscc hash];
   hash ^= [self.lotNumber hash];

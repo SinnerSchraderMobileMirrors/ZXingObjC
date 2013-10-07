@@ -47,13 +47,13 @@
 // in binary:
 //                0    1    1   0   0    1   == 0x19
 //
-int FIRST_DIGIT_ENCODINGS[10] = {
+NSInteger FIRST_DIGIT_ENCODINGS[10] = {
   0x00, 0x0B, 0x0D, 0xE, 0x13, 0x19, 0x1C, 0x15, 0x16, 0x1A
 };
 
 @interface ZXEAN13Reader ()
 
-@property (nonatomic, assign) int *decodeMiddleCounters;
+@property (nonatomic, assign) NSInteger *decodeMiddleCounters;
 
 @end
 
@@ -61,7 +61,7 @@ int FIRST_DIGIT_ENCODINGS[10] = {
 
 - (id)init {
   if (self = [super init]) {
-    _decodeMiddleCounters = (int *)malloc(sizeof(4) * sizeof(int));
+    _decodeMiddleCounters = (NSInteger *)malloc(sizeof(4) * sizeof(NSInteger));
     _decodeMiddleCounters[0] = 0;
     _decodeMiddleCounters[1] = 0;
     _decodeMiddleCounters[2] = 0;
@@ -77,25 +77,25 @@ int FIRST_DIGIT_ENCODINGS[10] = {
   }
 }
 
-- (int)decodeMiddle:(ZXBitArray *)row startRange:(NSRange)startRange result:(NSMutableString *)result error:(NSError **)error {
-  int *counters = self.decodeMiddleCounters;
+- (NSInteger)decodeMiddle:(ZXBitArray *)row startRange:(NSRange)startRange result:(NSMutableString *)result error:(NSError **)error {
+  NSInteger *counters = self.decodeMiddleCounters;
   counters[0] = 0;
   counters[1] = 0;
   counters[2] = 0;
   counters[3] = 0;
-  const int countersLen = 4;
-  int end = row.size;
-  int rowOffset = NSMaxRange(startRange);
+  const NSInteger countersLen = 4;
+  NSInteger end = row.size;
+  NSInteger rowOffset = NSMaxRange(startRange);
 
-  int lgPatternFound = 0;
+  NSInteger lgPatternFound = 0;
 
-  for (int x = 0; x < 6 && rowOffset < end; x++) {
-    int bestMatch = [ZXUPCEANReader decodeDigit:row counters:counters countersLen:countersLen rowOffset:rowOffset patternType:UPC_EAN_PATTERNS_L_AND_G_PATTERNS error:error];
+  for (NSInteger x = 0; x < 6 && rowOffset < end; x++) {
+    NSInteger bestMatch = [ZXUPCEANReader decodeDigit:row counters:counters countersLen:countersLen rowOffset:rowOffset patternType:UPC_EAN_PATTERNS_L_AND_G_PATTERNS error:error];
     if (bestMatch == -1) {
       return -1;
     }
     [result appendFormat:@"%C", (unichar)('0' + bestMatch % 10)];
-    for (int i = 0; i < countersLen; i++) {
+    for (NSInteger i = 0; i < countersLen; i++) {
       rowOffset += counters[i];
     }
     if (bestMatch >= 10) {
@@ -108,19 +108,19 @@ int FIRST_DIGIT_ENCODINGS[10] = {
     return -1;
   }
 
-  NSRange middleRange = [[self class] findGuardPattern:row rowOffset:rowOffset whiteFirst:YES pattern:(int *)MIDDLE_PATTERN patternLen:MIDDLE_PATTERN_LEN error:error];
+  NSRange middleRange = [[self class] findGuardPattern:row rowOffset:rowOffset whiteFirst:YES pattern:(NSInteger *)MIDDLE_PATTERN patternLen:MIDDLE_PATTERN_LEN error:error];
   if (middleRange.location == NSNotFound) {
     return -1;
   }
   rowOffset = NSMaxRange(middleRange);
 
-  for (int x = 0; x < 6 && rowOffset < end; x++) {
-    int bestMatch = [ZXUPCEANReader decodeDigit:row counters:counters countersLen:countersLen rowOffset:rowOffset patternType:UPC_EAN_PATTERNS_L_PATTERNS error:error];
+  for (NSInteger x = 0; x < 6 && rowOffset < end; x++) {
+    NSInteger bestMatch = [ZXUPCEANReader decodeDigit:row counters:counters countersLen:countersLen rowOffset:rowOffset patternType:UPC_EAN_PATTERNS_L_PATTERNS error:error];
     if (bestMatch == -1) {
       return -1;
     }
     [result appendFormat:@"%C", (unichar)('0' + bestMatch)];
-    for (int i = 0; i < countersLen; i++) {
+    for (NSInteger i = 0; i < countersLen; i++) {
       rowOffset += counters[i];
     }
   }
@@ -137,8 +137,8 @@ int FIRST_DIGIT_ENCODINGS[10] = {
  * digits in a barcode, determines the implicitly encoded first digit and adds it to the
  * result string.
  */
-- (BOOL)determineFirstDigit:(NSMutableString *)resultString lgPatternFound:(int)lgPatternFound {
-  for (int d = 0; d < 10; d++) {
+- (BOOL)determineFirstDigit:(NSMutableString *)resultString lgPatternFound:(NSInteger)lgPatternFound {
+  for (NSInteger d = 0; d < 10; d++) {
     if (lgPatternFound == FIRST_DIGIT_ENCODINGS[d]) {
       [resultString insertString:[NSString stringWithFormat:@"%C", (unichar)('0' + d)] atIndex:0];
       return YES;

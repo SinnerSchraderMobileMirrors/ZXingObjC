@@ -43,8 +43,8 @@
   return self;
 }
 
-- (NSString *)decodeAllCodes:(NSMutableString *)buff initialPosition:(int)initialPosition error:(NSError **)error {
-  int currentPosition = initialPosition;
+- (NSString *)decodeAllCodes:(NSMutableString *)buff initialPosition:(NSInteger)initialPosition error:(NSError **)error {
+  NSInteger currentPosition = initialPosition;
   NSString *remaining = nil;
   do {
     ZXDecodedInformation *info = [self decodeGeneralPurposeField:currentPosition remaining:remaining];
@@ -70,12 +70,12 @@
   return buff;
 }
 
-- (BOOL)isStillNumeric:(int)pos {
+- (BOOL)isStillNumeric:(NSInteger)pos {
   if (pos + 7 > self.information.size) {
     return pos + 4 <= self.information.size;
   }
 
-  for (int i = pos; i < pos + 3; ++i) {
+  for (NSInteger i = pos; i < pos + 3; ++i) {
     if ([self.information get:i]) {
       return YES;
     }
@@ -84,9 +84,9 @@
   return [self.information get:pos + 3];
 }
 
-- (ZXDecodedNumeric *)decodeNumeric:(int)pos {
+- (ZXDecodedNumeric *)decodeNumeric:(NSInteger)pos {
   if (pos + 7 > self.information.size) {
-    int numeric = [self extractNumericValueFromBitArray:pos bits:4];
+    NSInteger numeric = [self extractNumericValueFromBitArray:pos bits:4];
     if (numeric == 0) {
       return [[ZXDecodedNumeric alloc] initWithNewPosition:self.information.size
                                                  firstDigit:FNC1
@@ -96,27 +96,27 @@
                                                firstDigit:numeric - 1
                                               secondDigit:FNC1];
   }
-  int numeric = [self extractNumericValueFromBitArray:pos bits:7];
+  NSInteger numeric = [self extractNumericValueFromBitArray:pos bits:7];
 
-  int digit1 = (numeric - 8) / 11;
-  int digit2 = (numeric - 8) % 11;
+  NSInteger digit1 = (numeric - 8) / 11;
+  NSInteger digit2 = (numeric - 8) % 11;
 
   return [[ZXDecodedNumeric alloc] initWithNewPosition:pos + 7
                                              firstDigit:digit1
                                             secondDigit:digit2];
 }
 
-- (int)extractNumericValueFromBitArray:(int)pos bits:(int)bits {
+- (NSInteger)extractNumericValueFromBitArray:(NSInteger)pos bits:(NSInteger)bits {
   return [ZXGeneralAppIdDecoder extractNumericValueFromBitArray:self.information pos:pos bits:bits];
 }
 
-+ (int)extractNumericValueFromBitArray:(ZXBitArray *)information pos:(int)pos bits:(int)bits {
++ (NSInteger)extractNumericValueFromBitArray:(ZXBitArray *)information pos:(NSInteger)pos bits:(NSInteger)bits {
   if (bits > 32) {
     [NSException raise:NSInvalidArgumentException format:@"extractNumberValueFromBitArray can't handle more than 32 bits"];
   }
 
-  int value = 0;
-  for (int i = 0; i < bits; ++i) {
+  NSInteger value = 0;
+  for (NSInteger i = 0; i < bits; ++i) {
     if ([information get:pos + i]) {
       value |= 1 << (bits - i - 1);
     }
@@ -125,7 +125,7 @@
   return value;
 }
 
-- (ZXDecodedInformation *)decodeGeneralPurposeField:(int)pos remaining:(NSString *)remaining {
+- (ZXDecodedInformation *)decodeGeneralPurposeField:(NSInteger)pos remaining:(NSString *)remaining {
   [self.buffer setString:@""];
 
   if (remaining != nil) {
@@ -147,7 +147,7 @@
   BOOL isFinished;
   ZXBlockParsedResult *result;
   do {
-    int initialPosition = self.current.position;
+    NSInteger initialPosition = self.current.position;
 
     if (self.current.alpha) {
       result = [self parseAlphaBlock];
@@ -185,14 +185,14 @@
       }
       return [[ZXBlockParsedResult alloc] initWithInformation:information finished:YES];
     }
-    [self.buffer appendFormat:@"%d", numeric.firstDigit];
+    [self.buffer appendFormat:@"%ld", (long)numeric.firstDigit];
 
     if (numeric.secondDigitFNC1) {
       ZXDecodedInformation *information = [[ZXDecodedInformation alloc] initWithNewPosition:self.current.position
                                                                                   newString:self.buffer];
       return [[ZXBlockParsedResult alloc] initWithInformation:information finished:YES];
     }
-    [self.buffer appendFormat:@"%d", numeric.secondDigit];
+    [self.buffer appendFormat:@"%ld", (long)numeric.secondDigit];
   }
 
   if ([self isNumericToAlphaNumericLatch:self.current.position]) {
@@ -259,12 +259,12 @@
   return [[ZXBlockParsedResult alloc] initWithFinished:NO];
 }
 
-- (BOOL)isStillIsoIec646:(int)pos {
+- (BOOL)isStillIsoIec646:(NSInteger)pos {
   if (pos + 5 > self.information.size) {
     return NO;
   }
 
-  int fiveBitValue = [self extractNumericValueFromBitArray:pos bits:5];
+  NSInteger fiveBitValue = [self extractNumericValueFromBitArray:pos bits:5];
   if (fiveBitValue >= 5 && fiveBitValue < 16) {
     return YES;
   }
@@ -273,7 +273,7 @@
     return NO;
   }
 
-  int sevenBitValue = [self extractNumericValueFromBitArray:pos bits:7];
+  NSInteger sevenBitValue = [self extractNumericValueFromBitArray:pos bits:7];
   if (sevenBitValue >= 64 && sevenBitValue < 116) {
     return YES;
   }
@@ -282,12 +282,12 @@
     return NO;
   }
 
-  int eightBitValue = [self extractNumericValueFromBitArray:pos bits:8];
+  NSInteger eightBitValue = [self extractNumericValueFromBitArray:pos bits:8];
   return eightBitValue >= 232 && eightBitValue < 253;
 }
 
-- (ZXDecodedChar *)decodeIsoIec646:(int)pos {
-  int fiveBitValue = [self extractNumericValueFromBitArray:pos bits:5];
+- (ZXDecodedChar *)decodeIsoIec646:(NSInteger)pos {
+  NSInteger fiveBitValue = [self extractNumericValueFromBitArray:pos bits:5];
   if (fiveBitValue == 15) {
     return [[ZXDecodedChar alloc] initWithNewPosition:pos + 5 value:FNC1char];
   }
@@ -296,7 +296,7 @@
     return [[ZXDecodedChar alloc] initWithNewPosition:pos + 5 value:(unichar)('0' + fiveBitValue - 5)];
   }
 
-  int sevenBitValue = [self extractNumericValueFromBitArray:pos bits:7];
+  NSInteger sevenBitValue = [self extractNumericValueFromBitArray:pos bits:7];
 
   if (sevenBitValue >= 64 && sevenBitValue < 90) {
     return [[ZXDecodedChar alloc] initWithNewPosition:pos + 7 value:(unichar)(sevenBitValue + 1)];
@@ -306,7 +306,7 @@
     return [[ZXDecodedChar alloc] initWithNewPosition:pos + 7 value:(unichar)(sevenBitValue + 7)];
   }
 
-  int eightBitValue = [self extractNumericValueFromBitArray:pos bits:8];
+  NSInteger eightBitValue = [self extractNumericValueFromBitArray:pos bits:8];
   unichar c;
   switch (eightBitValue) {
     case 232:
@@ -374,18 +374,18 @@
       break;
     default:
       @throw [NSException exceptionWithName:@"RuntimeException"
-                                     reason:[NSString stringWithFormat:@"Decoding invalid ISO/IEC 646 value: %d", eightBitValue]
+                                     reason:[NSString stringWithFormat:@"Decoding invalid ISO/IEC 646 value: %ld", (long)eightBitValue]
                                    userInfo:nil];
   }
   return [[ZXDecodedChar alloc] initWithNewPosition:pos + 8 value:c];
 }
 
-- (BOOL)isStillAlpha:(int)pos {
+- (BOOL)isStillAlpha:(NSInteger)pos {
   if (pos + 5 > self.information.size) {
     return NO;
   }
 
-  int fiveBitValue = [self extractNumericValueFromBitArray:pos bits:5];
+  NSInteger fiveBitValue = [self extractNumericValueFromBitArray:pos bits:5];
   if (fiveBitValue >= 5 && fiveBitValue < 16) {
     return YES;
   }
@@ -394,12 +394,12 @@
     return NO;
   }
 
-  int sixBitValue = [self extractNumericValueFromBitArray:pos bits:6];
+  NSInteger sixBitValue = [self extractNumericValueFromBitArray:pos bits:6];
   return sixBitValue >= 16 && sixBitValue < 63;
 }
 
-- (ZXDecodedChar *)decodeAlphanumeric:(int)pos {
-  int fiveBitValue = [self extractNumericValueFromBitArray:pos bits:5];
+- (ZXDecodedChar *)decodeAlphanumeric:(NSInteger)pos {
+  NSInteger fiveBitValue = [self extractNumericValueFromBitArray:pos bits:5];
   if (fiveBitValue == 15) {
     return [[ZXDecodedChar alloc] initWithNewPosition:pos + 5 value:FNC1char];
   }
@@ -408,7 +408,7 @@
     return [[ZXDecodedChar alloc] initWithNewPosition:pos + 5 value:(unichar)('0' + fiveBitValue - 5)];
   }
 
-  int sixBitValue = [self extractNumericValueFromBitArray:pos bits:6];
+  NSInteger sixBitValue = [self extractNumericValueFromBitArray:pos bits:6];
 
   if (sixBitValue >= 32 && sixBitValue < 58) {
     return [[ZXDecodedChar alloc] initWithNewPosition:pos + 6 value:(unichar)(sixBitValue + 33)];
@@ -433,19 +433,19 @@
       break;
     default:
       @throw [NSException exceptionWithName:@"RuntimeException"
-                                     reason:[NSString stringWithFormat:@"Decoding invalid alphanumeric value: %d", sixBitValue]
+                                     reason:[NSString stringWithFormat:@"Decoding invalid alphanumeric value: %ld", (long)sixBitValue]
                                    userInfo:nil];
   }
 
   return [[ZXDecodedChar alloc] initWithNewPosition:pos + 6 value:c];
 }
 
-- (BOOL)isAlphaTo646ToAlphaLatch:(int)pos {
+- (BOOL)isAlphaTo646ToAlphaLatch:(NSInteger)pos {
   if (pos + 1 > self.information.size) {
     return NO;
   }
 
-  for (int i = 0; i < 5 && i + pos < self.information.size; ++i) {
+  for (NSInteger i = 0; i < 5 && i + pos < self.information.size; ++i) {
     if (i == 2) {
       if (![self.information get:pos + 2]) {
         return NO;
@@ -458,12 +458,12 @@
   return YES;
 }
 
-- (BOOL)isAlphaOr646ToNumericLatch:(int)pos {
+- (BOOL)isAlphaOr646ToNumericLatch:(NSInteger)pos {
   if (pos + 3 > self.information.size) {
     return NO;
   }
 
-  for (int i = pos; i < pos + 3; ++i) {
+  for (NSInteger i = pos; i < pos + 3; ++i) {
     if ([self.information get:i]) {
       return NO;
     }
@@ -472,12 +472,12 @@
   return YES;
 }
 
-- (BOOL)isNumericToAlphaNumericLatch:(int)pos {
+- (BOOL)isNumericToAlphaNumericLatch:(NSInteger)pos {
   if (pos + 1 > self.information.size) {
     return NO;
   }
 
-  for (int i = 0; i < 4 && i + pos < self.information.size; ++i) {
+  for (NSInteger i = 0; i < 4 && i + pos < self.information.size; ++i) {
     if ([self.information get:pos + i]) {
       return NO;
     }

@@ -21,7 +21,7 @@ static NSRegularExpression *RFC2445_DURATION = nil;
 static NSDateFormatter *DATE_FORMAT = nil;
 static NSDateFormatter *DATE_TIME_FORMAT = nil;
 
-const int RFC2445_DURATION_FIELD_UNITS_LEN = 5;
+const NSInteger RFC2445_DURATION_FIELD_UNITS_LEN = 5;
 const long RFC2445_DURATION_FIELD_UNITS[RFC2445_DURATION_FIELD_UNITS_LEN] = {
   7 * 24 * 60 * 60 * 1000, // 1 week
   24 * 60 * 60 * 1000, // 1 day
@@ -141,7 +141,7 @@ const long RFC2445_DURATION_FIELD_UNITS[RFC2445_DURATION_FIELD_UNITS_LEN] = {
   }
   long durationMS = 0;
   NSTextCheckingResult *match = m[0];
-  for (int i = 0; i < RFC2445_DURATION_FIELD_UNITS_LEN; i++) {
+  for (NSInteger i = 0; i < RFC2445_DURATION_FIELD_UNITS_LEN; i++) {
     if ([match rangeAtIndex:i + 1].location != NSNotFound) {
       NSString *fieldValue = [durationString substringWithRange:[match rangeAtIndex:i + 1]];
       if (fieldValue != nil) {

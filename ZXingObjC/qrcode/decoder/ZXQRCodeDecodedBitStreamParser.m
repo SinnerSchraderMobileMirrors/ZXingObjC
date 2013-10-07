@@ -35,11 +35,11 @@ char const ALPHANUMERIC_CHARS[45] = {
   ' ', '$', '%', '*', '+', '-', '.', '/', ':'
 };
 
-int const GB2312_SUBSET = 1;
+NSInteger const GB2312_SUBSET = 1;
 
 @implementation ZXQRCodeDecodedBitStreamParser
 
-+ (ZXDecoderResult *)decode:(int8_t *)bytes length:(unsigned int)length version:(ZXQRCodeVersion *)version
++ (ZXDecoderResult *)decode:(int8_t *)bytes length:(NSUInteger)length version:(ZXQRCodeVersion *)version
                     ecLevel:(ZXErrorCorrectionLevel *)ecLevel hints:(ZXDecodeHints *)hints error:(NSError **)error {
   ZXBitSource *bits = [[ZXBitSource alloc] initWithBytes:bytes length:length];
   NSMutableString *result = [NSMutableString stringWithCapacity:50];
@@ -68,7 +68,7 @@ int const GB2312_SUBSET = 1;
         }
         [bits readBits:16];
       } else if ([mode isEqual:[ZXMode eciMode]]) {
-        int value = [self parseECIValue:bits];
+        NSInteger value = [self parseECIValue:bits];
         currentCharacterSetECI = [ZXCharacterSetECI characterSetECIByValue:value];
         if (currentCharacterSetECI == nil) {
           if (error) *error = FormatErrorInstance();
@@ -76,8 +76,8 @@ int const GB2312_SUBSET = 1;
         }
       } else {
         if ([mode isEqual:[ZXMode hanziMode]]) {
-          int subset = [bits readBits:4];
-          int countHanzi = [bits readBits:[mode characterCountBits:version]];
+          NSInteger subset = [bits readBits:4];
+          NSInteger countHanzi = [bits readBits:[mode characterCountBits:version]];
           if (subset == GB2312_SUBSET) {
             if (![self decodeHanziSegment:bits result:result count:countHanzi]) {
               if (error) *error = FormatErrorInstance();
@@ -85,7 +85,7 @@ int const GB2312_SUBSET = 1;
             }
           }
         } else {
-          int count = [bits readBits:[mode characterCountBits:version]];
+          NSInteger count = [bits readBits:[mode characterCountBits:version]];
           if ([mode isEqual:[ZXMode numericMode]]) {
             if (![self decodeNumericSegment:bits result:result count:count]) {
               if (error) *error = FormatErrorInstance();
@@ -125,15 +125,15 @@ int const GB2312_SUBSET = 1;
 /**
  * See specification GBT 18284-2000
  */
-+ (BOOL)decodeHanziSegment:(ZXBitSource *)bits result:(NSMutableString *)result count:(int)count {
++ (BOOL)decodeHanziSegment:(ZXBitSource *)bits result:(NSMutableString *)result count:(NSInteger)count {
   if (count * 13 > bits.available) {
     return NO;
   }
 
   NSMutableData *buffer = [NSMutableData dataWithCapacity:2 * count];
   while (count > 0) {
-    int twoBytes = [bits readBits:13];
-    int assembledTwoBytes = ((twoBytes / 0x060) << 8) | (twoBytes % 0x060);
+    NSInteger twoBytes = [bits readBits:13];
+    NSInteger assembledTwoBytes = ((twoBytes / 0x060) << 8) | (twoBytes % 0x060);
     if (assembledTwoBytes < 0x003BF) {
       assembledTwoBytes += 0x0A1A1;
     } else {
@@ -155,15 +155,15 @@ int const GB2312_SUBSET = 1;
   return YES;
 }
 
-+ (BOOL)decodeKanjiSegment:(ZXBitSource *)bits result:(NSMutableString *)result count:(int)count {
++ (BOOL)decodeKanjiSegment:(ZXBitSource *)bits result:(NSMutableString *)result count:(NSInteger)count {
   if (count * 13 > bits.available) {
     return NO;
   }
 
   NSMutableData *buffer = [NSMutableData dataWithCapacity:2 * count];
   while (count > 0) {
-    int twoBytes = [bits readBits:13];
-    int assembledTwoBytes = ((twoBytes / 0x0C0) << 8) | (twoBytes % 0x0C0);
+    NSInteger twoBytes = [bits readBits:13];
+    NSInteger assembledTwoBytes = ((twoBytes / 0x0C0) << 8) | (twoBytes % 0x0C0);
     if (assembledTwoBytes < 0x01F00) {
       assembledTwoBytes += 0x08140;
     } else {
@@ -185,14 +185,14 @@ int const GB2312_SUBSET = 1;
   return YES;
 }
 
-+ (BOOL)decodeByteSegment:(ZXBitSource *)bits result:(NSMutableString *)result count:(int)count currentCharacterSetECI:(ZXCharacterSetECI *)currentCharacterSetECI byteSegments:(NSMutableArray *)byteSegments hints:(ZXDecodeHints *)hints {
++ (BOOL)decodeByteSegment:(ZXBitSource *)bits result:(NSMutableString *)result count:(NSInteger)count currentCharacterSetECI:(ZXCharacterSetECI *)currentCharacterSetECI byteSegments:(NSMutableArray *)byteSegments hints:(ZXDecodeHints *)hints {
   if (count << 3 > bits.available) {
     return NO;
   }
   int8_t readBytes[count];
   NSMutableArray *readBytesArray = [NSMutableArray arrayWithCapacity:count];
 
-  for (int i = 0; i < count; i++) {
+  for (NSInteger i = 0; i < count; i++) {
     readBytes[i] = (char)[bits readBits:8];
     [readBytesArray addObject:[NSNumber numberWithChar:readBytes[i]]];
   }
@@ -213,21 +213,21 @@ int const GB2312_SUBSET = 1;
   return YES;
 }
 
-+ (unichar)toAlphaNumericChar:(int)value {
++ (unichar)toAlphaNumericChar:(NSInteger)value {
   if (value >= 45) {
     return -1;
   }
   return ALPHANUMERIC_CHARS[value];
 }
 
-+ (BOOL)decodeAlphanumericSegment:(ZXBitSource *)bits result:(NSMutableString *)result count:(int)count fc1InEffect:(BOOL)fc1InEffect {
-  int start = result.length;
++ (BOOL)decodeAlphanumericSegment:(ZXBitSource *)bits result:(NSMutableString *)result count:(NSInteger)count fc1InEffect:(BOOL)fc1InEffect {
+  NSInteger start = result.length;
 
   while (count > 1) {
     if ([bits available] < 11) {
       return NO;
     }
-    int nextTwoCharsBits = [bits readBits:11];
+    NSInteger nextTwoCharsBits = [bits readBits:11];
     unichar next1 = [self toAlphaNumericChar:nextTwoCharsBits / 45];
     unichar next2 = [self toAlphaNumericChar:nextTwoCharsBits % 45];
 
@@ -243,7 +243,7 @@ int const GB2312_SUBSET = 1;
     [result appendFormat:@"%C", next1];
   }
   if (fc1InEffect) {
-    for (int i = start; i < [result length]; i++) {
+    for (NSInteger i = start; i < [result length]; i++) {
       if ([result characterAtIndex:i] == '%') {
         if (i < [result length] - 1 && [result characterAtIndex:i + 1] == '%') {
           [result deleteCharactersInRange:NSMakeRange(i + 1, 1)];
@@ -257,14 +257,14 @@ int const GB2312_SUBSET = 1;
   return YES;
 }
 
-+ (BOOL)decodeNumericSegment:(ZXBitSource *)bits result:(NSMutableString *)result count:(int)count {
++ (BOOL)decodeNumericSegment:(ZXBitSource *)bits result:(NSMutableString *)result count:(NSInteger)count {
   // Read three digits at a time
   while (count >= 3) {
     // Each 10 bits encodes three digits
     if (bits.available < 10) {
       return NO;
     }
-    int threeDigitsBits = [bits readBits:10];
+    NSInteger threeDigitsBits = [bits readBits:10];
     if (threeDigitsBits >= 1000) {
       return NO;
     }
@@ -281,7 +281,7 @@ int const GB2312_SUBSET = 1;
     if (bits.available < 7) {
       return NO;
     }
-    int twoDigitsBits = [bits readBits:7];
+    NSInteger twoDigitsBits = [bits readBits:7];
     if (twoDigitsBits >= 100) {
       return NO;
     }
@@ -293,7 +293,7 @@ int const GB2312_SUBSET = 1;
     if (bits.available < 4) {
       return NO;
     }
-    int digitBits = [bits readBits:4];
+    NSInteger digitBits = [bits readBits:4];
     if (digitBits >= 10) {
       return NO;
     }
@@ -303,17 +303,17 @@ int const GB2312_SUBSET = 1;
   return YES;
 }
 
-+ (int)parseECIValue:(ZXBitSource *)bits {
-  int firstByte = [bits readBits:8];
++ (NSInteger)parseECIValue:(ZXBitSource *)bits {
+  NSInteger firstByte = [bits readBits:8];
   if ((firstByte & 0x80) == 0) {
     return firstByte & 0x7F;
   }
   if ((firstByte & 0xC0) == 0x80) {
-    int secondByte = [bits readBits:8];
+    NSInteger secondByte = [bits readBits:8];
     return ((firstByte & 0x3F) << 8) | secondByte;
   }
   if ((firstByte & 0xE0) == 0xC0) {
-    int secondThirdBytes = [bits readBits:16];
+    NSInteger secondThirdBytes = [bits readBits:16];
     return ((firstByte & 0x1F) << 16) | secondThirdBytes;
   }
   return -1;
