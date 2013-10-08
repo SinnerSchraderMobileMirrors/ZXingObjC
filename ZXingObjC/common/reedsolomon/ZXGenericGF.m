@@ -67,6 +67,18 @@
   self.initialized = YES;
 }
 
+- (void)dealloc {
+  if (_expTable) {
+    free(_expTable);
+    _expTable = NULL;
+  }
+
+  if (_logTable) {
+    free(_logTable);
+    _logTable = NULL;
+  }
+}
+
 - (void)checkInit {
   if (!self.initialized) {
     [self initialize];

@@ -59,7 +59,7 @@ static NSString *BASE_IMAGE_PATH = @"Resources/golden/qrcode/";
 
 - (void)testQRCodeWriter {
   // The QR should be multiplied up to fit, with extra padding if necessary
-  NSInteger bigEnough = 256;
+  NSUInteger bigEnough = 256;
   ZXQRCodeWriter *writer = [[ZXQRCodeWriter alloc] init];
   ZXBitMatrix *matrix = [writer encode:@"http://www.google.com/" format:kBarcodeFormatQRCode width:bigEnough
                                 height:bigEnough hints:nil error:nil];
@@ -76,8 +76,8 @@ static NSString *BASE_IMAGE_PATH = @"Resources/golden/qrcode/";
   STAssertTrue(tooSmall < matrix.height, @"Matrix height should be greater than %d", tooSmall);
 
   // We should also be able to handle non-square requests by padding them
-  NSInteger strangeWidth = 500;
-  NSInteger strangeHeight = 100;
+  NSUInteger strangeWidth = 500;
+  NSUInteger strangeHeight = 100;
   matrix = [writer encode:@"http://www.google.com/" format:kBarcodeFormatQRCode width:strangeWidth
                    height:strangeHeight hints:nil error:nil];
   STAssertNotNil(matrix, @"Matrix should not be nil");
@@ -86,7 +86,7 @@ static NSString *BASE_IMAGE_PATH = @"Resources/golden/qrcode/";
 }
 
 - (void)compareToGoldenFile:(NSString *)contents ecLevel:(ZXErrorCorrectionLevel *)ecLevel
-                 resolution:(NSInteger)resolution fileName:(NSString *)fileName {
+                 resolution:(NSUInteger)resolution fileName:(NSString *)fileName {
   ZXImage *image = [self loadImage:fileName];
   STAssertNotNil(image, @"Image should not be nil");
   ZXBitMatrix *goldenResult = [self createMatrixFromImage:image];

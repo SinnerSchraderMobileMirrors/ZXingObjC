@@ -35,20 +35,18 @@
       }
       if (firstNonZero == coefficientsLen) {
         ZXGenericGFPoly *zero = [field zero];
-        _coefficients = (NSInteger *)malloc(zero.coefficientsLen * sizeof(NSInteger));
-        memcpy(_coefficients, zero.coefficients, zero.coefficientsLen * sizeof(NSInteger));
         _coefficientsLen = zero.coefficientsLen;
+        _coefficients = (NSInteger *)malloc(_coefficientsLen * sizeof(NSInteger));
+        memcpy(_coefficients, zero.coefficients, _coefficientsLen * sizeof(NSInteger));
       } else {
         _coefficientsLen = (coefficientsLen - firstNonZero);
         _coefficients = (NSInteger *)malloc(_coefficientsLen * sizeof(NSInteger));
-        for (NSInteger i = 0; i < _coefficientsLen; i++) {
-          _coefficients[i] = coefficients[firstNonZero + i];
-        }
+        memcpy(_coefficients, coefficients + firstNonZero, _coefficientsLen* sizeof(NSInteger));
       }
     } else {
-      _coefficients = (NSInteger *)malloc(coefficientsLen * sizeof(NSInteger));
-      memcpy(_coefficients, coefficients, coefficientsLen * sizeof(NSInteger));
       _coefficientsLen = coefficientsLen;
+      _coefficients = (NSInteger *)malloc(_coefficientsLen * sizeof(NSInteger));
+      memcpy(_coefficients, coefficients, _coefficientsLen * sizeof(NSInteger));
     }
   }
 

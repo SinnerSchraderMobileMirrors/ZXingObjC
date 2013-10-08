@@ -306,14 +306,14 @@
 }
 
 - (void)testInterleaveWithECBytes {
-  const NSInteger dataBytesLen = 9;
+  const NSUInteger dataBytesLen = 9;
   int8_t dataBytes[dataBytesLen] = {32, 65, 205, 69, 41, 220, 46, 128, 236};
   ZXBitArray *in = [[ZXBitArray alloc] init];
   for (NSInteger i = 0; i < dataBytesLen; i++) {
     [in appendBits:dataBytes[i] numBits:8];
   }
   ZXBitArray *out = [ZXEncoder interleaveWithECBytes:in numTotalBytes:26 numDataBytes:9 numRSBlocks:1 error:nil];
-  const NSInteger expectedLen = 26;
+  const NSUInteger expectedLen = 26;
   int8_t expected[expectedLen] = {
     // Data bytes.
     32, 65, 205, 69, 41, 220, 46, 128, 236,
@@ -328,7 +328,7 @@
   for (NSInteger x = 0; x < expectedLen; x++) {
     STAssertEquals(outArray[x], expected[x], @"Expected outArray[%d] to equal %d", x, expected[x]);
   }
-  const NSInteger dataBytesLen2 = 62;
+  const NSUInteger dataBytesLen2 = 62;
   int8_t dataBytes2[dataBytesLen2] = {
     67, 70, 22, 38, 54, 70, 86, 102, 118, 134, 150, 166, 182,
     198, 214, 230, 247, 7, 23, 39, 55, 71, 87, 103, 119, 135,
@@ -342,7 +342,7 @@
     [in appendBits:dataBytes2[i] numBits:8];
   }
   out = [ZXEncoder interleaveWithECBytes:in numTotalBytes:134 numDataBytes:62 numRSBlocks:4 error:nil];
-  const NSInteger expectedLen2 = 134;
+  const NSUInteger expectedLen2 = 134;
   int8_t expected2[expectedLen2] = {
     // Data bytes.
     67, 230, 54, 55, 70, 247, 70, 71, 22, 7, 86, 87, 38, 23, 102, 103, 54, 39,

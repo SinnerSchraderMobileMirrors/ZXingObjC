@@ -20,7 +20,7 @@
 
 - (void)testGetSet {
   ZXBitMatrix *matrix = [[ZXBitMatrix alloc] initWithDimension:33];
-  STAssertEquals(matrix.height, 33, @"Expected matrix height to be 33");
+  STAssertEquals(matrix.height, (NSUInteger)33, @"Expected matrix height to be 33");
   for (NSInteger y = 0; y < 33; y++) {
     for (NSInteger x = 0; x < 33; x++) {
       if ((y * x % 3) == 0) {
@@ -48,8 +48,8 @@
 
 - (void)testRectangularMatrix {
   ZXBitMatrix *matrix = [[ZXBitMatrix alloc] initWithWidth:75 height:20];
-  STAssertEquals(matrix.width, 75, @"Expected matrix.width to be 75");
-  STAssertEquals(matrix.height, 20, @"Expected matrix.height to be 20");
+  STAssertEquals(matrix.width, (NSUInteger)75, @"Expected matrix.width to be 75");
+  STAssertEquals(matrix.height, (NSUInteger)20, @"Expected matrix.height to be 20");
   [matrix setX:10 y:0];
   [matrix setX:11 y:1];
   [matrix setX:50 y:2];
@@ -74,8 +74,8 @@
 
 - (void)testRectangularSetRegion {
   ZXBitMatrix *matrix = [[ZXBitMatrix alloc] initWithWidth:320 height:240];
-  STAssertEquals(matrix.width, 320, @"Expected matrix.width to be 320");
-  STAssertEquals(matrix.height, 240, @"Expected matrix.height to be 240");
+  STAssertEquals(matrix.width, (NSUInteger)320, @"Expected matrix.width to be 320");
+  STAssertEquals(matrix.height, (NSUInteger)240, @"Expected matrix.height to be 240");
   [matrix setRegionAtLeft:105 top:22 width:80 height:12];
 
   // Only bits in the region should be on
@@ -97,17 +97,17 @@
 
   // Should allocate
   ZXBitArray *array = [matrix rowAtY:2 row:nil];
-  STAssertEquals(array.size, 102, @"Expected array.size to equal 102");
+  STAssertEquals(array.size, (NSUInteger)102, @"Expected array.size to equal 102");
 
   // Should reallocate
   ZXBitArray *array2 = [[ZXBitArray alloc] initWithSize:60];
   array2 = [matrix rowAtY:2 row:array2];
-  STAssertEquals(array2.size, 102, @"Expected array2.size to equal 102");
+  STAssertEquals(array2.size, (NSUInteger)102, @"Expected array2.size to equal 102");
 
   // Should use provided object, with original BitArray size
   ZXBitArray *array3 = [[ZXBitArray alloc] initWithSize:200];
   array3 = [matrix rowAtY:2 row:array3];
-  STAssertEquals(array3.size, 200, @"Expected array3.size to equal 200");
+  STAssertEquals(array3.size, (NSUInteger)200, @"Expected array3.size to equal 200");
 
   for (NSInteger x = 0; x < 102; x++) {
     BOOL on = (x & 0x03) == 0;

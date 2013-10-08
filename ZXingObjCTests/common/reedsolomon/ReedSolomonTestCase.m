@@ -471,7 +471,7 @@ const NSInteger ReedSolomonTestCase_RANDOM_SEED = 3735928559;
   NSInteger iterations = field.size > 256 ? 1 : DECODER_TEST_ITERATIONS;
   for (NSInteger j = 0; j < iterations; j++) {
     for (NSInteger i = 0; i < ecWordsLen; i++) {
-      if (i > 10 && i < ecWordsLen / 2 - 10) {
+      if (i > 10 && i < (ecWordsLen / 2) - 10) {
         // performance improvement - skip intermediate cases in long-running tests
         i += ecWordsLen / 10;
       }

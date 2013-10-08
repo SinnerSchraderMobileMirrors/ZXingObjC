@@ -22,7 +22,7 @@
   ZXEncodeHints *hints = [ZXEncodeHints hints];
   hints.dataMatrixShape = [ZXSymbolShapeHint forceSquare];
 
-  NSInteger bigEnough = 64;
+  NSUInteger bigEnough = 64;
   ZXDataMatrixWriter *writer = [[ZXDataMatrixWriter alloc] init];
   ZXBitMatrix *matrix = [writer encode:@"Hello Google" format:kBarcodeFormatDataMatrix width:bigEnough height:bigEnough hints:hints error:nil];
   STAssertNotNil(matrix, @"Matrix should not be nil");
@@ -34,7 +34,7 @@
   ZXEncodeHints *hints = [ZXEncodeHints hints];
   hints.dataMatrixShape = [ZXSymbolShapeHint forceSquare];
 
-  NSInteger bigEnough = 14;
+  NSUInteger bigEnough = 14;
   ZXDataMatrixWriter *writer = [[ZXDataMatrixWriter alloc] init];
   ZXBitMatrix *matrix = [writer encode:@"Hello Me" format:kBarcodeFormatDataMatrix width:bigEnough height:bigEnough hints:hints error:nil];
   STAssertNotNil(matrix, @"Matrix should not be nil");

@@ -40,8 +40,10 @@
 - (id)initWithSize:(NSUInteger)size {
   if (self = [super init]) {
     _size = size;
-    _bits = [self makeArray:size];
     _bitsLength = (size + 31) >> 5;
+
+    _bits = (int32_t *)malloc(_bitsLength * sizeof(int32_t));
+    memset(_bits, 0, _bitsLength * sizeof(int32_t));
   }
 
   return self;
@@ -61,18 +63,11 @@
 
 - (void)ensureCapacity:(NSUInteger)aSize {
   if (aSize > self.bitsLength << 5) {
-    int32_t *newBits = [self makeArray:aSize];
+    NSUInteger newBitsLength = (aSize + 31) >> 5;
+    self.bits = realloc(self.bits, newBitsLength * sizeof(int32_t));
+    memset(self.bits + self.bitsLength, 0, newBitsLength - self.bitsLength);
 
-    for (NSUInteger i = 0; i < self.bitsLength; i++) {
-      newBits[i] = self.bits[i];
-    }
-
-    if (self.bits != NULL) {
-      free(self.bits);
-      self.bits = NULL;
-    }
-    self.bits = newBits;
-    self.bitsLength = (aSize + 31) >> 5;
+    self.bitsLength = newBitsLength;
   }
 }
 
