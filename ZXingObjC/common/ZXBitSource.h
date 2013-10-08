@@ -28,7 +28,7 @@
 @property (nonatomic, assign, readonly) NSInteger byteOffset;
 
 - (id)initWithBytes:(int8_t *)bytes length:(NSUInteger)length;
-- (NSInteger)readBits:(NSInteger)numBits;
+- (int32_t)readBits:(NSInteger)numBits;
 - (NSInteger)available;
 
 @end

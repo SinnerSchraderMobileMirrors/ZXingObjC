@@ -319,7 +319,7 @@ NSInteger const TYPE_INFO_MASK_PATTERN = 0x5412;
 //
 // Since all coefficients in the polynomials are 1 or 0, we can do the calculation by bit
 // operations. We don't care if cofficients are positive or negative.
-+ (NSInteger)calculateBCHCode:(NSInteger)value poly:(NSInteger)poly {
++ (int32_t)calculateBCHCode:(int32_t)value poly:(NSInteger)poly {
   // If poly is "1 1111 0010 0101" (version info poly), msbSetInPoly is 13. We'll subtract 1
   // from 13 to make it 12.
   NSInteger msbSetInPoly = [self findMSBSet:poly];
@@ -342,10 +342,10 @@ NSInteger const TYPE_INFO_MASK_PATTERN = 0x5412;
     if (error) *error = [[NSError alloc] initWithDomain:ZXErrorDomain code:ZXNotFoundError userInfo:userInfo];
     return NO;
   }
-  NSInteger typeInfo = ([ecLevel bits] << 3) | maskPattern;
+  int32_t typeInfo = ([ecLevel bits] << 3) | (int32_t)maskPattern;
   [bits appendBits:typeInfo numBits:5];
 
-  NSInteger bchCode = [self calculateBCHCode:typeInfo poly:TYPE_INFO_POLY];
+  int32_t bchCode = [self calculateBCHCode:typeInfo poly:TYPE_INFO_POLY];
   [bits appendBits:bchCode numBits:10];
 
   ZXBitArray *maskBits = [[ZXBitArray alloc] init];
@@ -365,8 +365,8 @@ NSInteger const TYPE_INFO_MASK_PATTERN = 0x5412;
 // Make bit vector of version information. On success, store the result in "bits" and return true.
 // See 8.10 of JISX0510:2004 (p.45) for details.
 + (BOOL)makeVersionInfoBits:(ZXQRCodeVersion *)version bits:(ZXBitArray *)bits error:(NSError **)error {
-  [bits appendBits:version.versionNumber numBits:6];
-  NSInteger bchCode = [self calculateBCHCode:version.versionNumber poly:VERSION_INFO_POLY];
+  [bits appendBits:(int32_t)version.versionNumber numBits:6];
+  int32_t bchCode = [self calculateBCHCode:(int32_t)version.versionNumber poly:VERSION_INFO_POLY];
   [bits appendBits:bchCode numBits:12];
 
   if ([bits size] != 18) { // Just in case.

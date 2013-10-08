@@ -216,12 +216,12 @@
           (long)passedCounts[x], (long)imageFiles.count, (long)testResult.mustPassCount);
     NSInteger failed = (NSInteger)imageFiles.count - passedCounts[x];
     NSLog(@"    %ld failed due to misreads, %ld not detected",
-          (long)misreadCounts[x], failed - misreadCounts[x]);
+          (long)misreadCounts[x], (long)(failed - misreadCounts[x]));
     NSLog(@"  %ld of %ld images passed with try harder (%ld required)",
           (long)tryHarderCounts[x], (long)imageFiles.count, (long)testResult.tryHarderCount);
     failed = (NSInteger)imageFiles.count - tryHarderCounts[x];
     NSLog(@"    %ld failed due to misreads, %ld not detected",
-          (long)tryHarderMisreadCounts[x], failed - tryHarderMisreadCounts[x]);
+          (long)tryHarderMisreadCounts[x], (long)(failed - tryHarderMisreadCounts[x]));
     totalFound += passedCounts[x] + tryHarderCounts[x];
     totalMustPass += testResult.mustPassCount + testResult.tryHarderCount;
     totalMisread += misreadCounts[x] + tryHarderMisreadCounts[x];
@@ -230,17 +230,17 @@
 
   NSInteger totalTests = (NSInteger)imageFiles.count * testCount * 2;
   NSLog(@"TOTALS:\nDecoded %ld images out of %ld (%ld%%, %ld required)",
-        (long)totalFound, (long)totalTests, totalFound * 100 / totalTests, (long)totalMustPass);
+        (long)totalFound, (long)totalTests, (long)(totalFound * 100 / totalTests), (long)totalMustPass);
   if (totalFound > totalMustPass) {
-    NSLog(@"  +++ Test too lax by %ld images", totalFound - totalMustPass);
+    NSLog(@"  +++ Test too lax by %ld images", (long)(totalFound - totalMustPass));
   } else if (totalFound < totalMustPass) {
-    NSLog(@"  --- Test failed by %ld images", totalMustPass - totalFound);
+    NSLog(@"  --- Test failed by %ld images", (long)(totalMustPass - totalFound));
   }
 
   if (totalMisread < totalMaxMisread) {
-    NSLog(@"  +++ Test expects too many misreads by %ld images", totalMaxMisread - totalMisread);
+    NSLog(@"  +++ Test expects too many misreads by %ld images", (long)(totalMaxMisread - totalMisread));
   } else if (totalMisread > totalMaxMisread) {
-    NSLog(@"  --- Test had too many misreads by %ld images", totalMisread - totalMaxMisread);
+    NSLog(@"  --- Test had too many misreads by %ld images", (long)(totalMisread - totalMaxMisread));
   }
 
   // Then run through again and assert if any failed

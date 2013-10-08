@@ -83,9 +83,9 @@
   STAssertEquals(v.size, (NSUInteger)8, @"Expected size to be 8");
   STAssertEquals([self unsignedInt:v index:0], 0xff000000L, @"Expected index 0 to equal %ld", 0xff000000L);
   v = [[ZXBitArray alloc] init];
-  [v appendBits:(int8_t)0xff7 numBits:12];
+  [v appendBits:0xff7 numBits:12];
   STAssertEquals(v.size, (NSUInteger)12, @"Expected size to be 12");
-  STAssertEquals([self unsignedInt:v index:0], (uint8_t)0xff700000L, @"Expected index 0 to equal %ld", 0xff700000L);
+  STAssertEquals([self unsignedInt:v index:0], 0xff700000L, @"Expected index 0 to equal %ld", 0xff700000L);
 }
 
 - (void)testNumBytes {
@@ -105,9 +105,9 @@
 
 - (void)testAppendBitVector {
   ZXBitArray *v1 = [[ZXBitArray alloc] init];
-  [v1 appendBits:(int8_t)0xbe numBits:8];
+  [v1 appendBits:0xbe numBits:8];
   ZXBitArray *v2 = [[ZXBitArray alloc] init];
-  [v2 appendBits:(int8_t)0xef numBits:8];
+  [v2 appendBits:0xef numBits:8];
   [v1 appendBitArray:v2];
   // beef = 1011 1110 1110 1111
   NSString *expected = @" X.XXXXX. XXX.XXXX";
@@ -117,12 +117,12 @@
 - (void)testXOR {
   {
     ZXBitArray *v1 = [[ZXBitArray alloc] init];
-    [v1 appendBits:(int8_t)0x5555aaaa numBits:32];
+    [v1 appendBits:0x5555aaaa numBits:32];
     ZXBitArray *v2 = [[ZXBitArray alloc] init];
-    [v2 appendBits:(int8_t)0xaaaa5555 numBits:32];
+    [v2 appendBits:0xaaaa5555 numBits:32];
     [v1 xor:v2];
-    STAssertEquals([self unsignedInt:v1 index:0], (int8_t)0xffffffffL,
-                   @"Expected int8_t at index 0 to equal %d", 0xffffffffL);
+    STAssertEquals([self unsignedInt:v1 index:0], 0xffffffffL,
+                   @"Expected index 0 to equal %d", 0xffffffffL);
   }
   {
     ZXBitArray *v1 = [[ZXBitArray alloc] init];
@@ -130,14 +130,14 @@
     ZXBitArray *v2 = [[ZXBitArray alloc] init];
     [v2 appendBits:0x55 numBits:7];  // 101 0101
     [v1 xor:v2];
-    STAssertEquals([self unsignedInt:v1 index:0], (int8_t)0xfe000000L,
-                   @"Expected int8_t at index 0 to equal %d", 0xfe000000L); // 1111 1110
+    STAssertEquals([self unsignedInt:v1 index:0], 0xfe000000L,
+                   @"Expected index 0 to equal %d", 0xfe000000L); // 1111 1110
   }
 }
 
 - (void)testAt {
   ZXBitArray *v = [[ZXBitArray alloc] init];
-  [v appendBits:(int8_t)0xdead numBits:16];  // 1101 1110 1010 1101
+  [v appendBits:0xdead numBits:16];  // 1101 1110 1010 1101
   STAssertTrue([v get:0], @"Expected value at 0 to be 1");
   STAssertTrue([v get:1], @"Expected value at 1 to be 1");
   STAssertFalse([v get:2], @"Expected value at 2 to be 0");
@@ -161,7 +161,7 @@
 
 - (void)testToString {
   ZXBitArray *v = [[ZXBitArray alloc] init];
-  [v appendBits:(int8_t)0xdead numBits:16];  // 1101 1110 1010 1101
+  [v appendBits:0xdead numBits:16];  // 1101 1110 1010 1101
   NSString *expected = @" XX.XXXX. X.X.XX.X";
   STAssertEqualObjects([v description], expected, @"Expected v to be %@", expected);
 }

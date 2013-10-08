@@ -51,7 +51,7 @@
   return (ZXGenericGFPoly *)self.cachedGenerators[degree];
 }
 
-- (void)encode:(NSInteger *)toEncode toEncodeLen:(NSInteger)toEncodeLen ecBytes:(NSInteger)ecBytes {
+- (void)encode:(int32_t *)toEncode toEncodeLen:(NSInteger)toEncodeLen ecBytes:(NSInteger)ecBytes {
   if (ecBytes == 0) {
     @throw [NSException exceptionWithName:NSInvalidArgumentException
                                    reason:@"No error correction bytes"
@@ -78,7 +78,7 @@
     toEncode[dataBytes + i] = 0;
   }
   for (NSInteger i = 0; i < coefficientsLen; i++) {
-    toEncode[dataBytes + numZeroCoefficients + i] = coefficients[i];
+    toEncode[dataBytes + numZeroCoefficients + i] = (int32_t)coefficients[i];
   }
 }
 

@@ -98,9 +98,9 @@
   }
 
   if (totalFalsePositives < totalAllowed) {
-    NSLog(@"  +++ Test too lax by %ld images", totalAllowed - totalFalsePositives);
+    NSLog(@"  +++ Test too lax by %ld images", (long)(totalAllowed - totalFalsePositives));
   } else if (totalFalsePositives > totalAllowed) {
-    NSLog(@"  --- Test failed by %ld images", totalFalsePositives - totalAllowed);
+    NSLog(@"  --- Test failed by %ld images", (long)(totalFalsePositives - totalAllowed));
   }
 
   for (NSInteger x = 0; x < self.testResults.count; x++) {

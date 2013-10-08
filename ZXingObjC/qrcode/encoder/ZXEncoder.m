@@ -442,9 +442,9 @@ const NSStringEncoding DEFAULT_BYTE_MODE_ENCODING = NSISOLatin1StringEncoding;
   return result;
 }
 
-+ (int8_t *)generateECBytes:(int8_t[])dataBytes numDataBytes:(NSInteger)numDataBytes numEcBytesInBlock:(NSInteger)numEcBytesInBlock {
++ (int8_t *)generateECBytes:(int8_t *)dataBytes numDataBytes:(NSInteger)numDataBytes numEcBytesInBlock:(NSInteger)numEcBytesInBlock {
   NSInteger toEncodeLen = numDataBytes + numEcBytesInBlock;
-  NSInteger toEncode[toEncodeLen];
+  int32_t toEncode[toEncodeLen];
   for (NSInteger i = 0; i < numDataBytes; i++) {
     toEncode[i] = dataBytes[i] & 0xFF;
   }
@@ -480,7 +480,7 @@ const NSStringEncoding DEFAULT_BYTE_MODE_ENCODING = NSISOLatin1StringEncoding;
     if (error) *error = [[NSError alloc] initWithDomain:ZXErrorDomain code:ZXWriterError userInfo:userInfo];
     return NO;
   }
-  [bits appendBits:numLetters numBits:numBits];
+  [bits appendBits:(int32_t)numLetters numBits:numBits];
   return YES;
 }
 
@@ -513,14 +513,14 @@ const NSStringEncoding DEFAULT_BYTE_MODE_ENCODING = NSISOLatin1StringEncoding;
   NSInteger length = [content length];
   NSInteger i = 0;
   while (i < length) {
-    NSInteger num1 = [content characterAtIndex:i] - '0';
+    int32_t num1 = [content characterAtIndex:i] - '0';
     if (i + 2 < length) {
-      NSInteger num2 = [content characterAtIndex:i + 1] - '0';
-      NSInteger num3 = [content characterAtIndex:i + 2] - '0';
+      int32_t num2 = [content characterAtIndex:i + 1] - '0';
+      int32_t num3 = [content characterAtIndex:i + 2] - '0';
       [bits appendBits:num1 * 100 + num2 * 10 + num3 numBits:10];
       i += 3;
     } else if (i + 1 < length) {
-      NSInteger num2 = [content characterAtIndex:i + 1] - '0';
+      int32_t num2 = [content characterAtIndex:i + 1] - '0';
       [bits appendBits:num1 * 10 + num2 numBits:7];
       i += 2;
     } else {
@@ -535,13 +535,13 @@ const NSStringEncoding DEFAULT_BYTE_MODE_ENCODING = NSISOLatin1StringEncoding;
   NSInteger i = 0;
 
   while (i < length) {
-    NSInteger code1 = [self alphanumericCode:[content characterAtIndex:i]];
+    int32_t code1 = (int32_t)[self alphanumericCode:[content characterAtIndex:i]];
     if (code1 == -1) {
       if (error) *error = [[NSError alloc] initWithDomain:ZXErrorDomain code:ZXWriterError userInfo:nil];
       return NO;
     }
     if (i + 1 < length) {
-      NSInteger code2 = [self alphanumericCode:[content characterAtIndex:i + 1]];
+      int32_t code2 = (int32_t)[self alphanumericCode:[content characterAtIndex:i + 1]];
       if (code2 == -1) {
         if (error) *error = [[NSError alloc] initWithDomain:ZXErrorDomain code:ZXWriterError userInfo:nil];
         return NO;
@@ -569,10 +569,10 @@ const NSStringEncoding DEFAULT_BYTE_MODE_ENCODING = NSISOLatin1StringEncoding;
   NSData *data = [content dataUsingEncoding:NSShiftJISStringEncoding];
   int8_t *bytes = (int8_t *)[data bytes];
   for (NSInteger i = 0; i < [data length]; i += 2) {
-    NSInteger byte1 = bytes[i] & 0xFF;
-    NSInteger byte2 = bytes[i + 1] & 0xFF;
-    NSInteger code = (byte1 << 8) | byte2;
-    NSInteger subtracted = -1;
+    int32_t byte1 = bytes[i] & 0xFF;
+    int32_t byte2 = bytes[i + 1] & 0xFF;
+    int32_t code = (byte1 << 8) | byte2;
+    int32_t subtracted = -1;
     if (code >= 0x8140 && code <= 0x9ffc) {
       subtracted = code - 0x8140;
     } else if (code >= 0xe040 && code <= 0xebbf) {
@@ -584,7 +584,7 @@ const NSStringEncoding DEFAULT_BYTE_MODE_ENCODING = NSISOLatin1StringEncoding;
       if (error) *error = [[NSError alloc] initWithDomain:ZXErrorDomain code:ZXWriterError userInfo:userInfo];
       return NO;
     }
-    NSInteger encoded = ((subtracted >> 8) * 0xc0) + (subtracted & 0xff);
+    int32_t encoded = ((subtracted >> 8) * 0xc0) + (subtracted & 0xff);
     [bits appendBits:encoded numBits:13];
   }
   return YES;
@@ -592,7 +592,7 @@ const NSStringEncoding DEFAULT_BYTE_MODE_ENCODING = NSISOLatin1StringEncoding;
 
 + (void)appendECI:(ZXECI *)eci bits:(ZXBitArray *)bits {
   [bits appendBits:[[ZXMode eciMode] bits] numBits:4];
-  [bits appendBits:[eci value] numBits:8];
+  [bits appendBits:(int32_t)[eci value] numBits:8];
 }
 
 @end

@@ -29,6 +29,7 @@
 
 - (void)testGetNextSet1 {
   ZXBitArray *array = [[ZXBitArray alloc] initWithSize:32];
+  STAssertEquals([array nextSet:17], 32, @"Expected [array nextSet:%d] to equal 32", 17);
   for (NSInteger i = 0; i < array.size; i++) {
     STAssertEquals([array nextSet:i], 32, @"Expected [array nextSet:%d] to equal 32", i);
   }
@@ -111,7 +112,7 @@
 
 - (void)testSetBulk {
   ZXBitArray *array = [[ZXBitArray alloc] initWithSize:64];
-  [array setBulk:32 newBits:(int8_t)0xFFFF0000];
+  [array setBulk:32 newBits:0xFFFF0000];
   for (NSInteger i = 0; i < 48; i++) {
     STAssertFalse([array get:i], @"Expected [array get:%d] to be false", i);
   }
@@ -135,9 +136,9 @@
   ZXBitArray *array = [[ZXBitArray alloc] initWithSize:64];
   [array set:0];
   [array set:63];
-  int8_t *ints = array.bits;
+  int32_t *ints = array.bits;
   STAssertEquals(ints[0], 1, @"Expected ints[0] to equal 1");
-  STAssertEquals(ints[1], (NSInteger)NSIntegerMin, @"Expected ints[1] to equal NSIntegerMin");
+  STAssertEquals(ints[1], INT_MIN, @"Expected ints[1] to equal INT_MIN");
 }
 
 - (void)testIsRange {

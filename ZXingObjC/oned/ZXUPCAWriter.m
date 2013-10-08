@@ -54,7 +54,7 @@
       sum += ([contents characterAtIndex:i] - '0') * (i % 2 == 0 ? 3 : 1);
     }
 
-    contents = [contents stringByAppendingFormat:@"%ld", (1000 - sum) % 10];
+    contents = [contents stringByAppendingFormat:@"%ld", (long)(1000 - sum) % 10];
   } else if (length != 12) {
      @throw [NSException exceptionWithName:NSInvalidArgumentException
                                     reason:[NSString stringWithFormat:@"Requested contents should be 11 or 12 digits long, but got %ld", (long)[contents length]]

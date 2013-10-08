@@ -21,12 +21,12 @@
 
 @interface ZXErrorCorrectionLevel : NSObject
 
-@property (nonatomic, assign, readonly) NSInteger bits;
+@property (nonatomic, assign, readonly) int32_t bits;
 @property (nonatomic, copy, readonly) NSString *name;
 @property (nonatomic, assign, readonly) NSInteger ordinal;
 
-- (id)initWithOrdinal:(NSInteger)anOrdinal bits:(NSInteger)bits name:(NSString *)name;
-+ (ZXErrorCorrectionLevel *)forBits:(NSInteger)bits;
+- (id)initWithOrdinal:(NSInteger)anOrdinal bits:(int32_t)bits name:(NSString *)name;
++ (ZXErrorCorrectionLevel *)forBits:(int32_t)bits;
 
 /**
  * L = ~7% correction

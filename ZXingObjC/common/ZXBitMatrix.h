@@ -31,23 +31,23 @@
 
 @interface ZXBitMatrix : NSObject
 
-@property (nonatomic, readonly) NSInteger width;
-@property (nonatomic, readonly) NSInteger height;
-@property (nonatomic, readonly) NSInteger *bits;
+@property (nonatomic, readonly) NSUInteger width;
+@property (nonatomic, readonly) NSUInteger height;
+@property (nonatomic, readonly) int32_t *bits;
 
-+ (ZXBitMatrix *)bitMatrixWithDimension:(NSInteger)dimension;
-+ (ZXBitMatrix *)bitMatrixWithWidth:(NSInteger)width height:(NSInteger)height;
++ (ZXBitMatrix *)bitMatrixWithDimension:(NSUInteger)dimension;
++ (ZXBitMatrix *)bitMatrixWithWidth:(NSUInteger)width height:(NSUInteger)height;
 
-- (id)initWithDimension:(NSInteger)dimension;
-- (id)initWithWidth:(NSInteger)width height:(NSInteger)height;
+- (id)initWithDimension:(NSUInteger)dimension;
+- (id)initWithWidth:(NSUInteger)width height:(NSUInteger)height;
 
-- (BOOL)getX:(NSInteger)x y:(NSInteger)y;
-- (void)setX:(NSInteger)x y:(NSInteger)y;
-- (void)flipX:(NSInteger)x y:(NSInteger)y;
+- (BOOL)getX:(NSUInteger)x y:(NSUInteger)y;
+- (void)setX:(NSUInteger)x y:(NSUInteger)y;
+- (void)flipX:(NSUInteger)x y:(NSUInteger)y;
 - (void)clear;
-- (void)setRegionAtLeft:(NSInteger)left top:(NSInteger)top width:(NSInteger)width height:(NSInteger)height;
-- (ZXBitArray *)rowAtY:(NSInteger)y row:(ZXBitArray *)row;
-- (void)setRowAtY:(NSInteger)y row:(ZXBitArray *)row;
+- (void)setRegionAtLeft:(NSUInteger)left top:(NSUInteger)top width:(NSUInteger)width height:(NSUInteger)height;
+- (ZXBitArray *)rowAtY:(NSUInteger)y row:(ZXBitArray *)row;
+- (void)setRowAtY:(NSUInteger)y row:(ZXBitArray *)row;
 - (NSArray *)enclosingRectangle;
 - (NSArray *)topLeftOnBit;
 - (NSArray *)bottomRightOnBit;

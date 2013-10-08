@@ -26,10 +26,10 @@ extern NSInteger ZX_DEFAULT_AZTEC_EC_PERCENT;
 + (ZXBitArray *)generateModeMessageCompact:(BOOL)compact layers:(NSInteger)layers messageSizeInWords:(NSInteger)messageSizeInWords;
 + (void)drawModeMessage:(ZXBitMatrix *)matrix compact:(BOOL)compact matrixSize:(NSInteger)matrixSize modeMessage:(ZXBitArray *)modeMessage;
 + (ZXBitArray *)generateCheckWords:(ZXBitArray *)stuffedBits totalSymbolBits:(NSInteger)totalSymbolBits wordSize:(NSInteger)wordSize;
-+ (void)bitsToWords:(ZXBitArray *)stuffedBits wordSize:(NSInteger)wordSize totalWords:(NSInteger)totalWords message:(NSInteger *)message;
++ (void)bitsToWords:(ZXBitArray *)stuffedBits wordSize:(NSInteger)wordSize totalWords:(NSInteger)totalWords message:(int32_t *)message;
 + (ZXGenericGF *)getGF:(NSInteger)wordSize;
 + (ZXBitArray *)stuffBits:(ZXBitArray *)bits wordSize:(NSInteger)wordSize;
 + (ZXBitArray *)highLevelEncode:(int8_t *)data len:(NSUInteger)len;
-+ (void)outputWord:(ZXBitArray *)bits mode:(NSInteger)mode value:(NSInteger)value;
++ (void)outputWord:(ZXBitArray *)bits mode:(NSInteger)mode value:(int8_t)value;
 
 @end

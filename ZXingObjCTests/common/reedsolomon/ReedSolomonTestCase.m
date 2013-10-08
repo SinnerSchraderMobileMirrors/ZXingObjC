@@ -424,7 +424,7 @@ const NSInteger ReedSolomonTestCase_RANDOM_SEED = 3735928559;
   STAssertTrue(dataSize > 0 && dataSize <= field.size - 3, @"Invalid data size for %@", field);
   STAssertTrue(ecSize > 0 && ecSize + dataSize <= field.size, @"Invalid ECC size for %@", field);
   ZXReedSolomonEncoder *encoder = [[ZXReedSolomonEncoder alloc] initWithField:field];
-  NSInteger message[dataSize + ecSize];
+  int32_t message[dataSize + ecSize];
   NSInteger dataWords[dataSize];
   NSInteger ecWords[ecSize];
   srand(ReedSolomonTestCase_RANDOM_SEED);
@@ -452,13 +452,13 @@ const NSInteger ReedSolomonTestCase_RANDOM_SEED = 3735928559;
   ZXReedSolomonEncoder *encoder = [[ZXReedSolomonEncoder alloc] initWithField:field];
 
   NSInteger length = dataWordsLen + ecWordsLen;
-  NSInteger messageExpected[length];
-  NSInteger message[length];
-  memcpy(messageExpected, dataWords, dataWordsLen * sizeof(NSInteger));
-  memcpy(messageExpected + dataWordsLen, ecWords, ecWordsLen * sizeof(NSInteger));
+  int32_t messageExpected[length];
+  int32_t message[length];
+  memcpy(messageExpected, dataWords, dataWordsLen * sizeof(int32_t));
+  memcpy(messageExpected + dataWordsLen, ecWords, ecWordsLen * sizeof(int32_t));
   memcpy(message, dataWords, dataWordsLen * sizeof(NSInteger));
   [encoder encode:message toEncodeLen:length ecBytes:ecWordsLen];
-  [self assertDataEqualsExpected:messageExpected received:message length:length
+  [self assertDataEqualsExpected:(NSInteger *)messageExpected received:(NSInteger *)message length:length
                          message:[NSString stringWithFormat:@"Encode in %@ (%ld,%ld) failed", field, (long)dataWordsLen, (long) (long)ecWordsLen]];
 }
 

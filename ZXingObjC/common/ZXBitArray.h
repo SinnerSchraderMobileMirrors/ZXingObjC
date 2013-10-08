@@ -20,7 +20,7 @@
 
 @interface ZXBitArray : NSObject
 
-@property (nonatomic, readonly) int8_t *bits;
+@property (nonatomic, readonly) int32_t *bits;
 @property (nonatomic, readonly) NSUInteger size;
 
 - (id)initWithSize:(NSUInteger)size;
@@ -28,14 +28,14 @@
 - (BOOL)get:(NSUInteger)i;
 - (void)set:(NSUInteger)i;
 - (void)flip:(NSUInteger)i;
-- (NSUInteger)nextSet:(NSUInteger)from;
-- (NSUInteger)nextUnset:(NSUInteger)from;
-- (void)setBulk:(NSUInteger)i newBits:(int8_t)newBits;
+- (NSInteger)nextSet:(NSUInteger)from;
+- (NSInteger)nextUnset:(NSUInteger)from;
+- (void)setBulk:(NSUInteger)i newBits:(int32_t)newBits;
 - (void)setRange:(NSUInteger)start end:(NSInteger)end;
 - (void)clear;
 - (BOOL)isRange:(NSUInteger)start end:(NSUInteger)end value:(BOOL)value;
 - (void)appendBit:(BOOL)bit;
-- (void)appendBits:(int8_t)value numBits:(NSUInteger)numBits;
+- (void)appendBits:(int32_t)value numBits:(NSUInteger)numBits;
 - (void)appendBitArray:(ZXBitArray *)other;
 - (void)xor:(ZXBitArray *)other;
 - (void)toBytes:(NSUInteger)bitOffset array:(int8_t *)array offset:(NSUInteger)offset numBytes:(NSUInteger)numBytes;

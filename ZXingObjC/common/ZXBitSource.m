@@ -40,12 +40,12 @@
 }
 
 
-- (NSInteger)readBits:(NSInteger)numBits {
+- (int32_t)readBits:(NSInteger)numBits {
   if (numBits < 1 || numBits > 32 || numBits > self.available) {
     [NSException raise:NSInvalidArgumentException 
                 format:@"Invalid number of bits: %ld", (long)numBits];
   }
-  NSInteger result = 0;
+  int32_t result = 0;
   if (self.bitOffset > 0) {
     NSInteger bitsLeft = 8 - self.bitOffset;
     NSInteger toRead = numBits < bitsLeft ? numBits : bitsLeft;

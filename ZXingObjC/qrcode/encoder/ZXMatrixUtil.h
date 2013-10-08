@@ -25,7 +25,7 @@
 + (BOOL)maybeEmbedVersionInfo:(ZXQRCodeVersion *)version matrix:(ZXByteMatrix *)matrix error:(NSError **)error;
 + (BOOL)embedDataBits:(ZXBitArray *)dataBits maskPattern:(NSInteger)maskPattern matrix:(ZXByteMatrix *)matrix error:(NSError **)error;
 + (NSInteger)findMSBSet:(NSInteger)value;
-+ (NSInteger)calculateBCHCode:(NSInteger)value poly:(NSInteger)poly;
++ (int32_t)calculateBCHCode:(int32_t)value poly:(NSInteger)poly;
 + (BOOL)makeTypeInfoBits:(ZXErrorCorrectionLevel *)ecLevel maskPattern:(NSInteger)maskPattern bits:(ZXBitArray *)bits error:(NSError **)error;
 + (BOOL)makeVersionInfoBits:(ZXQRCodeVersion *)version bits:(ZXBitArray *)bits error:(NSError **)error;
 

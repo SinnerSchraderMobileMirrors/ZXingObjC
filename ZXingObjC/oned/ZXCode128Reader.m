@@ -297,7 +297,7 @@ NSInteger const CODE_STOP = 106;
       return nil;
     }
 
-    [rawCodes addObject:[NSNumber numberWithChar:(int8_t)code]];
+    [rawCodes addObject:@(code)];
 
     // Remember whether the last code was printable or not (excluding CODE_STOP)
     if (code != CODE_STOP) {
@@ -497,7 +497,7 @@ NSInteger const CODE_STOP = 106;
   NSInteger rawCodesSize = [rawCodes count];
   int8_t rawBytes[rawCodesSize];
   for (NSInteger i = 0; i < rawCodesSize; i++) {
-    rawBytes[i] = [rawCodes[i] charValue];
+    rawBytes[i] = (int8_t)[rawCodes[i] intValue];
   }
 
   return [ZXResult resultWithText:result

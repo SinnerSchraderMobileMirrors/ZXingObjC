@@ -177,7 +177,7 @@ static NSInteger WORD_SIZE[33] = {
   ZXReedSolomonEncoder *rs = [[ZXReedSolomonEncoder alloc] initWithField:[self getGF:wordSize]];
   NSInteger totalSizeInFullWords = totalSymbolBits / wordSize;
 
-  NSInteger messageWords[totalSizeInFullWords];
+  int32_t messageWords[totalSizeInFullWords];
   [self bitsToWords:stuffedBits wordSize:wordSize totalWords:totalSizeInFullWords message:messageWords];
   [rs encode:messageWords toEncodeLen:totalSizeInFullWords ecBytes:totalSizeInFullWords - messageSizeInWords];
 
@@ -282,12 +282,12 @@ static NSInteger WORD_SIZE[33] = {
 + (ZXBitArray *)generateModeMessageCompact:(BOOL)compact layers:(NSInteger)layers messageSizeInWords:(NSInteger)messageSizeInWords {
   ZXBitArray *modeMessage = [[ZXBitArray alloc] init];
   if (compact) {
-    [modeMessage appendBits:layers - 1 numBits:2];
-    [modeMessage appendBits:messageSizeInWords - 1 numBits:6];
+    [modeMessage appendBits:(int32_t)layers - 1 numBits:2];
+    [modeMessage appendBits:(int32_t)messageSizeInWords - 1 numBits:6];
     modeMessage = [self generateCheckWords:modeMessage totalSymbolBits:28 wordSize:4];
   } else {
-    [modeMessage appendBits:layers - 1 numBits:5];
-    [modeMessage appendBits:messageSizeInWords - 1 numBits:11];
+    [modeMessage appendBits:(int32_t)layers - 1 numBits:5];
+    [modeMessage appendBits:(int32_t)messageSizeInWords - 1 numBits:11];
     modeMessage = [self generateCheckWords:modeMessage totalSymbolBits:40 wordSize:4];
   }
   return modeMessage;
@@ -335,7 +335,7 @@ static NSInteger WORD_SIZE[33] = {
   ZXReedSolomonEncoder *rs = [[ZXReedSolomonEncoder alloc] initWithField:[self getGF:wordSize]];
   NSInteger totalSizeInFullWords = totalSymbolBits / wordSize;
 
-  NSInteger messageWords[totalSizeInFullWords];
+  int32_t messageWords[totalSizeInFullWords];
   [self bitsToWords:stuffedBits wordSize:wordSize totalWords:totalSizeInFullWords message:messageWords];
 
   [rs encode:messageWords toEncodeLen:totalSizeInFullWords ecBytes:totalSizeInFullWords - messageSizeInWords];
@@ -348,11 +348,11 @@ static NSInteger WORD_SIZE[33] = {
   return messageBits;
 }
 
-+ (void)bitsToWords:(ZXBitArray *)stuffedBits wordSize:(NSInteger)wordSize totalWords:(NSInteger)totalWords message:(NSInteger *)message {
++ (void)bitsToWords:(ZXBitArray *)stuffedBits wordSize:(NSInteger)wordSize totalWords:(NSInteger)totalWords message:(int32_t *)message {
   NSInteger i;
   NSInteger n;
   for (i = 0, n = stuffedBits.size / wordSize; i < n; i++) {
-    NSInteger value = 0;
+    int32_t value = 0;
     for (NSInteger j = 0; j < wordSize; j++) {
       value |= [stuffedBits get:i * wordSize + j] ? (1 << (wordSize - j - 1)) : 0;
     }
@@ -382,9 +382,9 @@ static NSInteger WORD_SIZE[33] = {
 
   // 1. stuff the bits
   NSInteger n = bits.size;
-  NSInteger mask = (1 << wordSize) - 2;
+  int32_t mask = (1 << wordSize) - 2;
   for (NSInteger i = 0; i < n; i += wordSize) {
-    NSInteger word = 0;
+    int32_t word = 0;
     for (NSInteger j = 0; j < wordSize; j++) {
       if (i + j >= n || [bits get:i + j]) {
         word |= 1 << (wordSize - 1 - j);
@@ -425,7 +425,7 @@ static NSInteger WORD_SIZE[33] = {
   NSInteger idx[5] = {0, 0, 0, 0, 0};
   NSInteger idxnext[5] = {0, 0, 0, 0, 0};
 
-  for (NSInteger i = 0; i < len; i++) {
+  for (int32_t i = 0; i < len; i++) {
     NSInteger c = data[i] & 0xFF;
     NSInteger next = i < len - 1 ? data[i + 1] & 0xFF : 0;
     NSInteger punctWord = 0;
@@ -513,7 +513,7 @@ static NSInteger WORD_SIZE[33] = {
         }
         // use binary table
         // find the binary string length
-        NSInteger k;
+        int32_t k;
         NSInteger lookahead;
         for (k = i + 1, lookahead = 0; k < len; k++) {
           next = data[k] & 0xFF;
@@ -576,7 +576,7 @@ static NSInteger WORD_SIZE[33] = {
 
 }
 
-+ (void)outputWord:(ZXBitArray *)bits mode:(NSInteger)mode value:(NSInteger)value {
++ (void)outputWord:(ZXBitArray *)bits mode:(NSInteger)mode value:(int8_t)value {
   if (mode == TABLE_DIGIT) {
     [bits appendBits:value numBits:4];
   } else if (mode < TABLE_BINARY) {
