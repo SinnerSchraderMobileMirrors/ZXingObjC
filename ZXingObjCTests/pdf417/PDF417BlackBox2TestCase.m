@@ -29,8 +29,8 @@
 
   if (self) {
     // TODO this should be 25,25,0,0
-    [self addTest:23 tryHarderCount:23 maxMisreads:1 maxTryHarderMisreads:1 rotation:0.0f];
-    [self addTest:23 tryHarderCount:23 maxMisreads:1 maxTryHarderMisreads:1 rotation:180.0f];
+    [self addTest:23 tryHarderCount:23 maxMisreads:2 maxTryHarderMisreads:2 rotation:0.0f];
+    [self addTest:23 tryHarderCount:23 maxMisreads:2 maxTryHarderMisreads:2 rotation:180.0f];
   }
 
   return self;

@@ -208,9 +208,9 @@
     if (red == green && green == blue) {
       _data[i] = red;
     } else {
-      _data[i] = (306 * (NSInteger)red +
-                 601 * (NSInteger)green +
-                 117 * (NSInteger)blue +
+      _data[i] = (306 * (int32_t)red +
+                 601 * (int32_t)green +
+                 117 * (int32_t)blue +
                 (0x200)) >> 10; // 0x200 = 1<<9, half an lsb of the result to force rounding
     }
   }
