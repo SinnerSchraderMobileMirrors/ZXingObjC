@@ -159,7 +159,7 @@ static ZXPDF417ECErrorCorrection *errorCorrection;
     }
   }
   int missingEndRows = 0;
-  for (int row = [rowHeights count] - 1; row >= 0; row--) {
+  for (int row = (int)[rowHeights count] - 1; row >= 0; row--) {
     if ([rowHeights[row] intValue] < maxRowHeight - ZXPDF417_ROW_HEIGHT_SKEW) {
       missingEndRows++;
     } else {
@@ -493,7 +493,7 @@ static ZXPDF417ECErrorCorrection *errorCorrection;
   }
 
   int previousValue = 0;
-  int i = [result count] - 1;
+  int i = (int)[result count] - 1;
   while (YES) {
     if ((codeword & 0x1) != previousValue) {
       previousValue = codeword & 0x1;
