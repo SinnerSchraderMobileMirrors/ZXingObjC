@@ -58,7 +58,7 @@
 
 - (NSArray *)decode:(ZXBinaryBitmap *)image hints:(ZXDecodeHints *)hints multiple:(BOOL)multiple error:(NSError **)error {
   NSMutableArray *results = [NSMutableArray array];
-  ZXPDF417DetectorResult *detectorResult = [[[ZXPDF417Detector alloc] initWithImage:image] detect:multiple error:error];
+  ZXPDF417DetectorResult *detectorResult = [ZXPDF417Detector detect:image hints:hints multiple:multiple error:error];
   if (!detectorResult) {
     return nil;
   }
