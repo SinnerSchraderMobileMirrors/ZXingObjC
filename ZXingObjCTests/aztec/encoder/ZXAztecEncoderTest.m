@@ -15,6 +15,7 @@
  */
 
 #import "ZXAztecEncoderTest.h"
+#import "ZXBoolArray.h"
 
 unsigned int ZXAztecEncoderTest_RANDOM_SEED = 3735928559;
 
@@ -450,12 +451,11 @@ unsigned int ZXAztecEncoderTest_RANDOM_SEED = 3735928559;
 }
 
 - (NSString *)highLevelDecode:(ZXBitArray *)bitArray {
-  int resultSize = bitArray.size;
-  BOOL result[resultSize];
-  for (int i = 0; i < resultSize; i++) {
-    result[i] = [bitArray get:i];
+  ZXBoolArray *result = [[ZXBoolArray alloc] initWithLength:bitArray.size];
+  for (int i = 0; i < result.length; i++) {
+    result.array[i] = [bitArray get:i];
   }
-  return [ZXAztecDecoder highLevelDecode:result length:resultSize];
+  return [ZXAztecDecoder highLevelDecode:result];
 }
 
 - (void)testHighLevelEncodeString:(NSString *)s expectedBits:(NSString *)expectedBits {

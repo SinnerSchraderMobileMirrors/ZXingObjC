@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 ZXing authors
+ * Copyright 2014 ZXing authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,23 @@
  * limitations under the License.
  */
 
-/**
- * The main class which implements Aztec Code decoding -- as opposed to locating and extracting
- * the Aztec Code from an image.
- */
+#import "ZXBoolArray.h"
 
-@class ZXAztecDetectorResult, ZXBoolArray, ZXDecoderResult;
+@implementation ZXBoolArray
 
-@interface ZXAztecDecoder : NSObject
+- (id)initWithLength:(unsigned int)length {
+  if (self = [super init]) {
+    _array = (BOOL *)calloc(length, sizeof(BOOL));
+    _length = length;
+  }
 
-- (ZXDecoderResult *)decode:(ZXAztecDetectorResult *)detectorResult error:(NSError **)error;
+  return self;
+}
 
-// This method is used for testing the high-level encoder
-+ (NSString *)highLevelDecode:(ZXBoolArray *)correctedBits;
+- (void)dealloc {
+  if (_array) {
+    free(_array);
+  }
+}
 
 @end
