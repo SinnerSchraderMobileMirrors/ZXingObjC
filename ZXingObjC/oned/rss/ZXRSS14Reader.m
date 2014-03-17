@@ -145,7 +145,7 @@ const int INSIDE_ODD_WIDEST[4] = {2,4,6,8};
 }
 
 - (ZXPair *)decodePair:(ZXBitArray *)row right:(BOOL)right rowNumber:(int)rowNumber hints:(ZXDecodeHints *)hints {
-  NSArray *startEnd = [self findFinderPattern:row rowOffset:0 rightFinderPattern:right];
+  ZXIntArray *startEnd = [self findFinderPattern:row rowOffset:0 rightFinderPattern:right];
   if (!startEnd) {
     return nil;
   }
@@ -155,7 +155,7 @@ const int INSIDE_ODD_WIDEST[4] = {2,4,6,8};
   }
   id<ZXResultPointCallback> resultPointCallback = hints == nil ? nil : hints.resultPointCallback;
   if (resultPointCallback != nil) {
-    float center = ([startEnd[0] intValue] + [startEnd[1] intValue]) / 2.0f;
+    float center = (startEnd.array[0] + startEnd.array[1]) / 2.0f;
     if (right) {
       center = [row size] - 1 - center;
     }
@@ -176,11 +176,11 @@ const int INSIDE_ODD_WIDEST[4] = {2,4,6,8};
   [counters clear];
 
   if (outsideChar) {
-    if (![ZXOneDReader recordPatternInReverse:row start:[[pattern startEnd][0] intValue] counters:counters]) {
+    if (![ZXOneDReader recordPatternInReverse:row start:[pattern startEnd].array[0] counters:counters]) {
       return nil;
     }
   } else {
-    if (![ZXOneDReader recordPattern:row start:[[pattern startEnd][1] intValue] counters:counters]) {
+    if (![ZXOneDReader recordPattern:row start:[pattern startEnd].array[1] counters:counters]) {
       return nil;
     }
 
@@ -259,7 +259,7 @@ const int INSIDE_ODD_WIDEST[4] = {2,4,6,8};
   }
 }
 
-- (NSArray *)findFinderPattern:(ZXBitArray *)row rowOffset:(int)rowOffset rightFinderPattern:(BOOL)rightFinderPattern {
+- (ZXIntArray *)findFinderPattern:(ZXBitArray *)row rowOffset:(int)rowOffset rightFinderPattern:(BOOL)rightFinderPattern {
   ZXIntArray *counters = self.decodeFinderCounters;
   [counters clear];
 
@@ -281,7 +281,7 @@ const int INSIDE_ODD_WIDEST[4] = {2,4,6,8};
     } else {
       if (counterPosition == 3) {
         if ([ZXAbstractRSSReader isFinderPattern:counters]) {
-          return @[@(patternStart), @(x)];
+          return [[ZXIntArray alloc] initWithInts:patternStart, x, -1];
         }
         patternStart += counters.array[0] + counters.array[1];
         counters.array[0] = counters.array[2];
@@ -300,16 +300,16 @@ const int INSIDE_ODD_WIDEST[4] = {2,4,6,8};
   return nil;
 }
 
-- (ZXRSSFinderPattern *)parseFoundFinderPattern:(ZXBitArray *)row rowNumber:(int)rowNumber right:(BOOL)right startEnd:(NSArray *)startEnd {
-  BOOL firstIsBlack = [row get:[startEnd[0] intValue]];
-  int firstElementStart = [startEnd[0] intValue] - 1;
+- (ZXRSSFinderPattern *)parseFoundFinderPattern:(ZXBitArray *)row rowNumber:(int)rowNumber right:(BOOL)right startEnd:(ZXIntArray *)startEnd {
+  BOOL firstIsBlack = [row get:startEnd.array[0]];
+  int firstElementStart = startEnd.array[0] - 1;
 
   while (firstElementStart >= 0 && firstIsBlack ^ [row get:firstElementStart]) {
     firstElementStart--;
   }
 
   firstElementStart++;
-  int firstCounter = [startEnd[0] intValue] - firstElementStart;
+  int firstCounter = startEnd.array[0] - firstElementStart;
 
   ZXIntArray *counters = self.decodeFinderCounters;
   for (int i = counters.length - 1; i > 0; i--) {
@@ -321,13 +321,13 @@ const int INSIDE_ODD_WIDEST[4] = {2,4,6,8};
     return nil;
   }
   int start = firstElementStart;
-  int end = [startEnd[1] intValue];
+  int end = startEnd.array[1];
   if (right) {
     start = [row size] - 1 - start;
     end = [row size] - 1 - end;
   }
   return [[ZXRSSFinderPattern alloc] initWithValue:value
-                                           startEnd:[@[@(firstElementStart), startEnd[1]] mutableCopy]
+                                           startEnd:[[ZXIntArray alloc] initWithInts:firstElementStart, startEnd.array[1], -1]
                                               start:start
                                                 end:end
                                           rowNumber:rowNumber];

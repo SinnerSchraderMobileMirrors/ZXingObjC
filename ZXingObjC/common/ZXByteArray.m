@@ -55,4 +55,18 @@
   }
 }
 
+- (NSString *)description {
+  NSMutableString *s = [NSMutableString stringWithFormat:@"length=%u, array=(", self.length];
+
+  for (int i = 0; i < self.length; i++) {
+    [s appendFormat:@"%d", self.array[i]];
+    if (i < self.length - 1) {
+      [s appendString:@", "];
+    }
+  }
+
+  [s appendString:@")"];
+  return s;
+}
+
 @end

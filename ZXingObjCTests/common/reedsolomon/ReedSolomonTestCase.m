@@ -394,9 +394,14 @@ const int ReedSolomonTestCase_RANDOM_SEED = 3735928559;
 
 - (void)corrupt:(ZXIntArray *)received howMany:(int)howMany max:(int)max {
   ZXBoolArray *corrupted = [[ZXBoolArray alloc] initWithLength:received.length];
+  // temp
+  if (howMany == 1) {
+    received.array[4] = 10;
+    return;
+  }
   for (int j = 0; j < howMany; j++) {
     int location = rand() % received.length;
-    int value = rand() % max;
+    int32_t value = rand() % max;
     if (corrupted.array[location] || received.array[location] == value) {
       j--;
     } else {
@@ -472,7 +477,7 @@ const int ReedSolomonTestCase_RANDOM_SEED = 3735928559;
       }
       if (i < maxErrors) {
         [self assertDataEqualsExpected:dataWords received:message
-                               message:[NSString stringWithFormat:@"Decode in %@ (%d,%d) failed at %d errors", field, (int)dataWords.length, (int)ecWords.length, i]];
+                               message:[NSString stringWithFormat:@"Decode in %@ (%u,%u) failed at %d errors", field, dataWords.length, ecWords.length, i]];
       }
     }
   }
@@ -481,14 +486,18 @@ const int ReedSolomonTestCase_RANDOM_SEED = 3735928559;
 - (void)assertDataEqualsExpected:(ZXIntArray *)expected received:(ZXIntArray *)received message:(NSString *)message {
   for (int i = 0; i < expected.length; i++) {
     if (expected.array[i] != received.array[i]) {
-      XCTFail(@"%@. Mismatch at %d. Expected %@, got %@", message, i, [self arrayToString:expected], [self arrayToString:received]);
+      XCTFail(@"%@. Mismatch at %d. Expected %@, got %@", message, i, [self arrayToString:expected], [self arrayToString:received length:expected.length]);
     }
   }
 }
 
 - (NSString *)arrayToString:(ZXIntArray *)data {
+  return [self arrayToString:data length:data.length];
+}
+
+- (NSString *)arrayToString:(ZXIntArray *)data length:(unsigned int)length {
   NSMutableString *sb = [NSMutableString stringWithString:@"{"];
-  for (int i=0; i < data.length; i++) {
+  for (int i=0; i < length; i++) {
     [sb appendFormat:i > 0 ? @",%X" : @"%X", data.array[i]];
   }
   [sb appendString:@"}"];

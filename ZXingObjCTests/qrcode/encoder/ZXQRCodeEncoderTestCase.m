@@ -357,7 +357,7 @@
     140, 61, 179, 154, 214, 138, 147, 87, 27, 96, 77, 47,
     187, 49, 156, 214, -1
   ];
-  XCTAssertEqual(out.sizeInBytes, (int)expected.length, @"Expected out sizeInBytes to equal %ud", expected.length);
+  XCTAssertEqual(out.sizeInBytes, (int)expected.length, @"Expected out sizeInBytes to equal %u", expected.length);
   outArray = [[ZXByteArray alloc] initWithLength:expected.length];
   [out toBytes:0 array:outArray offset:0 numBytes:expected.length];
   for (int x = 0; x < expected.length; x++) {
@@ -434,11 +434,10 @@
 // Numbers are from page 21 of JISX0510:2004
 - (void)testAppendKanjiBytes {
   ZXBitArray *bits = [[ZXBitArray alloc] init];
-  ZXByteArray *bytes = [[ZXByteArray alloc] initWithBytes:0x93, 0x5f, -1];
-  [ZXQRCodeEncoder appendKanjiBytes:[self shiftJISString:bytes] bits:bits error:nil];
+  [ZXQRCodeEncoder appendKanjiBytes:[self shiftJISString:[[ZXByteArray alloc] initWithBytes:0x93, 0x5f, -1]] bits:bits error:nil];
   NSString *expected = @" .XX.XX.. XXXXX";
   XCTAssertEqualObjects([bits description], expected, @"Expected bits to equal %@", expected);
-  [ZXQRCodeEncoder appendKanjiBytes:[self shiftJISString:bytes] bits:bits error:nil];
+  [ZXQRCodeEncoder appendKanjiBytes:[self shiftJISString:[[ZXByteArray alloc] initWithBytes:0xe4, 0xaa, -1]] bits:bits error:nil];
   expected = @" .XX.XX.. XXXXXXX. X.X.X.X. X.";
   XCTAssertEqualObjects([bits description], expected, @"Expected bits to equal %@", expected);
 }
@@ -451,6 +450,7 @@
   ZXIntArray *expected = [[ZXIntArray alloc] initWithInts:
     42, 159, 74, 221, 244, 169, 239, 150, 138, 70, 237, 85, 224, 96, 74, 219, 61, -1
   ];
+  XCTAssertEqual(ecBytes.length, expected.length, @"Excepted ecBytes and expected to have equal lengths");
   for (int x = 0; x < expected.length; x++) {
     XCTAssertEqual(ecBytes.array[x] & 0xFF, expected.array[x], @"Expected exBytes[%d] to equal %d", x, expected.array[x]);
   }
@@ -460,6 +460,7 @@
   expected = [[ZXIntArray alloc] initWithInts:
     175, 80, 155, 64, 178, 45, 214, 233, 65, 209, 12, 155, 117, 31, 140, 214, 27, 187, -1
   ];
+  XCTAssertEqual(ecBytes.length, expected.length, @"Excepted ecBytes and expected to have equal lengths");
   for (int x = 0; x < expected.length; x++) {
     XCTAssertEqual(ecBytes.array[x] & 0xFF, expected.array[x], @"Expected exBytes[%d] to equal %d", x, expected.array[x]);
   }
@@ -469,6 +470,7 @@
   expected = [[ZXIntArray alloc] initWithInts:
     0, 3, 130, 179, 194, 0, 55, 211, 110, 79, 98, 72, 170, 96, 211, 137, 213, -1
   ];
+  XCTAssertEqual(ecBytes.length, expected.length, @"Excepted ecBytes and expected to have equal lengths");
   for (int x = 0; x < expected.length; x++) {
     XCTAssertEqual(ecBytes.array[x] & 0xFF, expected.array[x], @"Expected exBytes[%d] to equal %d", x, expected.array[x]);
   }

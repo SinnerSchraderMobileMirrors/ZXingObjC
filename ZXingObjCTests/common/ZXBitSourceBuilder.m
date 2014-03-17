@@ -60,7 +60,7 @@
   if (self.bitsLeftInNextByte < 8) {
     [self write:0 numBits:self.bitsLeftInNextByte];
   }
-  ZXByteArray *bytes = [[ZXByteArray alloc] initWithLength:[self.output length]];
+  ZXByteArray *bytes = [[ZXByteArray alloc] initWithLength:(unsigned int)[self.output length]];
   memcpy(bytes.array, [self.output bytes], bytes.length * sizeof(int8_t));
   return bytes;
 }

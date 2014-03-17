@@ -78,15 +78,15 @@ const int PATTERNS[PATTERNS_LEN][5] = {
 }
 
 - (ZXResult *)decodeRow:(int)rowNumber row:(ZXBitArray *)row hints:(ZXDecodeHints *)hints error:(NSError **)error {
-  NSArray *startRange = [self decodeStart:row];
-  NSArray *endRange = [self decodeEnd:row];
+  ZXIntArray *startRange = [self decodeStart:row];
+  ZXIntArray *endRange = [self decodeEnd:row];
   if (!startRange || !endRange) {
     if (error) *error = NotFoundErrorInstance();
     return nil;
   }
 
   NSMutableString *resultString = [NSMutableString stringWithCapacity:20];
-  if (![self decodeMiddle:row payloadStart:[startRange[1] intValue] payloadEnd:[endRange[0] intValue] resultString:resultString]) {
+  if (![self decodeMiddle:row payloadStart:startRange.array[1] payloadEnd:endRange.array[0] resultString:resultString]) {
     if (error) *error = NotFoundErrorInstance();
     return nil;
   }
@@ -118,8 +118,8 @@ const int PATTERNS[PATTERNS_LEN][5] = {
 
   return [ZXResult resultWithText:resultString
                          rawBytes:nil
-                     resultPoints:@[[[ZXResultPoint alloc] initWithX:[startRange[1] floatValue] y:(float)rowNumber],
-                                    [[ZXResultPoint alloc] initWithX:[endRange[0] floatValue] y:(float)rowNumber]]
+                     resultPoints:@[[[ZXResultPoint alloc] initWithX:startRange.array[1] y:(float)rowNumber],
+                                    [[ZXResultPoint alloc] initWithX:endRange.array[0] y:(float)rowNumber]]
                            format:kBarcodeFormatITF];
 }
 
@@ -255,7 +255,7 @@ const int PATTERNS[PATTERNS_LEN][5] = {
     [row reverse];
     return nil;
   }
-  ZXIntArray *endPattern = [[self findGuardPattern:row rowOffset:endStart pattern:END_PATTERN_REVERSED patternLen:sizeof(END_PATTERN_REVERSED)/sizeof(int)] mutableCopy];
+  ZXIntArray *endPattern = [self findGuardPattern:row rowOffset:endStart pattern:END_PATTERN_REVERSED patternLen:sizeof(END_PATTERN_REVERSED)/sizeof(int)];
   if (!endPattern) {
     [row reverse];
     return nil;

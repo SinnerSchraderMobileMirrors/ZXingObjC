@@ -44,7 +44,7 @@
     va_list args;
     va_start(args, int1);
     int i = 0;
-    for (int8_t c = int1; c != -1; c = va_arg(args, int)) {
+    for (int32_t c = int1; c != -1; c = va_arg(args, int)) {
       _array[i++] = c;
     }
     va_end(args);
@@ -61,6 +61,20 @@
 
 - (void)clear {
   memset(self.array, 0, self.length * sizeof(int32_t));
+}
+
+- (NSString *)description {
+  NSMutableString *s = [NSMutableString stringWithFormat:@"length=%u, array=(", self.length];
+
+  for (int i = 0; i < self.length; i++) {
+    [s appendFormat:@"%d", self.array[i]];
+    if (i < self.length - 1) {
+      [s appendString:@", "];
+    }
+  }
+
+  [s appendString:@")"];
+  return s;
 }
 
 @end

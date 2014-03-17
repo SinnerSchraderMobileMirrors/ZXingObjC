@@ -77,6 +77,9 @@
   ZXGenericGFPoly *remainder = [info divide:generator][1];
   ZXIntArray *coefficients = remainder.coefficients;
   int numZeroCoefficients = ecBytes - coefficients.length;
+  for (int i = 0; i < numZeroCoefficients; i++) {
+    toEncode.array[dataBytes + i] = 0;
+  }
   for (int i = 0; i < coefficients.length; i++) {
     toEncode.array[dataBytes + numZeroCoefficients + i] = coefficients.array[i];
   }

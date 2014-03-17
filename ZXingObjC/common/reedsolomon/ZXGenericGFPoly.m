@@ -112,6 +112,8 @@
   ZXIntArray *sumDiff = [[ZXIntArray alloc] initWithLength:largerCoefficients.length];
   int lengthDiff = largerCoefficients.length - smallerCoefficients.length;
   // Copy high-order terms only found in higher-degree polynomial's coefficients
+  memcpy(sumDiff.array, largerCoefficients.array, lengthDiff * sizeof(int32_t));
+
   for (int i = lengthDiff; i < largerCoefficients.length; i++) {
     sumDiff.array[i] = [ZXGenericGF addOrSubtract:smallerCoefficients.array[i - lengthDiff] b:largerCoefficients.array[i]];
   }
@@ -119,7 +121,7 @@
   return [[ZXGenericGFPoly alloc] initWithField:self.field coefficients:sumDiff];
 }
 
-- (ZXGenericGFPoly *) multiply:(ZXGenericGFPoly *)other {
+- (ZXGenericGFPoly *)multiply:(ZXGenericGFPoly *)other {
   ZXGenericGF *field = self.field;
   if (![self.field isEqual:other.field]) {
     [NSException raise:NSInvalidArgumentException format:@"ZXGenericGFPolys do not have same GenericGF field"];
@@ -150,7 +152,7 @@
     return self;
   }
   int size = self.coefficients.length;
-  int *coefficients = self.coefficients.array;
+  int32_t *coefficients = self.coefficients.array;
   ZXIntArray *product = [[ZXIntArray alloc] initWithLength:size];
   for (int i = 0; i < size; i++) {
     product.array[i] = [self.field multiply:coefficients[i] b:scalar];
@@ -166,15 +168,11 @@
     return self.field.zero;
   }
   int size = self.coefficients.length;
-  int *coefficients = self.coefficients.array;
+  int32_t *coefficients = self.coefficients.array;
   ZXGenericGF *field = self.field;
   ZXIntArray *product = [[ZXIntArray alloc] initWithLength:size + degree];
-  for (int i = 0; i < size + degree; i++) {
-    if (i < size) {
-      product.array[i] = [field multiply:coefficients[i] b:coefficient];
-    } else {
-      product.array[i] = 0;
-    }
+  for (int i = 0; i < size; i++) {
+    product.array[i] = [field multiply:coefficients[i] b:coefficient];
   }
 
   return [[ZXGenericGFPoly alloc] initWithField:field coefficients:product];

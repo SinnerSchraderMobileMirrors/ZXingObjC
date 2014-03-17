@@ -293,7 +293,7 @@ int const CODE_STOP = 106;
       return nil;
     }
 
-    [rawCodes addObject:[NSNumber numberWithChar:(int8_t)code]];
+    [rawCodes addObject:@(code)];
 
     // Remember whether the last code was printable or not (excluding CODE_STOP)
     if (code != CODE_STOP) {
@@ -491,9 +491,9 @@ int const CODE_STOP = 106;
   float right = (float)(nextStart + lastStart) / 2.0f;
 
   NSUInteger rawCodesSize = [rawCodes count];
-  ZXByteArray *rawBytes = [[ZXByteArray alloc] initWithLength:rawCodesSize];
+  ZXByteArray *rawBytes = [[ZXByteArray alloc] initWithLength:(unsigned int)rawCodesSize];
   for (int i = 0; i < rawCodesSize; i++) {
-    rawBytes.array[i] = [rawCodes[i] charValue];
+    rawBytes.array[i] = (int8_t)[rawCodes[i] intValue];
   }
 
   return [ZXResult resultWithText:result

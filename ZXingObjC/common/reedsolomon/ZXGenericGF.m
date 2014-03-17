@@ -20,8 +20,8 @@
 
 @interface ZXGenericGF ()
 
-@property (nonatomic, assign) int *expTable;
-@property (nonatomic, assign) int *logTable;
+@property (nonatomic, assign) int32_t *expTable;
+@property (nonatomic, assign) int32_t *logTable;
 @property (nonatomic, assign) int primitive;
 
 @end
@@ -40,23 +40,23 @@
     _size = size;
     _generatorBase = b;
 
-    _expTable = (int *)malloc(self.size * sizeof(int));
-    _logTable = (int *)malloc(self.size * sizeof(int));
-    int x = 1;
+    _expTable = (int32_t *)malloc(self.size * sizeof(int32_t));
+    _logTable = (int32_t *)malloc(self.size * sizeof(int32_t));
+    int32_t x = 1;
     for (int i = 0; i < self.size; i++) {
       _expTable[i] = x;
       x <<= 1; // x = x * 2; we're assuming the generator alpha is 2
       if (x >= self.size) {
-        x ^= self.primitive;
-        x &= self.size - 1;
+        x ^= (int32_t)self.primitive;
+        x &= (int32_t)self.size - 1;
       }
     }
 
-    for (int i = 0; i < self.size-1; i++) {
+    for (int32_t i = 0; i < (int32_t)self.size-1; i++) {
       _logTable[_expTable[i]] = i;
     }
     // logTable[0] == 0 but this should never be used
-    _zero = [[ZXGenericGFPoly alloc] initWithField:self coefficients:[[ZXIntArray alloc] initWithLength:0]];
+    _zero = [[ZXGenericGFPoly alloc] initWithField:self coefficients:[[ZXIntArray alloc] initWithLength:1]];
 
     ZXIntArray *oneCoefficient = [[ZXIntArray alloc] initWithLength:1];
     oneCoefficient.array[0] = 1;
@@ -128,7 +128,7 @@
   return [self AztecData6];
 }
 
-- (ZXGenericGFPoly *)buildMonomial:(int)degree coefficient:(int)coefficient {
+- (ZXGenericGFPoly *)buildMonomial:(int)degree coefficient:(int32_t)coefficient {
   if (degree < 0) {
     [NSException raise:NSInvalidArgumentException format:@"Degree must be greater than 0."];
   }
@@ -140,18 +140,15 @@
   return [[ZXGenericGFPoly alloc] initWithField:self coefficients:coefficients];
 }
 
-/**
- * Implements both addition and subtraction -- they are the same in GF(size).
- */
-+ (int)addOrSubtract:(int)a b:(int)b {
++ (int32_t)addOrSubtract:(int32_t)a b:(int32_t)b {
   return a ^ b;
 }
 
-- (int)exp:(int)a {
+- (int32_t)exp:(int)a {
   return _expTable[a];
 }
 
-- (int)log:(int)a {
+- (int32_t)log:(int)a {
   if (a == 0) {
     [NSException raise:NSInvalidArgumentException format:@"Argument must be non-zero."];
   }
@@ -159,7 +156,7 @@
   return _logTable[a];
 }
 
-- (int)inverse:(int)a {
+- (int32_t)inverse:(int)a {
   if (a == 0) {
     [NSException raise:NSInvalidArgumentException format:@"Argument must be non-zero."];
   }
@@ -167,7 +164,7 @@
   return _expTable[_size - _logTable[a] - 1];
 }
 
-- (int)multiply:(int)a b:(int)b {
+- (int32_t)multiply:(int)a b:(int)b {
   if (a == 0 || b == 0) {
     return 0;
   }
