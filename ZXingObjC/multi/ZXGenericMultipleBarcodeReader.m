@@ -19,8 +19,8 @@
 #import "ZXReader.h"
 #import "ZXResultPoint.h"
 
-int const MIN_DIMENSION_TO_RECUR = 100;
-int const MAX_DEPTH = 4;
+const int MIN_DIMENSION_TO_RECUR = 100;
+const int MAX_DEPTH = 4;
 
 @interface ZXGenericMultipleBarcodeReader ()
 

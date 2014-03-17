@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-extern int const NUM_MASK_PATTERNS;
+extern const int NUM_MASK_PATTERNS;
 
 @class ZXByteMatrix, ZXErrorCorrectionLevel, ZXMode, ZXQRCodeVersion;
 

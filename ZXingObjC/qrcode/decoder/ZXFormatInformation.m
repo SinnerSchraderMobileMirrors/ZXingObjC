@@ -17,13 +17,13 @@
 #import "ZXErrorCorrectionLevel.h"
 #import "ZXFormatInformation.h"
 
-int const FORMAT_INFO_MASK_QR = 0x5412;
+const int FORMAT_INFO_MASK_QR = 0x5412;
 
 /**
  * See ISO 18004:2006, Annex C, Table C.1
  */
-int const FORMAT_INFO_DECODE_LOOKUP_LEN = 32;
-int const FORMAT_INFO_DECODE_LOOKUP[FORMAT_INFO_DECODE_LOOKUP_LEN][2] = {
+const int FORMAT_INFO_DECODE_LOOKUP_LEN = 32;
+const int FORMAT_INFO_DECODE_LOOKUP[FORMAT_INFO_DECODE_LOOKUP_LEN][2] = {
   {0x5412, 0x00},
   {0x5125, 0x01},
   {0x5E7C, 0x02},
@@ -61,7 +61,7 @@ int const FORMAT_INFO_DECODE_LOOKUP[FORMAT_INFO_DECODE_LOOKUP_LEN][2] = {
 /**
  * Offset i holds the number of 1 bits in the binary representation of i
  */
-int const BITS_SET_IN_HALF_BYTE[16] = {0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4};
+const int BITS_SET_IN_HALF_BYTE[16] = {0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4};
 
 @implementation ZXFormatInformation
 

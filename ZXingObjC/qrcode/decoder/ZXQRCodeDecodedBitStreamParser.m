@@ -35,7 +35,7 @@ char const ALPHANUMERIC_CHARS[45] = {
   ' ', '$', '%', '*', '+', '-', '.', '/', ':'
 };
 
-int const GB2312_SUBSET = 1;
+const int GB2312_SUBSET = 1;
 
 @implementation ZXQRCodeDecodedBitStreamParser
 

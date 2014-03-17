@@ -23,7 +23,7 @@
 #import "ZXQRCode.h"
 #import "ZXQRCodeVersion.h"
 
-int const POSITION_DETECTION_PATTERN[7][7] = {
+const int POSITION_DETECTION_PATTERN[7][7] = {
   {1, 1, 1, 1, 1, 1, 1},
   {1, 0, 0, 0, 0, 0, 1},
   {1, 0, 1, 1, 1, 0, 1},
@@ -33,7 +33,7 @@ int const POSITION_DETECTION_PATTERN[7][7] = {
   {1, 1, 1, 1, 1, 1, 1},
 };
 
-int const POSITION_ADJUSTMENT_PATTERN[5][5] = {
+const int POSITION_ADJUSTMENT_PATTERN[5][5] = {
   {1, 1, 1, 1, 1},
   {1, 0, 0, 0, 1},
   {1, 0, 1, 0, 1},
@@ -42,7 +42,7 @@ int const POSITION_ADJUSTMENT_PATTERN[5][5] = {
 };
 
 // From Appendix E. Table 1, JIS0510X:2004 (p 71). The table was double-checked by komatsu.
-int const POSITION_ADJUSTMENT_PATTERN_COORDINATE_TABLE[40][7] = {
+const int POSITION_ADJUSTMENT_PATTERN_COORDINATE_TABLE[40][7] = {
   {-1, -1, -1, -1,  -1,  -1,  -1},  // Version 1
   { 6, 18, -1, -1,  -1,  -1,  -1},  // Version 2
   { 6, 22, -1, -1,  -1,  -1,  -1},  // Version 3
@@ -86,7 +86,7 @@ int const POSITION_ADJUSTMENT_PATTERN_COORDINATE_TABLE[40][7] = {
 };
 
 // Type info cells at the left top corner.
-int const TYPE_INFO_COORDINATES[15][2] = {
+const int TYPE_INFO_COORDINATES[15][2] = {
   {8, 0},
   {8, 1},
   {8, 2},
@@ -105,11 +105,11 @@ int const TYPE_INFO_COORDINATES[15][2] = {
 };
 
 // From Appendix D in JISX0510:2004 (p. 67)
-int const VERSION_INFO_POLY = 0x1f25;  // 1 1111 0010 0101
+const int VERSION_INFO_POLY = 0x1f25;  // 1 1111 0010 0101
 
 // From Appendix C in JISX0510:2004 (p.65).
-int const TYPE_INFO_POLY = 0x537;
-int const TYPE_INFO_MASK_PATTERN = 0x5412;
+const int TYPE_INFO_POLY = 0x537;
+const int TYPE_INFO_MASK_PATTERN = 0x5412;
 
 @implementation ZXMatrixUtil
 

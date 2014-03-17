@@ -29,23 +29,23 @@ enum {
   PUNCT_SHIFT
 };
 
-int const TEXT_COMPACTION_MODE_LATCH = 900;
-int const BYTE_COMPACTION_MODE_LATCH = 901;
-int const NUMERIC_COMPACTION_MODE_LATCH = 902;
-int const BYTE_COMPACTION_MODE_LATCH_6 = 924;
-int const BEGIN_MACRO_PDF417_CONTROL_BLOCK = 928;
-int const BEGIN_MACRO_PDF417_OPTIONAL_FIELD = 923;
-int const MACRO_PDF417_TERMINATOR = 922;
-int const MODE_SHIFT_TO_BYTE_COMPACTION_MODE = 913;
-int const MAX_NUMERIC_CODEWORDS = 15;
+const int TEXT_COMPACTION_MODE_LATCH = 900;
+const int BYTE_COMPACTION_MODE_LATCH = 901;
+const int NUMERIC_COMPACTION_MODE_LATCH = 902;
+const int BYTE_COMPACTION_MODE_LATCH_6 = 924;
+const int BEGIN_MACRO_PDF417_CONTROL_BLOCK = 928;
+const int BEGIN_MACRO_PDF417_OPTIONAL_FIELD = 923;
+const int MACRO_PDF417_TERMINATOR = 922;
+const int MODE_SHIFT_TO_BYTE_COMPACTION_MODE = 913;
+const int MAX_NUMERIC_CODEWORDS = 15;
 
-int const PL = 25;
-int const LL = 27;
-int const AS = 27;
-int const ML = 28;
-int const AL = 28;
-int const PS = 29;
-int const PAL = 29;
+const int PL = 25;
+const int LL = 27;
+const int AS = 27;
+const int ML = 28;
+const int AL = 28;
+const int PS = 29;
+const int PAL = 29;
 
 char const PUNCT_CHARS[29] = {
   ';', '<', '>', '@', '[', '\\', '}', '_', '`', '~', '!',
@@ -57,7 +57,7 @@ char const MIXED_CHARS[25] = {
   '\r', '\t', ',', ':', '#', '-', '.', '$', '/', '+', '%', '*',
   '=', '^'};
 
-int const NUMBER_OF_SEQUENCE_CODEWORDS = 2;
+const int NUMBER_OF_SEQUENCE_CODEWORDS = 2;
 
 /**
  * Table containing values for the exponent of 900.

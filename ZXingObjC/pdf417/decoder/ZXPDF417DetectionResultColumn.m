@@ -18,7 +18,7 @@
 #import "ZXPDF417Codeword.h"
 #import "ZXPDF417DetectionResultColumn.h"
 
-int const MAX_NEARBY_DISTANCE = 5;
+const int MAX_NEARBY_DISTANCE = 5;
 
 @interface ZXPDF417DetectionResultColumn ()
 

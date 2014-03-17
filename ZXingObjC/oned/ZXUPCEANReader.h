@@ -17,11 +17,6 @@
 #import "ZXBarcodeFormat.h"
 #import "ZXOneDReader.h"
 
-/**
- * Encapsulates functionality and implementation that is common to UPC and EAN families
- * of one-dimensional barcodes.
- */
-
 typedef enum {
 	UPC_EAN_PATTERNS_L_PATTERNS = 0,
 	UPC_EAN_PATTERNS_L_AND_G_PATTERNS
@@ -38,6 +33,10 @@ extern const int L_AND_G_PATTERNS[][4];
 
 @class ZXDecodeHints, ZXEANManufacturerOrgSupport, ZXIntArray, ZXResult, ZXUPCEANExtensionSupport;
 
+/**
+ * Encapsulates functionality and implementation that is common to UPC and EAN families
+ * of one-dimensional barcodes.
+ */
 @interface ZXUPCEANReader : ZXOneDReader
 
 + (NSRange)findStartGuardPattern:(ZXBitArray *)row error:(NSError **)error;

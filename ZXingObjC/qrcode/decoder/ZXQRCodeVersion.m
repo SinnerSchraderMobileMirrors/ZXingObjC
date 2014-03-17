@@ -86,8 +86,8 @@
  * Element i represents the raw version bits that specify version i + 7
  */
 
-int const VERSION_DECODE_INFO_LEN = 34;
-int const VERSION_DECODE_INFO[VERSION_DECODE_INFO_LEN] = {
+const int VERSION_DECODE_INFO_LEN = 34;
+const int VERSION_DECODE_INFO[VERSION_DECODE_INFO_LEN] = {
   0x07C94, 0x085BC, 0x09A99, 0x0A4D3, 0x0BBF6,
   0x0C762, 0x0D847, 0x0E60D, 0x0F928, 0x10B78,
   0x1145D, 0x12A17, 0x13532, 0x149A6, 0x15683,

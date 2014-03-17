@@ -19,7 +19,7 @@
 #import "ZXMode.h"
 #import "ZXQRCode.h"
 
-int const NUM_MASK_PATTERNS = 8;
+const int NUM_MASK_PATTERNS = 8;
 
 @implementation ZXQRCode
 

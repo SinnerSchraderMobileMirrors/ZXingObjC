@@ -63,41 +63,26 @@
   }
 }
 
-/**
- * Gets the requested bit, where true means black.
- */
 - (BOOL)getX:(int)x y:(int)y {
   NSInteger offset = y * self.rowSize + (x >> 5);
   return ((self.bits[offset] >> (x & 0x1f)) & 1) != 0;
 }
 
-/**
- * Sets the given bit to true.
- */
 - (void)setX:(int)x y:(int)y {
   NSInteger offset = y * self.rowSize + (x >> 5);
   self.bits[offset] |= 1 << (x & 0x1f);
 }
 
-/**
- * Flips the given bit.
- */
 - (void)flipX:(int)x y:(int)y {
   NSUInteger offset = y * self.rowSize + (x >> 5);
   self.bits[offset] ^= 1 << (x & 0x1f);
 }
 
-/**
- * Clears all bits (sets to false).
- */
 - (void)clear {
   NSInteger max = self.bitsSize;
   memset(self.bits, 0, max * sizeof(int32_t));
 }
 
-/**
- * Sets a square region of the bit matrix to true.
- */
 - (void)setRegionAtLeft:(int)left top:(int)top width:(int)aWidth height:(int)aHeight {
   if (aHeight < 1 || aWidth < 1) {
     @throw [NSException exceptionWithName:NSInvalidArgumentException
@@ -119,9 +104,6 @@
   }
 }
 
-/**
- * A fast method to retrieve one row of data from the matrix as a BitArray.
- */
 - (ZXBitArray *)rowAtY:(int)y row:(ZXBitArray *)row {
   if (row == nil || [row size] < self.width) {
     row = [[ZXBitArray alloc] initWithSize:self.width];
@@ -140,11 +122,6 @@
   }
 }
 
-/**
- * This is useful in detecting the enclosing rectangle of a 'pure' barcode.
- *
- * Returns {left,top,width,height} enclosing rectangle of all 1 bits, or null if it is all white
- */
 - (NSArray *)enclosingRectangle {
   int left = self.width;
   int top = self.height;
@@ -193,11 +170,6 @@
   return @[@(left), @(top), @(width), @(height)];
 }
 
-/**
- * This is useful in detecting a corner of a 'pure' barcode.
- * 
- * Returns {x,y} coordinate of top-left-most 1 bit, or null if it is all white
- */
 - (NSArray *)topLeftOnBit {
   int bitsOffset = 0;
   while (bitsOffset < self.bitsSize && self.bits[bitsOffset] == 0) {

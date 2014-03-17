@@ -98,7 +98,6 @@ const long RFC2445_DURATION_FIELD_UNITS[RFC2445_DURATION_FIELD_UNITS_LEN] = {
   return result;
 }
 
-
 /**
  * Parses a string as a date. RFC 2445 allows the start and end fields to be of type DATE (e.g. 20081021)
  * or DATE-TIME (e.g. 20081021T123000 for local time, or 20081021T123000Z for UTC).

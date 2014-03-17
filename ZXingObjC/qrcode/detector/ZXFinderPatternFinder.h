@@ -21,8 +21,8 @@
  * This class is thread-safe but not reentrant. Each thread must allocate its own object.
  */
 
-extern int const FINDER_PATTERN_MIN_SKIP;
-extern int const FINDER_PATTERN_MAX_MODULES;
+extern const int FINDER_PATTERN_MIN_SKIP;
+extern const int FINDER_PATTERN_MAX_MODULES;
 
 @class ZXBitMatrix, ZXDecodeHints, ZXFinderPatternInfo;
 @protocol ZXResultPointCallback;

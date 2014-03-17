@@ -30,8 +30,8 @@
 
 @end
 
-int const INIT_SIZE = 30;
-int const CORR = 1;
+const int INIT_SIZE = 30;
+const int CORR = 1;
 
 @implementation ZXWhiteRectangleDetector
 
@@ -72,17 +72,6 @@ int const CORR = 1;
   return self;
 }
 
-/**
- * Detects a candidate barcode-like rectangular region within an image. It
- * starts around the center of the image, increases the size of the candidate
- * region until it finds a white rectangular region.
- * 
- * Returns a ResultPoint NSArray describing the corners of the rectangular
- * region. The first and last points are opposed on the diagonal, as
- * are the second and third. The first point will be the topmost
- * point and the last, the bottommost. The second point will be
- * leftmost and the third, the rightmost
- */
 - (NSArray *)detectWithError:(NSError **)error {
   int left = self.leftInit;
   int right = self.rightInit;
@@ -249,11 +238,15 @@ int const CORR = 1;
 /**
  * recenters the points of a constant distance towards the center
  *
- * returns a ResultPoint NSArray describing the corners of the rectangular
- * region. The first and last points are opposed on the diagonal, as
- * are the second and third. The first point will be the topmost
- * point and the last, the bottommost. The second point will be
- * leftmost and the third, the rightmost
+ * @param y bottom most point
+ * @param z left most point
+ * @param x right most point
+ * @param t top most point
+ * @return ZXResultPoint array describing the corners of the rectangular
+ *         region. The first and last points are opposed on the diagonal, as
+ *         are the second and third. The first point will be the topmost
+ *         point and the last, the bottommost. The second point will be
+ *         leftmost and the third, the rightmost
  */
 - (NSArray *)centerEdges:(ZXResultPoint *)y z:(ZXResultPoint *)z x:(ZXResultPoint *)x t:(ZXResultPoint *)t {
   //
@@ -285,9 +278,14 @@ int const CORR = 1;
   }
 }
 
-
 /**
  * Determines whether a segment contains a black point
+ *
+ * @param a          min value of the scanned coordinate
+ * @param b          max value of the scanned coordinate
+ * @param fixed      value of fixed coordinate
+ * @param horizontal set to true if scan must be horizontal, false if vertical
+ * @return true if a black point has been found, else false.
  */
 - (BOOL)containsBlackPoint:(int)a b:(int)b fixed:(int)fixed horizontal:(BOOL)horizontal {
   if (horizontal) {

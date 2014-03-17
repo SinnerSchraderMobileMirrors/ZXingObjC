@@ -100,6 +100,11 @@
   return rowOffset;
 }
 
+/**
+ * @param raw raw content of extension
+ * @return formatted interpretation of raw content as a NSDictionary mapping
+ *  one ZXResultMetadataType to appropriate value, or nil if not known
+ */
 - (NSMutableDictionary *)parseExtensionString:(NSString *)raw {
   if (raw.length != 2) {
     return nil;

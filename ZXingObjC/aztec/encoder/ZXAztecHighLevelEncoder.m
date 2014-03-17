@@ -30,7 +30,7 @@ const int ZX_AZTEC_MODE_PUNCT = 4; // 5 bits
 // be up to 14 bits.  In the best possible case, we are already there!
 // The high half-word of each entry gives the number of bits.
 // The low half-word of each entry are the actual bits necessary to change
-const int ZX_AZTEC_LATCH_TABLE[5][5] = {
+const int ZX_AZTEC_LATCH_TABLE[][5] = {
   {
     0,
     (5 << 16) + 28,              // UPPER -> LOWER

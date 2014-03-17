@@ -43,7 +43,12 @@ const int MATRIX_HEIGHT = 33;
 }
 
 /**
- * Locates and decodes a MaxiCode code in an image.
+ * Locates and decodes a MaxiCode in an image.
+ *
+ * @return a String representing the content encoded by the MaxiCode
+ * @return nil if a MaxiCode cannot be found
+ * @return nil if a MaxiCode cannot be decoded
+ * @return nil if error correction fails
  */
 - (ZXResult *)decode:(ZXBinaryBitmap *)image error:(NSError **)error {
   return [self decode:image hints:nil error:error];

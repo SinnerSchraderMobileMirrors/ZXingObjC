@@ -20,7 +20,7 @@
 #import "ZXEAN13Writer.h"
 #import "ZXUPCEANReader.h"
 
-const int EAN13_CODE_WIDTH = 3 + // start guard
+const int ZX_EAN13_CODE_WIDTH = 3 + // start guard
   (7 * 6) + // left bars
   5 + // middle guard
   (7 * 6) + // right bars
@@ -50,11 +50,11 @@ const int EAN13_CODE_WIDTH = 3 + // start guard
   }
 
   int firstDigit = [[contents substringToIndex:1] intValue];
-  int parities = FIRST_DIGIT_ENCODINGS[firstDigit];
-  ZXBoolArray *result = [[ZXBoolArray alloc] initWithLength:EAN13_CODE_WIDTH];
+  int parities = ZX_EAN13_FIRST_DIGIT_ENCODINGS[firstDigit];
+  ZXBoolArray *result = [[ZXBoolArray alloc] initWithLength:ZX_EAN13_CODE_WIDTH];
   int pos = 0;
 
-  pos += [self appendPattern:result pos:pos pattern:START_END_PATTERN patternLen:START_END_PATTERN_LEN startColor:TRUE];
+  pos += [self appendPattern:result pos:pos pattern:START_END_PATTERN patternLen:START_END_PATTERN_LEN startColor:YES];
 
   for (int i = 1; i <= 6; i++) {
     int digit = [[contents substringWithRange:NSMakeRange(i, 1)] intValue];
@@ -68,9 +68,9 @@ const int EAN13_CODE_WIDTH = 3 + // start guard
 
   for (int i = 7; i <= 12; i++) {
     int digit = [[contents substringWithRange:NSMakeRange(i, 1)] intValue];
-    pos += [self appendPattern:result pos:pos pattern:L_PATTERNS[digit] patternLen:L_PATTERNS_SUB_LEN startColor:TRUE];
+    pos += [self appendPattern:result pos:pos pattern:L_PATTERNS[digit] patternLen:L_PATTERNS_SUB_LEN startColor:YES];
   }
-  [self appendPattern:result pos:pos pattern:START_END_PATTERN patternLen:START_END_PATTERN_LEN startColor:TRUE];
+  [self appendPattern:result pos:pos pattern:START_END_PATTERN patternLen:START_END_PATTERN_LEN startColor:YES];
 
   return result;
 }

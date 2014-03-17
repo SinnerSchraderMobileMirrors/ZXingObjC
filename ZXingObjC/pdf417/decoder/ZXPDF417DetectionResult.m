@@ -22,7 +22,7 @@
 #import "ZXPDF417DetectionResultColumn.h"
 #import "ZXPDF417DetectionResultRowIndicatorColumn.h"
 
-int const ADJUST_ROW_NUMBER_SKIP = 2;
+const int ADJUST_ROW_NUMBER_SKIP = 2;
 
 @interface ZXPDF417DetectionResult ()
 

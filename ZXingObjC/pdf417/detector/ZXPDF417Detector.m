@@ -29,28 +29,28 @@
 const int INDEXES_PATTERN_LEN = 4;
 const int INDEXES_START_PATTERN[INDEXES_PATTERN_LEN] = {0, 4, 1, 5};
 const int INDEXES_STOP_PATTERN[INDEXES_PATTERN_LEN] = {6, 2, 7, 3};
-int const PDF417_INTEGER_MATH_SHIFT = 8;
-int const PDF417_PATTERN_MATCH_RESULT_SCALE_FACTOR = 1 << PDF417_INTEGER_MATH_SHIFT;
-int const MAX_AVG_VARIANCE = (int) (PDF417_PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.42f);
-int const MAX_INDIVIDUAL_VARIANCE = (int) (PDF417_PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.8f);
+const int PDF417_ZX_ONED_INTEGER_MATH_SHIFT = 8;
+const int PDF417_ZX_ONED_PATTERN_MATCH_RESULT_SCALE_FACTOR = 1 << PDF417_ZX_ONED_INTEGER_MATH_SHIFT;
+const int MAX_AVG_VARIANCE = (int) (PDF417_ZX_ONED_PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.42f);
+const int MAX_INDIVIDUAL_VARIANCE = (int) (PDF417_ZX_ONED_PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.8f);
 
 // B S B S B S B S Bar/Space pattern
 // 11111111 0 1 0 1 0 1 000
-int const PDF417_START_PATTERN_LEN = 8;
-int const PDF417_START_PATTERN[PDF417_START_PATTERN_LEN] = {8, 1, 1, 1, 1, 1, 1, 3};
+const int PDF417_START_PATTERN_LEN = 8;
+const int PDF417_START_PATTERN[PDF417_START_PATTERN_LEN] = {8, 1, 1, 1, 1, 1, 1, 3};
 
 // 1111111 0 1 000 1 0 1 00 1
-int const PDF417_STOP_PATTERN_LEN = 9;
-int const PDF417_STOP_PATTERN[PDF417_STOP_PATTERN_LEN] = {7, 1, 1, 3, 1, 1, 1, 2, 1};
-int const MAX_PIXEL_DRIFT = 3;
-int const MAX_PATTERN_DRIFT = 5;
+const int PDF417_STOP_PATTERN_LEN = 9;
+const int PDF417_STOP_PATTERN[PDF417_STOP_PATTERN_LEN] = {7, 1, 1, 3, 1, 1, 1, 2, 1};
+const int MAX_PIXEL_DRIFT = 3;
+const int MAX_PATTERN_DRIFT = 5;
 // if we set the value too low, then we don't detect the correct height of the bar if the start patterns are damaged.
 // if we set the value too high, then we might detect the start pattern from a neighbor barcode.
-int const SKIPPED_ROW_COUNT_MAX = 25;
+const int SKIPPED_ROW_COUNT_MAX = 25;
 // A PDF471 barcode should have at least 3 rows, with each row being >= 3 times the module width. Therefore it should be at least
 // 9 pixels tall. To be conservative, we use about half the size to ensure we don't miss it.
-int const ROW_STEP = 5;
-int const BARCODE_MIN_HEIGHT = 10;
+const int ROW_STEP = 5;
+const int BARCODE_MIN_HEIGHT = 10;
 
 @implementation ZXPDF417Detector
 
@@ -329,12 +329,12 @@ int const BARCODE_MIN_HEIGHT = 10;
   if (total < patternLength || patternLength == 0) {
     return INT_MAX;
   }
-  int unitBarWidth = (total << PDF417_INTEGER_MATH_SHIFT) / patternLength;
-  maxIndividualVariance = (maxIndividualVariance * unitBarWidth) >> PDF417_INTEGER_MATH_SHIFT;
+  int unitBarWidth = (total << PDF417_ZX_ONED_INTEGER_MATH_SHIFT) / patternLength;
+  maxIndividualVariance = (maxIndividualVariance * unitBarWidth) >> PDF417_ZX_ONED_INTEGER_MATH_SHIFT;
 
   int totalVariance = 0;
   for (int x = 0; x < numCounters; x++) {
-    int counter = counters[x] << PDF417_INTEGER_MATH_SHIFT;
+    int counter = counters[x] << PDF417_ZX_ONED_INTEGER_MATH_SHIFT;
     int scaledPattern = pattern[x] * unitBarWidth;
     int variance = counter > scaledPattern ? counter - scaledPattern : scaledPattern - counter;
     if (variance > maxIndividualVariance) {

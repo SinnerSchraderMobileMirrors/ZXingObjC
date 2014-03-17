@@ -18,15 +18,15 @@
 #import "ZXPDF417.h"
 #import "ZXPDF417Common.h"
 
-int const ZXPDF417_NUMBER_OF_CODEWORDS = 929;
+const int ZXPDF417_NUMBER_OF_CODEWORDS = 929;
 // Maximum Codewords (Data + Error).
-int const ZXPDF417_MAX_CODEWORDS_IN_BARCODE = ZXPDF417_NUMBER_OF_CODEWORDS - 1;
-int const ZXPDF417_MIN_ROWS_IN_BARCODE = 3;
-int const ZXPDF417_MAX_ROWS_IN_BARCODE = 90;
+const int ZXPDF417_MAX_CODEWORDS_IN_BARCODE = ZXPDF417_NUMBER_OF_CODEWORDS - 1;
+const int ZXPDF417_MIN_ROWS_IN_BARCODE = 3;
+const int ZXPDF417_MAX_ROWS_IN_BARCODE = 90;
 // One left row indication column + max 30 data columns + one right row indicator column
-int const ZXPDF417_MAX_CODEWORDS_IN_ROW = 32;
-int const ZXPDF417_MODULES_IN_CODEWORD = 17;
-int const ZXPDF417_MODULES_IN_STOP_PATTERN = 18;
+const int ZXPDF417_MAX_CODEWORDS_IN_ROW = 32;
+const int ZXPDF417_MODULES_IN_CODEWORD = 17;
+const int ZXPDF417_MODULES_IN_STOP_PATTERN = 18;
 
 @implementation ZXPDF417Common
 

@@ -546,7 +546,7 @@ const int MAX_PAIRS = 11;
   counters.array[0] = firstCounter;
   memcpy(self.decodeFinderCounters.array, counters.array, counters.length * sizeof(int32_t));
 
-  int value = [ZXAbstractRSSReader parseFinderValue:counters finderPatternType:RSS_PATTERNS_RSS_EXPANDED_PATTERNS];
+  int value = [ZXAbstractRSSReader parseFinderValue:counters finderPatternType:ZX_RSS_PATTERNS_RSS_EXPANDED_PATTERNS];
   if (value == -1) {
     return nil;
   }

@@ -48,7 +48,7 @@
 // in binary:
 //                0    1    1   0   0    1   == 0x19
 //
-int FIRST_DIGIT_ENCODINGS[10] = {
+const int ZX_EAN13_FIRST_DIGIT_ENCODINGS[] = {
   0x00, 0x0B, 0x0D, 0xE, 0x13, 0x19, 0x1C, 0x15, 0x16, 0x1A
 };
 
@@ -122,10 +122,15 @@ int FIRST_DIGIT_ENCODINGS[10] = {
  * Based on pattern of odd-even ('L' and 'G') patterns used to encoded the explicitly-encoded
  * digits in a barcode, determines the implicitly encoded first digit and adds it to the
  * result string.
+ *
+ * @param resultString string to insert decoded first digit into
+ * @param lgPatternFound int whose bits indicates the pattern of odd/even L/G patterns used to
+ *  encode digits
+ * @return NO if first digit cannot be determined
  */
 - (BOOL)determineFirstDigit:(NSMutableString *)resultString lgPatternFound:(int)lgPatternFound {
   for (int d = 0; d < 10; d++) {
-    if (lgPatternFound == FIRST_DIGIT_ENCODINGS[d]) {
+    if (lgPatternFound == ZX_EAN13_FIRST_DIGIT_ENCODINGS[d]) {
       [resultString insertString:[NSString stringWithFormat:@"%C", (unichar)('0' + d)] atIndex:0];
       return YES;
     }
