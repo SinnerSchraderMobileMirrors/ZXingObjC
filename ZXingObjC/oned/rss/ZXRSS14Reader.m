@@ -173,14 +173,7 @@ const int INSIDE_ODD_WIDEST[4] = {2,4,6,8};
 
 - (ZXDataCharacter *)decodeDataCharacter:(ZXBitArray *)row pattern:(ZXRSSFinderPattern *)pattern outsideChar:(BOOL)outsideChar {
   ZXIntArray *counters = self.dataCharacterCounters;
-  counters.array[0] = 0;
-  counters.array[1] = 0;
-  counters.array[2] = 0;
-  counters.array[3] = 0;
-  counters.array[4] = 0;
-  counters.array[5] = 0;
-  counters.array[6] = 0;
-  counters.array[7] = 0;
+  [counters clear];
 
   if (outsideChar) {
     if (![ZXOneDReader recordPatternInReverse:row start:[[pattern startEnd][0] intValue] counters:counters]) {
@@ -268,10 +261,7 @@ const int INSIDE_ODD_WIDEST[4] = {2,4,6,8};
 
 - (NSArray *)findFinderPattern:(ZXBitArray *)row rowOffset:(int)rowOffset rightFinderPattern:(BOOL)rightFinderPattern {
   ZXIntArray *counters = self.decodeFinderCounters;
-  counters.array[0] = 0;
-  counters.array[1] = 0;
-  counters.array[2] = 0;
-  counters.array[3] = 0;
+  [counters clear];
 
   int width = row.size;
   BOOL isWhite = NO;

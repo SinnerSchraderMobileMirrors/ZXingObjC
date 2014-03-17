@@ -673,7 +673,7 @@
 		25404135166AA0F100E13304 /* ZXQRCodeDecodedBitStreamParserTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 254040BB166AA0F100E13304 /* ZXQRCodeDecodedBitStreamParserTestCase.m */; };
 		25404136166AA0F100E13304 /* ZXQRCodeVersionTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 254040BD166AA0F100E13304 /* ZXQRCodeVersionTestCase.m */; };
 		25404137166AA0F100E13304 /* BitVectorTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 254040C0166AA0F100E13304 /* BitVectorTestCase.m */; };
-		25404138166AA0F100E13304 /* ZXEncoderTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 254040C2166AA0F100E13304 /* ZXEncoderTestCase.m */; };
+		25404138166AA0F100E13304 /* ZXQRCodeEncoderTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 254040C2166AA0F100E13304 /* ZXQRCodeEncoderTestCase.m */; };
 		25404139166AA0F100E13304 /* ZXMaskUtilTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 254040C4166AA0F100E13304 /* ZXMaskUtilTestCase.m */; };
 		2540413A166AA0F100E13304 /* ZXMatrixUtilTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 254040C6166AA0F100E13304 /* ZXMatrixUtilTestCase.m */; };
 		2540413B166AA0F100E13304 /* ZXQRCodeTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 254040C8166AA0F100E13304 /* ZXQRCodeTestCase.m */; };
@@ -911,7 +911,7 @@
 		25404379166AB8B800E13304 /* ZXQRCodeDecodedBitStreamParserTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 254040BB166AA0F100E13304 /* ZXQRCodeDecodedBitStreamParserTestCase.m */; };
 		2540437A166AB8B800E13304 /* ZXQRCodeVersionTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 254040BD166AA0F100E13304 /* ZXQRCodeVersionTestCase.m */; };
 		2540437B166AB8B800E13304 /* BitVectorTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 254040C0166AA0F100E13304 /* BitVectorTestCase.m */; };
-		2540437C166AB8B800E13304 /* ZXEncoderTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 254040C2166AA0F100E13304 /* ZXEncoderTestCase.m */; };
+		2540437C166AB8B800E13304 /* ZXQRCodeEncoderTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 254040C2166AA0F100E13304 /* ZXQRCodeEncoderTestCase.m */; };
 		2540437D166AB8B800E13304 /* ZXMaskUtilTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 254040C4166AA0F100E13304 /* ZXMaskUtilTestCase.m */; };
 		2540437E166AB8B800E13304 /* ZXMatrixUtilTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 254040C6166AA0F100E13304 /* ZXMatrixUtilTestCase.m */; };
 		2540437F166AB8B800E13304 /* ZXQRCodeTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 254040C8166AA0F100E13304 /* ZXQRCodeTestCase.m */; };
@@ -2278,8 +2278,8 @@
 		254040BD166AA0F100E13304 /* ZXQRCodeVersionTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZXQRCodeVersionTestCase.m; sourceTree = "<group>"; };
 		254040BF166AA0F100E13304 /* BitVectorTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BitVectorTestCase.h; sourceTree = "<group>"; };
 		254040C0166AA0F100E13304 /* BitVectorTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BitVectorTestCase.m; sourceTree = "<group>"; };
-		254040C1166AA0F100E13304 /* ZXEncoderTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZXEncoderTestCase.h; sourceTree = "<group>"; };
-		254040C2166AA0F100E13304 /* ZXEncoderTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZXEncoderTestCase.m; sourceTree = "<group>"; };
+		254040C1166AA0F100E13304 /* ZXQRCodeEncoderTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZXQRCodeEncoderTestCase.h; sourceTree = "<group>"; };
+		254040C2166AA0F100E13304 /* ZXQRCodeEncoderTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZXQRCodeEncoderTestCase.m; sourceTree = "<group>"; };
 		254040C3166AA0F100E13304 /* ZXMaskUtilTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZXMaskUtilTestCase.h; sourceTree = "<group>"; };
 		254040C4166AA0F100E13304 /* ZXMaskUtilTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZXMaskUtilTestCase.m; sourceTree = "<group>"; };
 		254040C5166AA0F100E13304 /* ZXMatrixUtilTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZXMatrixUtilTestCase.h; sourceTree = "<group>"; };
@@ -3593,12 +3593,12 @@
 			children = (
 				254040BF166AA0F100E13304 /* BitVectorTestCase.h */,
 				254040C0166AA0F100E13304 /* BitVectorTestCase.m */,
-				254040C1166AA0F100E13304 /* ZXEncoderTestCase.h */,
-				254040C2166AA0F100E13304 /* ZXEncoderTestCase.m */,
 				254040C3166AA0F100E13304 /* ZXMaskUtilTestCase.h */,
 				254040C4166AA0F100E13304 /* ZXMaskUtilTestCase.m */,
 				254040C5166AA0F100E13304 /* ZXMatrixUtilTestCase.h */,
 				254040C6166AA0F100E13304 /* ZXMatrixUtilTestCase.m */,
+				254040C1166AA0F100E13304 /* ZXQRCodeEncoderTestCase.h */,
+				254040C2166AA0F100E13304 /* ZXQRCodeEncoderTestCase.m */,
 				254040C7166AA0F100E13304 /* ZXQRCodeTestCase.h */,
 				254040C8166AA0F100E13304 /* ZXQRCodeTestCase.m */,
 			);
@@ -4882,7 +4882,7 @@
 				25404135166AA0F100E13304 /* ZXQRCodeDecodedBitStreamParserTestCase.m in Sources */,
 				25404136166AA0F100E13304 /* ZXQRCodeVersionTestCase.m in Sources */,
 				25404137166AA0F100E13304 /* BitVectorTestCase.m in Sources */,
-				25404138166AA0F100E13304 /* ZXEncoderTestCase.m in Sources */,
+				25404138166AA0F100E13304 /* ZXQRCodeEncoderTestCase.m in Sources */,
 				25404139166AA0F100E13304 /* ZXMaskUtilTestCase.m in Sources */,
 				2540413A166AA0F100E13304 /* ZXMatrixUtilTestCase.m in Sources */,
 				2540413B166AA0F100E13304 /* ZXQRCodeTestCase.m in Sources */,
@@ -5237,7 +5237,7 @@
 				25404379166AB8B800E13304 /* ZXQRCodeDecodedBitStreamParserTestCase.m in Sources */,
 				2540437A166AB8B800E13304 /* ZXQRCodeVersionTestCase.m in Sources */,
 				2540437B166AB8B800E13304 /* BitVectorTestCase.m in Sources */,
-				2540437C166AB8B800E13304 /* ZXEncoderTestCase.m in Sources */,
+				2540437C166AB8B800E13304 /* ZXQRCodeEncoderTestCase.m in Sources */,
 				2540437D166AB8B800E13304 /* ZXMaskUtilTestCase.m in Sources */,
 				2540437E166AB8B800E13304 /* ZXMatrixUtilTestCase.m in Sources */,
 				2540437F166AB8B800E13304 /* ZXQRCodeTestCase.m in Sources */,

@@ -439,10 +439,7 @@ const int MAX_PAIRS = 11;
 
 - (BOOL)findNextPair:(ZXBitArray *)row previousPairs:(NSMutableArray *)previousPairs forcedOffset:(int)forcedOffset {
   ZXIntArray *counters = self.decodeFinderCounters;
-  counters.array[0] = 0;
-  counters.array[1] = 0;
-  counters.array[2] = 0;
-  counters.array[3] = 0;
+  [counters clear];
 
   int width = row.size;
 
@@ -559,14 +556,7 @@ const int MAX_PAIRS = 11;
 
 - (ZXDataCharacter *)decodeDataCharacter:(ZXBitArray *)row pattern:(ZXRSSFinderPattern *)pattern isOddPattern:(BOOL)isOddPattern leftChar:(BOOL)leftChar {
   ZXIntArray *counters = self.dataCharacterCounters;
-  counters.array[0] = 0;
-  counters.array[1] = 0;
-  counters.array[2] = 0;
-  counters.array[3] = 0;
-  counters.array[4] = 0;
-  counters.array[5] = 0;
-  counters.array[6] = 0;
-  counters.array[7] = 0;
+  [counters clear];
 
   if (leftChar) {
     if (![ZXOneDReader recordPatternInReverse:row start:[[pattern startEnd][0] intValue] counters:counters]) {

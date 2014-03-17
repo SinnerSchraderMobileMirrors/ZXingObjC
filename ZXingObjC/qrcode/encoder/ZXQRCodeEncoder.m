@@ -394,15 +394,14 @@ const NSStringEncoding DEFAULT_BYTE_MODE_ENCODING = NSISOLatin1StringEncoding;
     }
 
     int size = numDataBytesInBlock[0];
-    int8_t dataBytes[size];
+    ZXByteArray *dataBytes = [[ZXByteArray alloc] initWithLength:size];
     [bits toBytes:8 * dataBytesOffset array:dataBytes offset:0 numBytes:size];
-    int8_t *ecBytes = [self generateECBytes:dataBytes numDataBytes:size numEcBytesInBlock:numEcBytesInBlock[0]];
-    [blocks addObject:[[ZXBlockPair alloc] initWithData:dataBytes length:size errorCorrection:ecBytes errorCorrectionLength:numEcBytesInBlock[0]]];
+    ZXByteArray *ecBytes = [self generateECBytes:dataBytes numEcBytesInBlock:numEcBytesInBlock[0]];
+    [blocks addObject:[[ZXBlockPair alloc] initWithData:dataBytes errorCorrection:ecBytes]];
 
     maxNumDataBytes = MAX(maxNumDataBytes, size);
     maxNumEcBytes = MAX(maxNumEcBytes, numEcBytesInBlock[0]);
     dataBytesOffset += numDataBytesInBlock[0];
-    free(ecBytes);
   }
   if (numDataBytes != dataBytesOffset) {
     NSDictionary *userInfo = @{NSLocalizedDescriptionKey: @"Data bytes does not match offset"};
@@ -416,20 +415,20 @@ const NSStringEncoding DEFAULT_BYTE_MODE_ENCODING = NSISOLatin1StringEncoding;
   // First, place data blocks.
   for (int i = 0; i < maxNumDataBytes; ++i) {
     for (ZXBlockPair *block in blocks) {
-      int8_t *dataBytes = block.dataBytes;
-      NSUInteger length = block.length;
+      ZXByteArray *dataBytes = block.dataBytes;
+      NSUInteger length = dataBytes.length;
       if (i < length) {
-        [result appendBits:dataBytes[i] numBits:8];
+        [result appendBits:dataBytes.array[i] numBits:8];
       }
     }
   }
   // Then, place error correction blocks.
   for (int i = 0; i < maxNumEcBytes; ++i) {
     for (ZXBlockPair *block in blocks) {
-      int8_t *ecBytes = block.errorCorrectionBytes;
-      int length = block.errorCorrectionLength;
+      ZXByteArray *ecBytes = block.errorCorrectionBytes;
+      int length = ecBytes.length;
       if (i < length) {
-        [result appendBits:ecBytes[i] numBits:8];
+        [result appendBits:ecBytes.array[i] numBits:8];
       }
     }
   }

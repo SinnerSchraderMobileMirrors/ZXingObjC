@@ -63,7 +63,7 @@ enum {
 @implementation ZXDataMatrixDecodedBitStreamParser
 
 + (ZXDecoderResult *)decode:(ZXByteArray *)bytes error:(NSError **)error {
-  ZXBitSource *bits = [[ZXBitSource alloc] initWithBytes:bytes.array length:bytes.length];
+  ZXBitSource *bits = [[ZXBitSource alloc] initWithBytes:bytes];
   NSMutableString *result = [NSMutableString stringWithCapacity:100];
   NSMutableString *resultTrailer = [NSMutableString string];
   NSMutableArray *byteSegments = [NSMutableArray arrayWithCapacity:1];

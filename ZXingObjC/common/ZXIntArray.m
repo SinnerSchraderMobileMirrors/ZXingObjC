@@ -59,4 +59,8 @@
   }
 }
 
+- (void)clear {
+  memset(self.array, 0, self.length * sizeof(int32_t));
+}
+
 @end

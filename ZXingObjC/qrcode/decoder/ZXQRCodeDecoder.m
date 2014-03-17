@@ -15,11 +15,13 @@
  */
 
 #import "ZXBitMatrix.h"
+#import "ZXByteArray.h"
 #import "ZXDecoderResult.h"
 #import "ZXErrorCorrectionLevel.h"
 #import "ZXErrors.h"
 #import "ZXFormatInformation.h"
 #import "ZXGenericGF.h"
+#import "ZXIntArray.h"
 #import "ZXQRCodeBitMatrixParser.h"
 #import "ZXQRCodeDataBlock.h"
 #import "ZXQRCodeDecodedBitStreamParser.h"
@@ -125,7 +127,7 @@
   }
   ZXErrorCorrectionLevel *ecLevel = formatInfo.errorCorrectionLevel;
 
-  NSArray *codewords = [parser readCodewordsWithError:error];
+  ZXByteArray *codewords = [parser readCodewordsWithError:error];
   if (!codewords) {
     return nil;
   }
@@ -140,21 +142,21 @@
     return nil;
   }
 
-  int8_t resultBytes[totalBytes];
+  ZXByteArray *resultBytes = [[ZXByteArray alloc] initWithLength:totalBytes];
   int resultOffset = 0;
 
   for (ZXQRCodeDataBlock *dataBlock in dataBlocks) {
-    NSMutableArray *codewordBytes = [dataBlock codewords];
+    ZXByteArray *codewordBytes = dataBlock.codewords;
     int numDataCodewords = [dataBlock numDataCodewords];
     if (![self correctErrors:codewordBytes numDataCodewords:numDataCodewords error:error]) {
       return nil;
     }
     for (int i = 0; i < numDataCodewords; i++) {
-      resultBytes[resultOffset++] = [codewordBytes[i] charValue];
+      resultBytes.array[resultOffset++] = codewordBytes.array[i];
     }
   }
 
-  return [ZXQRCodeDecodedBitStreamParser decode:resultBytes length:totalBytes version:version ecLevel:ecLevel hints:hints error:error];
+  return [ZXQRCodeDecodedBitStreamParser decode:resultBytes version:version ecLevel:ecLevel hints:hints error:error];
 }
 
 
@@ -162,17 +164,16 @@
  * Given data and error-correction codewords received, possibly corrupted by errors, attempts to
  * correct the errors in-place using Reed-Solomon error correction.
  */
-- (BOOL)correctErrors:(NSMutableArray *)codewordBytes numDataCodewords:(int)numDataCodewords error:(NSError **)error {
-  int numCodewords = (int)[codewordBytes count];
-  int codewordsInts[numCodewords];
-
+- (BOOL)correctErrors:(ZXByteArray *)codewordBytes numDataCodewords:(int)numDataCodewords error:(NSError **)error {
+  int numCodewords = (int)codewordBytes.length;
+  // First read into an array of ints
+  ZXIntArray *codewordsInts = [[ZXIntArray alloc] initWithLength:numCodewords];
   for (int i = 0; i < numCodewords; i++) {
-    codewordsInts[i] = [codewordBytes[i] charValue] & 0xFF;
+    codewordsInts.array[i] = codewordBytes.array[i] & 0xFF;
   }
-
-  int numECCodewords = (int)[codewordBytes count] - numDataCodewords;
+  int numECCodewords = (int)codewordBytes.length - numDataCodewords;
   NSError *decodeError = nil;
-  if (![self.rsDecoder decode:codewordsInts receivedLen:numCodewords twoS:numECCodewords error:&decodeError]) {
+  if (![self.rsDecoder decode:codewordsInts twoS:numECCodewords error:&decodeError]) {
     if (decodeError.code == ZXReedSolomonError) {
       if (error) *error = ChecksumErrorInstance();
       return NO;
@@ -181,9 +182,10 @@
       return NO;
     }
   }
-
+  // Copy back into array of bytes -- only need to worry about the bytes that were data
+  // We don't care about errors in the error-correction codewords
   for (int i = 0; i < numDataCodewords; i++) {
-    codewordBytes[i] = [NSNumber numberWithChar:codewordsInts[i]];
+    codewordBytes.array[i] = (int8_t) codewordsInts.array[i];
   }
   return YES;
 }

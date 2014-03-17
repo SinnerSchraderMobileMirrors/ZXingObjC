@@ -106,9 +106,9 @@ const int L_AND_G_PATTERNS[L_AND_G_PATTERNS_LEN][L_AND_G_PATTERNS_SUB_LEN] = {
   BOOL foundStart = NO;
   NSRange startRange = NSMakeRange(NSNotFound, 0);
   int nextStart = 0;
-  int counters[START_END_PATTERN_LEN];
-
+  ZXIntArray *counters = [[ZXIntArray alloc] initWithLength:START_END_PATTERN_LEN];
   while (!foundStart) {
+    [counters clear];
     startRange = [self findGuardPattern:row rowOffset:nextStart whiteFirst:NO pattern:START_END_PATTERN patternLen:START_END_PATTERN_LEN counters:counters error:error];
     if (startRange.location == NSNotFound) {
       return startRange;

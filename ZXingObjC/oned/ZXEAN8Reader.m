@@ -36,10 +36,7 @@
 
 - (int)decodeMiddle:(ZXBitArray *)row startRange:(NSRange)startRange result:(NSMutableString *)result error:(NSError **)error {
   ZXIntArray *counters = self.decodeMiddleCounters;
-  counters.array[0] = 0;
-  counters.array[1] = 0;
-  counters.array[2] = 0;
-  counters.array[3] = 0;
+  [counters clear];
   int end = row.size;
   int rowOffset = (int)NSMaxRange(startRange);
 
