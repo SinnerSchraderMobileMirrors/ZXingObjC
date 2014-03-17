@@ -117,7 +117,6 @@ const int PATTERNS[PATTERNS_LEN][5] = {
 
   return [ZXResult resultWithText:resultString
                          rawBytes:nil
-                           length:0
                      resultPoints:@[[[ZXResultPoint alloc] initWithX:[startRange[1] floatValue] y:(float)rowNumber],
                                     [[ZXResultPoint alloc] initWithX:[endRange[0] floatValue] y:(float)rowNumber]]
                            format:kBarcodeFormatITF];

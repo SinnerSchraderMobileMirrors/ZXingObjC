@@ -16,19 +16,20 @@
 
 #import "ZXBitArray.h"
 #import "ZXBlockPair.h"
+#import "ZXByteArray.h"
 #import "ZXByteMatrix.h"
 #import "ZXCharacterSetECI.h"
-#import "ZXECI.h"
-#import "ZXEncoder.h"
 #import "ZXEncodeHints.h"
 #import "ZXErrors.h"
 #import "ZXErrorCorrectionLevel.h"
 #import "ZXGenericGF.h"
+#import "ZXIntArray.h"
 #import "ZXMaskUtil.h"
 #import "ZXMatrixUtil.h"
 #import "ZXMode.h"
-#import "ZXQRCodeVersion.h"
 #import "ZXQRCode.h"
+#import "ZXQRCodeEncoder.h"
+#import "ZXQRCodeVersion.h"
 #import "ZXReedSolomonEncoder.h"
 
 // The original table is defined in the table 5 of JISX0510:2004 (p.19).
@@ -43,7 +44,7 @@ const int ALPHANUMERIC_TABLE[96] = {
 
 const NSStringEncoding DEFAULT_BYTE_MODE_ENCODING = NSISOLatin1StringEncoding;
 
-@implementation ZXEncoder
+@implementation ZXQRCodeEncoder
 
 + (int)calculateMaskPenalty:(ZXByteMatrix *)matrix {
   return [ZXMaskUtil applyMaskPenaltyRule1:matrix]
@@ -442,21 +443,17 @@ const NSStringEncoding DEFAULT_BYTE_MODE_ENCODING = NSISOLatin1StringEncoding;
   return result;
 }
 
-+ (int8_t *)generateECBytes:(int8_t[])dataBytes numDataBytes:(int)numDataBytes numEcBytesInBlock:(int)numEcBytesInBlock {
-  int toEncodeLen = numDataBytes + numEcBytesInBlock;
-  int toEncode[toEncodeLen];
++ (ZXByteArray *)generateECBytes:(ZXByteArray *)dataBytes numEcBytesInBlock:(int)numEcBytesInBlock {
+  int numDataBytes = dataBytes.length;
+  ZXIntArray *toEncode = [[ZXIntArray alloc] initWithLength:numDataBytes + numEcBytesInBlock];
   for (int i = 0; i < numDataBytes; i++) {
-    toEncode[i] = dataBytes[i] & 0xFF;
+    toEncode.array[i] = dataBytes.array[i] & 0xFF;
   }
-  for (int i = numDataBytes; i < toEncodeLen; i++) {
-    toEncode[i] = 0;
-  }
+  [[[ZXReedSolomonEncoder alloc] initWithField:[ZXGenericGF QrCodeField256]] encode:toEncode ecBytes:numEcBytesInBlock];
 
-  [[[ZXReedSolomonEncoder alloc] initWithField:[ZXGenericGF QrCodeField256]] encode:toEncode toEncodeLen:toEncodeLen ecBytes:numEcBytesInBlock];
-
-  int8_t *ecBytes = (int8_t *)malloc(numEcBytesInBlock * sizeof(int8_t));
+  ZXByteArray *ecBytes = [[ZXByteArray alloc] initWithLength:numEcBytesInBlock];
   for (int i = 0; i < numEcBytesInBlock; i++) {
-    ecBytes[i] = (int8_t)toEncode[numDataBytes + i];
+    ecBytes.array[i] = (int8_t) toEncode.array[numDataBytes + i];
   }
 
   return ecBytes;

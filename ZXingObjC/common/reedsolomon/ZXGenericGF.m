@@ -16,6 +16,7 @@
 
 #import "ZXGenericGF.h"
 #import "ZXGenericGFPoly.h"
+#import "ZXIntArray.h"
 
 @interface ZXGenericGF ()
 
@@ -55,11 +56,11 @@
       _logTable[_expTable[i]] = i;
     }
     // logTable[0] == 0 but this should never be used
-    int zeroInt = 0;
-    _zero = [[ZXGenericGFPoly alloc] initWithField:self coefficients:&zeroInt coefficientsLen:1];
+    _zero = [[ZXGenericGFPoly alloc] initWithField:self coefficients:[[ZXIntArray alloc] initWithLength:0]];
 
-    int oneInt = 1;
-    _one = [[ZXGenericGFPoly alloc] initWithField:self coefficients:&oneInt coefficientsLen:1];
+    ZXIntArray *oneCoefficient = [[ZXIntArray alloc] initWithLength:1];
+    oneCoefficient.array[0] = 1;
+    _one = [[ZXGenericGFPoly alloc] initWithField:self coefficients:oneCoefficient];
   }
 
   return self;
@@ -134,14 +135,9 @@
   if (coefficient == 0) {
     return self.zero;
   }
-
-  int coefficientsLen = degree + 1;
-  int coefficients[coefficientsLen];
-  coefficients[0] = coefficient;
-  for (int i = 1; i < coefficientsLen; i++) {
-    coefficients[i] = 0;
-  }
-  return [[ZXGenericGFPoly alloc] initWithField:self coefficients:coefficients coefficientsLen:coefficientsLen];
+  ZXIntArray *coefficients = [[ZXIntArray alloc] initWithLength:degree + 1];
+  coefficients.array[0] = coefficient;
+  return [[ZXGenericGFPoly alloc] initWithField:self coefficients:coefficients];
 }
 
 /**

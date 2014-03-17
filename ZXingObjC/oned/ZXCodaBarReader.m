@@ -179,7 +179,6 @@ const unichar STARTEND_ENCODING[STARTEND_ENCODING_LEN]  = {'A', 'B', 'C', 'D'};
   float right = (float) runningCount;
   return [ZXResult resultWithText:self.decodeRowResult
                          rawBytes:nil
-                           length:0
                      resultPoints:@[[[ZXResultPoint alloc] initWithX:left y:(float)rowNumber],
                                     [[ZXResultPoint alloc] initWithX:right y:(float)rowNumber]]
                            format:kBarcodeFormatCodabar];

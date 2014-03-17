@@ -14,38 +14,34 @@
  * limitations under the License.
  */
 
-#import "ZXIntArray.h"
+#import "ZXByteArray.h"
 
-@implementation ZXIntArray
+@implementation ZXByteArray
 
 - (id)initWithLength:(unsigned int)length {
   if (self = [super init]) {
-    if (length > 0) {
-      _array = (int32_t *)calloc(length, sizeof(int32_t));
-    } else {
-      _array = NULL;
-    }
+    _array = (int8_t *)calloc(length, sizeof(BOOL));
     _length = length;
   }
 
   return self;
 }
 
-- (id)initWithInts:(int32_t)int1, ... {
+- (id)initWithBytes:(int8_t)byte1, ... {
   va_list args;
-  va_start(args, int1);
+  va_start(args, byte1);
   unsigned int length = 0;
-  for (int32_t i = int1; i != -1; i = va_arg(args, int)) {
+  for (int8_t byte = byte1; byte != -1; byte = va_arg(args, int)) {
     length++;
   }
   va_end(args);
 
   if (self = [self initWithLength:length]) {
     va_list args;
-    va_start(args, int1);
+    va_start(args, byte1);
     int i = 0;
-    for (int8_t c = int1; c != -1; c = va_arg(args, int)) {
-      _array[i++] = c;
+    for (int8_t byte = byte1; byte != -1; byte = va_arg(args, int)) {
+      _array[i++] = byte;
     }
     va_end(args);
   }

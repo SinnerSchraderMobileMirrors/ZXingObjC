@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 ZXing authors
+ * Copyright 2014 ZXing authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,12 @@
  * limitations under the License.
  */
 
-#import "ZXDecoderResult.h"
+@interface ZXByteArray : NSObject
 
-@implementation ZXDecoderResult
+@property (nonatomic, assign, readonly) int8_t *array;
+@property (nonatomic, assign, readonly) unsigned int length;
 
-- (id)initWithRawBytes:(ZXByteArray *)rawBytes
-                  text:(NSString *)text
-          byteSegments:(NSMutableArray *)byteSegments
-               ecLevel:(NSString *)ecLevel {
-  if (self = [super init]) {
-    _rawBytes = rawBytes;
-    _text = text;
-    _byteSegments = byteSegments;
-    _ecLevel = ecLevel;
-  }
-
-  return self;
-}
+- (id)initWithLength:(unsigned int)length;
+- (id)initWithBytes:(int8_t)byte1, ...;
 
 @end

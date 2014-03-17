@@ -81,7 +81,7 @@ static NSString *ZX_AZTEC_DIGIT_TABLE[] = {
   }
 
   NSString *result = [[self class] encodedData:correctedBits];
-  return [[ZXDecoderResult alloc] initWithRawBytes:NULL length:0 text:result byteSegments:nil ecLevel:nil];
+  return [[ZXDecoderResult alloc] initWithRawBytes:nil text:result byteSegments:nil ecLevel:nil];
 }
 
 + (NSString *)highLevelDecode:(ZXBoolArray *)correctedBits {
@@ -230,7 +230,7 @@ static NSString *ZX_AZTEC_DIGIT_TABLE[] = {
 
   ZXReedSolomonDecoder *rsDecoder = [[ZXReedSolomonDecoder alloc] initWithField:gf];
   NSError *decodeError = nil;
-  if (![rsDecoder decode:dataWords.array receivedLen:numCodewords twoS:(int)numECCodewords error:&decodeError]) {
+  if (![rsDecoder decode:dataWords twoS:numECCodewords error:&decodeError]) {
     if (decodeError.code == ZXReedSolomonError) {
       if (error) *error = FormatErrorInstance();
     } else {
