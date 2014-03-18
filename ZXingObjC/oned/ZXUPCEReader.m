@@ -67,9 +67,7 @@ const int NUMSYS_AND_CHECK_DIGIT_PATTERNS[2][10] = {
     }
     [result appendFormat:@"%C", (unichar)('0' + bestMatch % 10)];
 
-    for (int i = 0; i < counters.length; i++) {
-      rowOffset += counters.array[i];
-    }
+    rowOffset += [counters sum];
 
     if (bestMatch >= 10) {
       lgPatternFound |= 1 << (5 - x);
