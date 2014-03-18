@@ -40,8 +40,8 @@
     _size = size;
     _generatorBase = b;
 
-    _expTable = (int32_t *)malloc(self.size * sizeof(int32_t));
-    _logTable = (int32_t *)malloc(self.size * sizeof(int32_t));
+    _expTable = (int32_t *)calloc(self.size, sizeof(int32_t));
+    _logTable = (int32_t *)calloc(self.size, sizeof(int32_t));
     int32_t x = 1;
     for (int i = 0; i < self.size; i++) {
       _expTable[i] = x;
@@ -58,9 +58,7 @@
     // logTable[0] == 0 but this should never be used
     _zero = [[ZXGenericGFPoly alloc] initWithField:self coefficients:[[ZXIntArray alloc] initWithLength:1]];
 
-    ZXIntArray *oneCoefficient = [[ZXIntArray alloc] initWithLength:1];
-    oneCoefficient.array[0] = 1;
-    _one = [[ZXGenericGFPoly alloc] initWithField:self coefficients:oneCoefficient];
+    _one = [[ZXGenericGFPoly alloc] initWithField:self coefficients:[[ZXIntArray alloc] initWithInts:1, -1]];
   }
 
   return self;

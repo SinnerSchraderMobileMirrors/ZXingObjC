@@ -53,6 +53,12 @@
   return self;
 }
 
+- (id)copyWithZone:(NSZone *)zone {
+  ZXIntArray *copy = [[ZXIntArray allocWithZone:zone] initWithLength:self.length];
+  memcpy(copy.array, self.array, self.length * sizeof(int32_t));
+  return copy;
+}
+
 - (void)dealloc {
   if (_array) {
     free(_array);

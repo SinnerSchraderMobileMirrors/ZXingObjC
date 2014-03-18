@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-@interface ZXIntArray : NSObject
+@interface ZXIntArray : NSObject <NSCopying>
 
 @property (nonatomic, assign, readonly) int32_t *array;
 @property (nonatomic, assign, readonly) unsigned int length;

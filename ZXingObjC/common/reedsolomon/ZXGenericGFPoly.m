@@ -27,12 +27,12 @@
 @implementation ZXGenericGFPoly
 
 - (id)initWithField:(ZXGenericGF *)field coefficients:(ZXIntArray *)coefficients {
-  if (coefficients.length == 0) {
-    @throw [NSException exceptionWithName:@"IllegalArgumentException"
-                                   reason:@"coefficients must have at least one element"
-                                 userInfo:nil];
-  }
   if (self = [super init]) {
+    if (coefficients.length == 0) {
+      @throw [NSException exceptionWithName:@"IllegalArgumentException"
+                                     reason:@"coefficients must have at least one element"
+                                   userInfo:nil];
+    }
     _field = field;
     int coefficientsLength = coefficients.length;
     if (coefficientsLength > 1 && coefficients.array[0] == 0) {
