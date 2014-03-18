@@ -86,7 +86,7 @@ int const CODE39_ASTERISK_ENCODING = 0x094;
 
 - (ZXResult *)decodeRow:(int)rowNumber row:(ZXBitArray *)row hints:(ZXDecodeHints *)hints error:(NSError **)error {
   ZXIntArray *theCounters = self.counters;
-  memset(theCounters.array, 0, theCounters.length * sizeof(int32_t));
+  [theCounters clear];
   NSMutableString *result = [NSMutableString stringWithCapacity:20];
 
   ZXIntArray *start = [self findAsteriskPattern:row counters:theCounters];

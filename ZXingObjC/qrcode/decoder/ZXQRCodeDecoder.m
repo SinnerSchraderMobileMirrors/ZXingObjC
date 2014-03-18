@@ -15,6 +15,7 @@
  */
 
 #import "ZXBitMatrix.h"
+#import "ZXBoolArray.h"
 #import "ZXByteArray.h"
 #import "ZXDecoderResult.h"
 #import "ZXErrorCorrectionLevel.h"
@@ -46,20 +47,17 @@
   return self;
 }
 
-- (ZXDecoderResult *)decode:(BOOL **)image length:(unsigned int)length error:(NSError **)error {
-  return [self decode:image length:length hints:nil error:error];
+- (ZXDecoderResult *)decode:(NSArray *)image error:(NSError **)error {
+  return [self decode:image hints:nil error:error];
 }
 
-/**
- * Convenience method that can decode a QR Code represented as a 2D array of booleans.
- * "true" is taken to mean a black module.
- */
-- (ZXDecoderResult *)decode:(BOOL **)image length:(unsigned int)length hints:(ZXDecodeHints *)hints error:(NSError **)error {
-  int dimension = length;
+- (ZXDecoderResult *)decode:(NSArray *)image hints:(ZXDecodeHints *)hints error:(NSError **)error {
+  int dimension = (int)[image count];
   ZXBitMatrix *bits = [[ZXBitMatrix alloc] initWithDimension:dimension];
   for (int i = 0; i < dimension; i++) {
+    ZXBoolArray *b = image[i];
     for (int j = 0; j < dimension; j++) {
-      if (image[i][j]) {
+      if (b.array[j]) {
         [bits setX:j y:i];
       }
     }
@@ -72,9 +70,6 @@
   return [self decodeMatrix:bits hints:nil error:error];
 }
 
-/**
- * Decodes a QR Code represented as a {@link BitMatrix}. A 1 or "true" is taken to mean a black module.
- */
 - (ZXDecoderResult *)decodeMatrix:(ZXBitMatrix *)bits hints:(ZXDecodeHints *)hints error:(NSError **)error {
   ZXQRCodeBitMatrixParser *parser = [[ZXQRCodeBitMatrixParser alloc] initWithBitMatrix:bits error:error];
   if (!parser) {
@@ -159,10 +154,13 @@
   return [ZXQRCodeDecodedBitStreamParser decode:resultBytes version:version ecLevel:ecLevel hints:hints error:error];
 }
 
-
 /**
  * Given data and error-correction codewords received, possibly corrupted by errors, attempts to
  * correct the errors in-place using Reed-Solomon error correction.
+ *
+ * @param codewordBytes data and error correction codewords
+ * @param numDataCodewords number of codewords that are data bytes
+ * @return NO if error correction fails
  */
 - (BOOL)correctErrors:(ZXByteArray *)codewordBytes numDataCodewords:(int)numDataCodewords error:(NSError **)error {
   int numCodewords = (int)codewordBytes.length;

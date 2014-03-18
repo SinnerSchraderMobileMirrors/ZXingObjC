@@ -15,6 +15,7 @@
  */
 
 #import "ZXBitMatrix.h"
+#import "ZXBoolArray.h"
 #import "ZXByteArray.h"
 #import "ZXDataMatrixBitMatrixParser.h"
 #import "ZXDataMatrixDataBlock.h"
@@ -43,16 +44,13 @@
   return self;
 }
 
-/**
- * Convenience method that can decode a Data Matrix Code represented as a 2D array of booleans.
- * "true" is taken to mean a black module.
- */
-- (ZXDecoderResult *)decode:(BOOL **)image length:(unsigned int)length error:(NSError **)error {
-  int dimension = length;
+- (ZXDecoderResult *)decode:(NSArray *)image error:(NSError **)error {
+  int dimension = (int)[image count];
   ZXBitMatrix *bits = [[ZXBitMatrix alloc] initWithDimension:dimension];
   for (int i = 0; i < dimension; i++) {
+    ZXBoolArray *b = image[i];
     for (int j = 0; j < dimension; j++) {
-      if (image[i][j]) {
+      if (b.array[j]) {
         [bits setX:j y:i];
       }
     }

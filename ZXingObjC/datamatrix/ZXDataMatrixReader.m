@@ -98,7 +98,7 @@
   return result;
 }
 
-- (void) reset {
+- (void)reset {
   // do nothing
 }
 
