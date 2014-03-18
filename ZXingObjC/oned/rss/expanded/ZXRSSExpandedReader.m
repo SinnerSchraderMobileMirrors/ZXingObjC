@@ -227,14 +227,15 @@ const int MAX_PAIRS = 11;
 // Whether the pairs form a valid find pattern seqience,
 // either complete or a prefix
 - (BOOL)isValidSequence:(NSArray *)pairs {
+  int count = (int)[pairs count];
   for (int i = 0, sz = 2; i < FINDER_PATTERN_SEQUENCES_LEN; i++, sz++) {
-    if ([self.pairs count] > sz) {
+    if (count > sz) {
       continue;
     }
 
     BOOL stop = YES;
-    for (int j = 0; j < [self.pairs count]; j++) {
-      if ([[self.pairs[j] finderPattern] value] != FINDER_PATTERN_SEQUENCES[i][j]) {
+    for (int j = 0; j < count; j++) {
+      if ([[pairs[j] finderPattern] value] != FINDER_PATTERN_SEQUENCES[i][j]) {
         stop = NO;
         break;
       }
