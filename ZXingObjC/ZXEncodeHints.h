@@ -61,14 +61,14 @@
  * For Aztec it represents the minimal percentage of error correction words.
  * Note: an Aztec symbol should have a minimum of 25% EC words.
  */
-@property (nonatomic, strong) NSNumber *errorCorrectionPercent;
+@property (nonatomic, copy) NSNumber *errorCorrectionPercent;
 
 /**
  * Specifies margin, in pixels, to use when generating the barcode. The meaning can vary
  * by format; for example it controls margin before and after the barcode horizontally for
  * most 1D formats.
  */
-@property (nonatomic, strong) NSNumber *margin;
+@property (nonatomic, copy) NSNumber *margin;
 
 /**
  * Specifies whether to use compact mode for PDF417.
@@ -84,5 +84,13 @@
  * Specifies the minimum and maximum number of rows and columns for PDF417.
  */
 @property (nonatomic, strong) ZXDimensions *pdf417Dimensions;
+
+/**
+ * Specifies the required number of layers for an Aztec code:
+ *   a negative number (-1, -2, -3, -4) specifies a compact Aztec code
+ *   0 indicates to use the minimum number of layers (the default)
+ *   a positive number (1, 2, .. 32) specifies a normaol (non-compact) Aztec code
+ */
+@property (nonatomic, copy) NSNumber *aztecLayers;
 
 @end
